@@ -1,14 +1,36 @@
-# Xebia LMS — Learning Management System
+# Xebia Academy — Enterprise Learning Management System (LMS)
 
-A full-stack Learning Management System (LMS) with a Spring Boot backend, PostgreSQL database, Cloudinary media storage, and a React + Vite frontend.
+A premium, full-stack enterprise Learning Management System (LMS) featuring a **Spring Boot** backend, **PostgreSQL** database, **Cloudinary** media manager, and a fully responsive **React + Vite** client portal. Optimized for corporate technical training, campus onboarding cohorts, and developer skill transformations.
 
+---
 
+## 🌟 Key Application Features
+
+### 🤖 1. Interactive Xebia AI Assistant
+- **Pulsing Float Widget**: A unified AI chatbot available on both the Admin and Student portals.
+- **Context-Aware Recommendations**: Offers smart suggestions for learning summaries, course advice, and explanations of metrics.
+- **Interactive Prompts**: Supports quick-action selection tags and interactive conversation simulation.
+
+### 🎨 2. Dynamic Xebia Brand Theming
+- **Dual Mode Support**: Standard theme toggle supports smooth transitions between clean light mode and glassmorphic dark mode.
+- **Official Brand Colors**: Implemented matching HSL tokens using Xebia's official Plum (`#6C1D5F`), Velvet (`#84117C`), and Teal (`#01AC9F`) color palette.
+- **Dynamic Design Tokens**: Custom styled card elements, responsive grid layouts, and glassmorphism cards.
+
+### 📊 3. Premium Admin Dashboard
+- **Comprehensive Analytics**: Tracks total learning hours, top performers, regional distribution, and project assignments.
+- **Specialized Cohorts**: Includes dedicated tracking tabs for AI Readiness Index (currently at 88%), fresher campus onboarding funnel, and future risk mitigations.
+
+### 🛠️ 4. Curriculum & Learning Builder
+- **Multi-level Hierarchy**: Categories ➔ Courses ➔ Modules ➔ Submodules ➔ 9 Content block types.
+- **Rich Media Blocks**: Native rendering of Heading, Text, Callout, Code (with syntax highlight), YouTube videos, PDFs, Slide decks, and Tables.
+
+---
 
 ## Project Architecture
 
 ```
 ├── backend/   # Spring Boot Application (Java 17, Maven)
-├── frontend/  # React + Vite Client Application (Tailwind CSS, HSL Theming)
+├── frontend/  # React + Vite Client Application (Tailwind CSS, HSL Brand Theming)
 └── docs/      # Module Reference & Flow Documentation
 ```
 
