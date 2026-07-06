@@ -11,17 +11,17 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.lms</groupId>
-    <artifactId>enterprise-lms</artifactId>
+    <groupId>com.xebia.lms</groupId>
+    <artifactId>xebia-lms</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>backend/lms-common</module>
-        <module>backend/lms-discovery-server</module>
-        <module>backend/lms-config-server</module>
-        <module>backend/lms-gateway</module>
-        <module>backend/lms-iam-service</module>
+        <module>backend/xebia-lms-common</module>
+        <module>backend/xebia-lms-discovery-server</module>
+        <module>backend/xebia-lms-config-server</module>
+        <module>backend/xebia-lms-gateway</module>
+        <module>backend/xebia-lms-iam-service</module>
     </modules>
 
     <properties>
@@ -40,8 +40,8 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>com.lms</groupId>
-                <artifactId>lms-common</artifactId>
+                <groupId>com.xebia.lms</groupId>
+                <artifactId>xebia-lms-common</artifactId>
                 <version>1.0.0</version>
             </dependency>
         </dependencies>
