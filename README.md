@@ -126,7 +126,7 @@ Make sure you have the following installed on your machine:
 | `SPRING_PROFILES_ACTIVE` | Active profile: `dev` (H2 DB) or `postgres` | `postgres` | Yes |
 | `SPRING_DATASOURCE_URL` | PostgreSQL JDBC Connection URL | `jdbc:postgresql://localhost:5433/lms` | Yes (for postgres) |
 | `SPRING_DATASOURCE_USERNAME` | PostgreSQL User Username | `postgres` | Yes (for postgres) |
-| `SPRING_DATASOURCE_PASSWORD` | PostgreSQL User Password | `nitinverma` | Yes (for postgres) |
+| `SPRING_DATASOURCE_PASSWORD` | PostgreSQL User Password | `abhaykumawat` | Yes (for postgres) |
 | `CLOUDINARY_CLOUD_NAME` | Cloudinary Storage Account Name | `dnplvm1es` | Yes |
 | `CLOUDINARY_API_KEY` | Cloudinary API Key | `658889419438443` | Yes |
 | `CLOUDINARY_API_SECRET` | Cloudinary API Secret Token | `b1YxF7d9kO3UI6rSXDqGXJHNGn8` | Yes |
