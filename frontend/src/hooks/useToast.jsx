@@ -53,11 +53,11 @@ export function ToastProvider({ children }) {
                 )}
               >
                 <Icon className="h-5 w-5 shrink-0" />
-                <p className="flex-1 text-sm font-medium text-brand-text-primary">{toast.message}</p>
+                <p className="flex-1 text-sm font-medium text-inherit">{toast.message}</p>
                 <button
                   type="button"
                   onClick={() => dismiss(toast.id)}
-                  className="shrink-0 rounded-lg p-1 hover:bg-black/5"
+                  className="shrink-0 rounded-lg p-1 hover:bg-black/5 text-inherit opacity-75 hover:opacity-100 transition-opacity"
                   aria-label="Dismiss"
                 >
                   <X className="h-4 w-4" />
