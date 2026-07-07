@@ -52,6 +52,44 @@ public class LMSBackendApplication {
         } catch (Exception e) {
             System.err.println("Failed to parse local .env file: " + e.getMessage());
         }
+
+        // Print debug information during startup to help troubleshoot Render deployment
+        String activeProfile = getEnvOrProperty("SPRING_PROFILES_ACTIVE");
+        String port = getEnvOrProperty("PORT");
+        String dbUrl = getEnvOrProperty("SPRING_DATASOURCE_URL");
+        String dbUser = getEnvOrProperty("SPRING_DATASOURCE_USERNAME");
+        String redisUrl = getEnvOrProperty("REDIS_URL");
+
+        System.out.println("========================================================================");
+        System.out.println("[LMS_backend Startup Check] Loaded environment parameters:");
+        System.out.println("  Active Profile (SPRING_PROFILES_ACTIVE): " + (activeProfile != null ? activeProfile : "postgres (default)"));
+        System.out.println("  Server Port (PORT):                     " + (port != null ? port : "8082 (default)"));
+        System.out.println("  Database URL (SPRING_DATASOURCE_URL):   " + maskUrl(dbUrl));
+        System.out.println("  Database Username (SPRING_DATASOURCE_USER): " + (dbUser != null ? dbUser : "NOT SET"));
+        System.out.println("  Redis URL (REDIS_URL):                 " + maskUrl(redisUrl));
+        System.out.println("========================================================================");
+
         SpringApplication.run(LMSBackendApplication.class, args);
+    }
+
+    private static String getEnvOrProperty(String key) {
+        String val = System.getProperty(key);
+        if (val == null || val.trim().isEmpty()) {
+            val = System.getenv(key);
+        }
+        return val;
+    }
+
+    private static String maskUrl(String url) {
+        if (url == null || url.trim().isEmpty()) {
+            return "NOT SET";
+        }
+        try {
+            // Mask password in connection string: e.g. jdbc:postgresql://username:password@host:port/db
+            // or redis://:password@host:port
+            return url.replaceAll("(:[^@/:]+)@", ":******@");
+        } catch (Exception e) {
+            return "SET (Failed to mask)";
+        }
     }
 }

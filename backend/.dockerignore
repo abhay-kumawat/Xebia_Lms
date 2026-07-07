@@ -1,0 +1,14 @@
+target/
+*.jar
+.mvn/
+.git/
+.gitignore
+Dockerfile
+README.md
+mvnw
+mvnw.cmd
+.factorypath
+.env
+package-lock.json
+package.json
+uploads/
