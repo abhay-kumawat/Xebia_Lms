@@ -395,7 +395,8 @@ export function CatalogProvider({ children }) {
       }));
     } catch (err) {
       console.error('Error fetching data from API:', err);
-      showToast('Error syncing with backend server', 'error');
+      // Removed UI popup warning as requested by the user
+      // showToast('Error syncing with backend server', 'error');
     }
   }, [showToast]);
 
