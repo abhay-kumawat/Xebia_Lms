@@ -20,7 +20,7 @@ public class SubmoduleEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
  
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false, length = 200, columnDefinition = "varchar(200) default 'Untitled'")
     private String title;
  
     @Column(columnDefinition = "TEXT")
