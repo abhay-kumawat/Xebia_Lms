@@ -9,6 +9,9 @@ import Dashboard from '@/pages/admin/Dashboard';
 import CategoryManagement from '@/pages/admin/CategoryManagement';
 import CategoryForm from '@/pages/admin/CategoryForm';
 import MediaLibrary from '@/pages/admin/MediaLibrary';
+import CourseManagement from '@/pages/admin/CourseManagement';
+import CourseForm from '@/pages/admin/CourseForm';
+import CourseBuilder from '@/pages/admin/CourseBuilder';
 
 // Student Features & Pages
 import StudentPortal from '@/pages/student/StudentPortal';
