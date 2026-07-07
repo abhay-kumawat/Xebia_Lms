@@ -65,7 +65,7 @@ public class CourseEntity {
     private String backgroundImage;
 
     @Builder.Default
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default true")
     private Boolean isActive = true;
 
     @Builder.Default

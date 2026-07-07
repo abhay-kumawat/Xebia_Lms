@@ -32,7 +32,7 @@ public class CategoryEntity {
     @Column(length = 20)
     private String color;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default true")
     @Builder.Default
     private Boolean isActive = true;
 

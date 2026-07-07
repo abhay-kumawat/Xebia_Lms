@@ -30,7 +30,7 @@ public class ModuleEntity {
     @Builder.Default
     private Integer moduleOrder = 0;
  
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default true")
     @Builder.Default
     private Boolean isActive = true;
 

@@ -48,7 +48,7 @@ public class SubmoduleEntity {
     @Builder.Default
     private Integer submoduleOrder = 0;
  
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default true")
     @Builder.Default
     private Boolean isActive = true;
 
