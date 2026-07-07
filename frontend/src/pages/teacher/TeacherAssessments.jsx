@@ -1,14 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { 
   ClipboardList, Plus, FileText, CheckSquare, Clock, Award, 
-  Search, Filter, ChevronRight, User, BookOpen, Calendar, HelpCircle 
+  Search, Filter, ChevronRight, User, BookOpen, Calendar, HelpCircle, Mail 
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
 import Badge from '@/components/ui/Badge';
 import Modal from '@/components/ui/Modal';
-import Select from '@/components/ui/Select';
 import StatCard from '@/components/ui/StatCard';
 import PageHeader from '@/components/layout/PageHeader';
 import { useToast } from '@/hooks/useToast';
@@ -21,13 +19,13 @@ const INITIAL_ASSESSMENTS = [
   { id: 4, title: "Data Science DataFrame Ops", type: "Quiz", course: "Data Science with Pandas", totalPoints: 50, questionsCount: 5, dueDate: "2026-07-12" }
 ];
 
-// Mock Student Submissions Data
+// Mock Student Submissions Data (including Enrollment Number and Email)
 const INITIAL_SUBMISSIONS = [
-  { id: 101, studentName: "Abhay Kumawat", assessmentTitle: "Docker Container Lifecycle", type: "Quiz", submittedDate: "2026-07-07", status: "Graded", score: 92 },
-  { id: 102, studentName: "Neha Patel", assessmentTitle: "Docker Container Lifecycle", type: "Quiz", submittedDate: "2026-07-06", status: "Graded", score: 87 },
-  { id: 103, studentName: "Aarav Sharma", assessmentTitle: "Docker Container Lifecycle", type: "Quiz", submittedDate: "2026-07-06", status: "Graded", score: 82 },
-  { id: 104, studentName: "Abhay Kumawat", assessmentTitle: "Spring Boot REST Endpoints", type: "Assignment", submittedDate: "2026-07-07", status: "Pending Evaluation", score: null },
-  { id: 105, studentName: "Rohan Das", assessmentTitle: "Spring Boot REST Endpoints", type: "Assignment", submittedDate: "2026-07-05", status: "Graded", score: 88 }
+  { id: 101, studentName: "Abhay Kumawat", enrollmentNo: "XEB-2026-081", email: "abhay.kumawat@xebia.com", assessmentTitle: "Docker Container Lifecycle", type: "Quiz", submittedDate: "2026-07-07", status: "Graded", score: 92 },
+  { id: 102, studentName: "Neha Patel", enrollmentNo: "XEB-2026-112", email: "neha.patel@xebia.com", assessmentTitle: "Docker Container Lifecycle", type: "Quiz", submittedDate: "2026-07-06", status: "Graded", score: 87 },
+  { id: 103, studentName: "Aarav Sharma", enrollmentNo: "XEB-2026-095", email: "aarav.sharma@xebia.com", assessmentTitle: "Docker Container Lifecycle", type: "Quiz", submittedDate: "2026-07-06", status: "Graded", score: 82 },
+  { id: 104, studentName: "Abhay Kumawat", enrollmentNo: "XEB-2026-081", email: "abhay.kumawat@xebia.com", assessmentTitle: "Spring Boot REST Endpoints", type: "Assignment", submittedDate: "2026-07-07", status: "Pending Evaluation", score: null },
+  { id: 105, studentName: "Rohan Das", enrollmentNo: "XEB-2026-204", email: "rohan.das@xebia.com", assessmentTitle: "Spring Boot REST Endpoints", type: "Assignment", submittedDate: "2026-07-05", status: "Graded", score: 88 }
 ];
 
 const MOCK_COURSES = [
@@ -134,7 +132,7 @@ export default function TeacherAssessments() {
   };
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="space-y-8 pb-12 px-6">
       {/* Page Header */}
       <PageHeader 
         title="Assessments Management" 
@@ -165,90 +163,111 @@ export default function TeacherAssessments() {
         ))}
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-2">
-        {/* Left Column: List of Assessments */}
-        <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-white/[0.05] dark:bg-white/[0.02]">
-          <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Active Assessments</h3>
-          <div className="space-y-4">
-            {assessments.map(item => (
-              <div 
-                key={item.id}
-                className="flex items-center justify-between rounded-2xl border border-slate-100 p-4.5 dark:border-white/[0.03] dark:bg-white/[0.005] hover:bg-slate-50/50 dark:hover:bg-white/[0.01] transition-colors"
-              >
-                <div className="flex items-center gap-3.5">
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${
-                    item.type === 'Quiz' ? 'bg-purple-500/10 text-purple-600' : 'bg-blue-500/10 text-blue-600'
-                  }`}>
-                    <ClipboardList className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-800 dark:text-slate-200 text-sm">{item.title}</h4>
-                    <p className="text-[10px] text-slate-400 mt-0.5">{item.course}</p>
-                    <div className="mt-2 flex items-center gap-3 text-[10px] font-semibold text-slate-500">
-                      <span className="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">{item.type}</span>
-                      <span>{item.questionsCount} {item.type === 'Quiz' ? 'Questions' : 'Tasks'}</span>
-                      <span>Max {item.totalPoints} pts</span>
-                    </div>
-                  </div>
+      {/* Top Section: List of Assessments */}
+      <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-white/[0.05] dark:bg-white/[0.02]">
+        <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Active Assessments</h3>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {assessments.map(item => (
+            <div 
+              key={item.id}
+              className="flex flex-col justify-between rounded-2xl border border-slate-100 p-4.5 dark:border-white/[0.03] dark:bg-white/[0.005] hover:bg-slate-50/50 dark:hover:bg-white/[0.01] transition-colors"
+            >
+              <div className="flex items-center gap-3.5 mb-3">
+                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
+                  item.type === 'Quiz' ? 'bg-purple-500/10 text-purple-600' : 'bg-blue-500/10 text-blue-600'
+                }`}>
+                  <ClipboardList className="h-5 w-5" />
                 </div>
-                <div className="text-right text-xs">
-                  <p className="text-slate-400">Due Date</p>
-                  <p className="font-bold text-slate-700 dark:text-slate-300 mt-0.5">{item.dueDate}</p>
+                <div className="min-w-0">
+                  <h4 className="font-bold text-slate-800 dark:text-slate-200 text-sm truncate">{item.title}</h4>
+                  <p className="text-[10px] text-slate-400 mt-0.5 truncate">{item.course}</p>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Right Column: Student Submissions & Grading Panel */}
-        <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-white/[0.05] dark:bg-white/[0.02]">
-          <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Student Submissions</h3>
-          <div className="space-y-4">
-            {submissions.map(sub => (
-              <div 
-                key={sub.id}
-                className="flex items-center justify-between rounded-2xl border border-slate-100 p-4.5 dark:border-white/[0.03] dark:bg-white/[0.005] hover:bg-slate-50/50 dark:hover:bg-white/[0.01] transition-colors"
-              >
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">{sub.studentName}</span>
-                    <span className="text-[10px] bg-slate-100 dark:bg-slate-850 px-1.5 py-0.5 rounded font-semibold text-slate-500 uppercase tracking-wider">{sub.type}</span>
-                  </div>
-                  <p className="text-xs text-slate-400 mt-1">{sub.assessmentTitle}</p>
-                  <p className="text-[10px] text-slate-400 mt-1.5 flex items-center gap-1 font-medium">
-                    <Calendar className="h-3 w-3" />
-                    Submitted: {sub.submittedDate}
-                  </p>
+              <div className="flex items-center justify-between border-t border-slate-100 dark:border-white/[0.03] pt-3 text-[10px] font-semibold text-slate-500">
+                <div className="flex items-center gap-2">
+                  <span className="bg-slate-100 dark:bg-slate-850 px-2 py-0.5 rounded text-slate-600 dark:text-slate-350">{item.type}</span>
+                  <span>Max {item.totalPoints} pts</span>
                 </div>
+                <span className="font-bold text-slate-600 dark:text-slate-300">Due: {item.dueDate}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
-                <div className="text-right">
-                  {sub.status === 'Graded' ? (
-                    <div className="space-y-1">
-                      <span className="text-sm font-black text-emerald-500 bg-emerald-500/10 rounded-lg px-2.5 py-1">
+      {/* Bottom Section: Student Submissions Full-Width Table */}
+      <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-white/[0.05] dark:bg-white/[0.02]">
+        <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Student Submissions</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr className="border-b border-slate-100 dark:border-white/[0.04] text-xs font-bold uppercase tracking-wider text-slate-400">
+                <th className="pb-3.5">Student Details</th>
+                <th className="pb-3.5">Enrollment No</th>
+                <th className="pb-3.5">Email Address</th>
+                <th className="pb-3.5">Assessment Name</th>
+                <th className="pb-3.5 text-center">Submitted Date</th>
+                <th className="pb-3.5 text-right">Score / Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-white/[0.04]">
+              {submissions.map(sub => (
+                <tr 
+                  key={sub.id} 
+                  className="group hover:bg-slate-50/45 dark:hover:bg-white/[0.005] transition-colors"
+                >
+                  {/* Name */}
+                  <td className="py-4 font-semibold text-slate-800 dark:text-slate-150">
+                    <div className="flex items-center gap-2">
+                      <div className="h-7 w-7 rounded-full bg-gradient-to-tr from-emerald-500/10 to-teal-500/10 font-bold text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-[10px]">
+                        {sub.studentName.charAt(0)}
+                      </div>
+                      <span>{sub.studentName}</span>
+                    </div>
+                  </td>
+
+                  {/* Enrollment No */}
+                  <td className="py-4 font-bold text-xs text-slate-600 dark:text-slate-400">
+                    {sub.enrollmentNo}
+                  </td>
+
+                  {/* Email */}
+                  <td className="py-4 text-xs font-semibold text-slate-550 dark:text-slate-400">
+                    {sub.email}
+                  </td>
+
+                  {/* Assessment Title */}
+                  <td className="py-4">
+                    <p className="font-semibold text-slate-700 dark:text-slate-350">{sub.assessmentTitle}</p>
+                    <p className="text-[10px] text-slate-400 uppercase tracking-wider font-bold mt-0.5">{sub.type}</p>
+                  </td>
+
+                  {/* Date */}
+                  <td className="py-4 text-center text-xs font-medium text-slate-500">
+                    {sub.submittedDate}
+                  </td>
+
+                  {/* Score / Action */}
+                  <td className="py-4 text-right">
+                    {sub.status === 'Graded' ? (
+                      <span className="text-xs font-black text-emerald-500 bg-emerald-500/10 rounded-lg px-2.5 py-1">
                         {sub.score}%
                       </span>
-                      <p className="text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-wider">Graded</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-1.5">
-                      <Badge variant="warning" className="rounded-full px-2 py-0.5 text-[10px] font-bold">
-                        Pending
-                      </Badge>
-                      <br />
+                    ) : (
                       <Button
                         onClick={() => startGrading(sub)}
                         variant="ghost"
                         size="xs"
-                        className="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-350 cursor-pointer font-bold uppercase tracking-wider text-[10px]"
+                        className="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-350 cursor-pointer font-bold uppercase tracking-wider text-[10px] p-0"
                       >
                         Grade Now →
                       </Button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 
@@ -386,7 +405,9 @@ export default function TeacherAssessments() {
           >
             <form onSubmit={handleGradeSubmit} className="space-y-5">
               <div className="rounded-xl bg-slate-50 dark:bg-white/[0.005] border border-slate-100 dark:border-white/[0.03] p-4 text-xs space-y-2">
-                <p><span className="font-bold text-slate-400 uppercase tracking-wider">Student:</span> <span className="font-bold text-slate-800 dark:text-slate-200">{selectedSubmission.studentName}</span></p>
+                <p><span className="font-bold text-slate-400 uppercase tracking-wider">Student Name:</span> <span className="font-bold text-slate-800 dark:text-slate-200">{selectedSubmission.studentName}</span></p>
+                <p><span className="font-bold text-slate-400 uppercase tracking-wider">Enrollment No:</span> <span className="font-bold text-slate-800 dark:text-slate-200">{selectedSubmission.enrollmentNo}</span></p>
+                <p><span className="font-bold text-slate-400 uppercase tracking-wider">Email Address:</span> <span className="font-medium text-slate-800 dark:text-slate-200">{selectedSubmission.email}</span></p>
                 <p><span className="font-bold text-slate-400 uppercase tracking-wider">Assessment:</span> <span className="font-semibold text-slate-800 dark:text-slate-200">{selectedSubmission.assessmentTitle}</span></p>
                 <p><span className="font-bold text-slate-400 uppercase tracking-wider">Submitted:</span> <span className="font-medium text-slate-800 dark:text-slate-200">{selectedSubmission.submittedDate}</span></p>
               </div>
