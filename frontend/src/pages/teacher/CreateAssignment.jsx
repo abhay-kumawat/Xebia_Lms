@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, Save, CloudUpload, FileText, CheckCircle, 
-  Settings2, Calendar, Clock, Globe, ShieldAlert, Sparkles 
+  Settings2, Calendar, Clock, Globe, ShieldAlert, Sparkles, Trash2 
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
@@ -12,6 +12,38 @@ import { useToast } from '@/hooks/useToast';
 export default function CreateAssignment() {
   const navigate = useNavigate();
   const { showToast } = useToast();
+
+  // File Upload References & State
+  const fileInputRef = useRef(null);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+
+  const handleBoxClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    setUploadedFiles(prev => [...prev, ...files]);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    if (e.dataTransfer.files) {
+      const files = Array.from(e.dataTransfer.files);
+      setUploadedFiles(prev => [...prev, ...files]);
+    }
+  };
+
+  const removeFile = (index, e) => {
+    e.stopPropagation();
+    setUploadedFiles(prev => prev.filter((_, i) => i !== index));
+  };
 
   // Form States
   const [title, setTitle] = useState('Microservices Architecture Lab 2');
@@ -200,14 +232,58 @@ export default function CreateAssignment() {
             </p>
 
             {/* File Drag & Drop Box */}
-            <div className="border-2 border-dashed border-slate-200 dark:border-[#334155] rounded-2xl p-8 flex flex-col items-center justify-center text-center bg-slate-50/50 dark:bg-[#1E293B]/20 hover:border-emerald-500 dark:hover:border-emerald-400 transition-colors cursor-pointer select-none">
-              <CloudUpload className="h-10 w-10 text-slate-400 dark:text-slate-550 mb-3" />
-              <p className="text-sm font-bold text-slate-700 dark:text-slate-350">
-                Click to upload files or drag and drop
-              </p>
-              <p className="text-[11px] text-slate-400 mt-1">
-                PDF, ZIP, DOCX, or Images up to 25 MB
-              </p>
+            <div 
+              onClick={handleBoxClick}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              className="border-2 border-dashed border-slate-200 dark:border-[#334155] rounded-2xl p-8 flex flex-col items-center justify-center text-center bg-slate-50/50 dark:bg-[#1E293B]/20 hover:border-emerald-500 dark:hover:border-emerald-400 transition-colors cursor-pointer select-none"
+            >
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileChange} 
+                className="hidden" 
+                multiple 
+              />
+              
+              {uploadedFiles.length === 0 ? (
+                <>
+                  <CloudUpload className="h-10 w-10 text-slate-400 dark:text-slate-550 mb-3" />
+                  <p className="text-sm font-bold text-slate-700 dark:text-slate-350">
+                    Click to upload files or drag and drop
+                  </p>
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    PDF, ZIP, DOCX, or Images up to 25 MB
+                  </p>
+                </>
+              ) : (
+                <div className="w-full text-left space-y-2">
+                  <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Selected Files ({uploadedFiles.length})</p>
+                  {uploadedFiles.map((file, idx) => (
+                    <div 
+                      key={idx} 
+                      className="flex items-center justify-between rounded-xl bg-white dark:bg-[#111827] border border-slate-100 dark:border-[#334155]/60 p-3"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <FileText className="h-5 w-5 text-emerald-500 shrink-0" />
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-slate-800 dark:text-slate-250 truncate">{file.name}</p>
+                          <p className="text-[10px] text-slate-400">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => removeFile(idx, e)}
+                        className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 border-0 bg-transparent cursor-pointer"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                  <p className="text-[10px] text-slate-400 text-center pt-2">Click or drag more files to append.</p>
+                </div>
+              )}
             </div>
           </div>
 
