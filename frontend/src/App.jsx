@@ -53,6 +53,7 @@ import TeacherDashboard from '@/pages/teacher/Dashboard';
 import TeacherStudentTracker from '@/pages/teacher/StudentTracker';
 import TeacherAssessments from '@/pages/teacher/TeacherAssessments';
 import CreateAssignment from '@/pages/teacher/CreateAssignment';
+import ImportQuizFromExcel from '@/pages/teacher/ImportQuizFromExcel';
 
 function RouteTitle({ title, children }) {
   React.useEffect(() => {
@@ -246,6 +247,12 @@ export default function App() {
                   <Route path="assessments/create" element={
                     <RouteTitle title="Create Assignment">
                       <CreateAssignment />
+                    </RouteTitle>
+                  } />
+
+                  <Route path="assessments/import-excel" element={
+                    <RouteTitle title="Import Quiz from Excel">
+                      <ImportQuizFromExcel />
                     </RouteTitle>
                   } />
                   

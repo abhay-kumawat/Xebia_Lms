@@ -173,14 +173,24 @@ export default function TeacherAssessments() {
         title="Assessments Management" 
         description="Create quizzes, evaluate programming assignments, and view grading statistics."
         action={
-          <Button 
-            onClick={() => navigate('/teacher/assessments/create')}
-            variant="primary" 
-            className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-md cursor-pointer border-0 text-white font-semibold"
-          >
-            <Plus className="h-4.5 w-4.5" />
-            <span>Create Assessment</span>
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              onClick={() => navigate('/teacher/assessments/import-excel')}
+              variant="outline"
+              className="flex items-center gap-2 rounded-2xl border-emerald-500/20 bg-emerald-500/5 text-emerald-600 hover:bg-emerald-500/10 dark:text-emerald-400 font-semibold cursor-pointer"
+            >
+              <FileSpreadsheet className="h-4 w-4" />
+              <span>Import from Excel</span>
+            </Button>
+            <Button 
+              onClick={() => navigate('/teacher/assessments/create')}
+              variant="primary" 
+              className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-md cursor-pointer border-0 text-white font-semibold"
+            >
+              <Plus className="h-4.5 w-4.5" />
+              <span>Create Assessment</span>
+            </Button>
+          </div>
         }
       />
 
