@@ -152,3 +152,49 @@ Make sure you have the following installed on your machine:
 | `CLOUDINARY_CLOUD_NAME` | Cloudinary Storage Account Name | `dnplvm1es` | Yes |
 | `CLOUDINARY_API_KEY` | Cloudinary API Key | `658889419438443` | Yes |
 | `CLOUDINARY_API_SECRET` | Cloudinary API Secret Token | `b1YxF7d9kO3UI6rSXDqGXJHNGn8` | Yes |
+
+---
+
+## 🌐 Production Deployment Guide
+
+This section explains how to deploy the LMS application on **Render** (for the backend) and **Vercel** (for the frontend).
+
+### 1. Backend Deployment on Render
+
+The backend is packaged inside a Docker container (configured via the root `Dockerfile`).
+
+1. **Create Web Service**: Set up a new **Web Service** on Render, pointing to your GitHub repository.
+2. **Set Build Settings**:
+   - **Environment**: `Docker`
+   - **Branch**: `main`
+3. **Configure Environment Variables**:
+   Add the following environment variables in your Render Dashboard (**Settings ➔ Environment**):
+   - `PORT`: `10000` (Render expects the application to listen on this port)
+   - `SPRING_PROFILES_ACTIVE`: `postgres`
+   - `SPRING_DATASOURCE_URL`: `jdbc:postgresql://<db-host>/<db-name>?sslmode=require`
+   - `SPRING_DATASOURCE_USERNAME`: `<db-username>`
+   - `SPRING_DATASOURCE_PASSWORD`: `<db-password>`
+   - `CLOUDINARY_CLOUD_NAME`: `<your-cloudinary-name>`
+   - `CLOUDINARY_API_KEY`: `<your-cloudinary-key>`
+   - `CLOUDINARY_API_SECRET`: `<your-cloudinary-secret>`
+4. **Database Migrations on Render**:
+   - If you add new columns to your entities that are non-nullable (`NOT NULL`), they will fail to migrate if your database has existing data.
+   - To fix this, temporarily change `spring.jpa.hibernate.ddl-auto` to `create` in `backend/src/main/resources/application-postgres.properties`, deploy it once to drop/recreate all tables cleanly, and then immediately change it back to `update` to preserve your records.
+
+---
+
+### 2. Frontend Deployment on Vercel
+
+The frontend is a React + Vite application.
+
+1. **Create Vercel Project**: Set up a new project on Vercel, pointing to the same GitHub repository.
+2. **Root Directory Configuration**:
+   - Set the **Root Directory** to `frontend`.
+3. **Framework Preset**:
+   - Choose **Vite** as the framework preset.
+4. **Configure Environment Variables**:
+   Add the following variables in Vercel's **Settings ➔ Environment Variables** (or set them in `frontend/.env.production` before building):
+   - `VITE_API_URL`: `https://your-render-backend-name.onrender.com`
+   - `VITE_API_BASE_URL`: `https://your-render-backend-name.onrender.com`
+5. **Build and Deploy**:
+   Vercel will trigger a build of the frontend, compile the production bundle injecting the backend URL, and host the client application at a custom `*.vercel.app` domain.
