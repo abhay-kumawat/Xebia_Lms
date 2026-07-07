@@ -247,6 +247,24 @@ export default function App() {
                       <CourseManagement />
                     </RouteTitle>
                   } />
+                  
+                  <Route path="courses/new" element={
+                    <RouteTitle title="Create Course">
+                      <CourseForm />
+                    </RouteTitle>
+                  } />
+
+                  <Route path="courses/:courseId/edit" element={
+                    <RouteTitle title="Edit Course">
+                      <CourseForm />
+                    </RouteTitle>
+                  } />
+                  
+                  <Route path="courses/:courseId/builder" element={
+                    <RouteTitle title="Course Builder">
+                      <CourseBuilder />
+                    </RouteTitle>
+                  } />
 
                   <Route path="*" element={<Navigate to="dashboard" replace />} />
                 </Routes>

@@ -38,6 +38,8 @@ export default function CourseManagement({ categoryId = null }) {
   const { showToast } = useToast();
   const navigate = useNavigate();
   const category = resolvedCategoryId ? getCategory(resolvedCategoryId) : null;
+  const isTeacher = window.location.pathname.startsWith('/teacher');
+  const urlPrefix = isTeacher ? '/teacher' : '/admin';
 
   const [search, setSearch]                   = useState('');
   const [statusFilter, setStatusFilter]       = useState('all');
@@ -80,7 +82,7 @@ export default function CourseManagement({ categoryId = null }) {
       showToast('Create a category first before adding a course.', 'error');
       return;
     }
-    navigate('/admin/courses/new');
+    navigate(`${urlPrefix}/courses/new`);
   };
 
   const emptyStateConfig = useMemo(() => {
@@ -238,7 +240,7 @@ export default function CourseManagement({ categoryId = null }) {
                 course={course}
                 categoryName={getCategoryName(course.categoryId)}
                 categoryColor={getCategoryColor(course.categoryId)}
-                onEdit={(c)      => navigate(`/admin/courses/${c.id}/edit`)}
+                onEdit={(c)      => navigate(`${urlPrefix}/courses/${c.id}/edit`)}
                 onDelete={setDeleteTarget}
                 onDuplicate={(c) => duplicateCourse(c.id)}
               />

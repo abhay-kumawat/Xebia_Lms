@@ -29,7 +29,9 @@ export default function CourseCard({ course, categoryName, categoryColor = '#6c1
   const isPublished = course.status === 'published';
   const isActive = course.status !== 'archived';
 
-  const targetUrl = `/admin/courses/${course.id}/builder`;
+  const isTeacher = window.location.pathname.startsWith('/teacher');
+  const urlPrefix = isTeacher ? '/teacher' : '/admin';
+  const targetUrl = `${urlPrefix}/courses/${course.id}/builder`;
 
   const handleCardClick = (e) => {
     if (e.target.closest('button') || e.target.closest('a')) {

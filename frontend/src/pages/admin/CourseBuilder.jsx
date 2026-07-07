@@ -97,18 +97,22 @@ export default function CourseBuilder() {
     );
   }
 
+  const isTeacher = window.location.pathname.startsWith('/teacher');
+  const urlPrefix = isTeacher ? '/teacher' : '/admin';
+
   return (
     <div className="flex flex-col h-screen">
       <CourseBuilderWorkspaceContent
         course={course}
         catalog={catalog}
         showToast={showToast}
+        urlPrefix={urlPrefix}
       />
     </div>
   );
 }
 
-function CourseBuilderWorkspaceContent({ course, catalog, showToast }) {
+function CourseBuilderWorkspaceContent({ course, catalog, showToast, urlPrefix }) {
   // Navigation & View Mode
   const [activeView, setActiveView] = useState('modules_submodules'); // 'modules_submodules' or 'submodule_content'
   const [activeModuleId, setActiveModuleId] = useState(course.modules?.[0]?.id || null);
@@ -712,7 +716,7 @@ function CourseBuilderWorkspaceContent({ course, catalog, showToast }) {
       <div className="sticky top-0 z-20 border-b border-brand-border dark:border-slate-800 bg-white dark:bg-slate-900">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2 text-sm font-semibold text-brand-text-secondary dark:text-slate-400">
-            <Link to="/admin/courses" className="text-brand-text-secondary hover:text-brand-text-primary transition-colors">Courses</Link>
+            <Link to={`${urlPrefix}/courses`} className="text-brand-text-secondary hover:text-brand-text-primary transition-colors">Courses</Link>
             <ChevronRight className="h-3.5 w-3.5 text-brand-text-secondary" />
             <span className="text-brand-text-secondary truncate max-w-[150px]">
               {course.title}

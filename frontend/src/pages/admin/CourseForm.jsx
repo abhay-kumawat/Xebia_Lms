@@ -358,6 +358,8 @@ export default function CourseForm() {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const { courses, categories, createCourse, updateCourse, hydrated } = useCatalog();
+  const isTeacher = window.location.pathname.startsWith('/teacher');
+  const urlPrefix = isTeacher ? '/teacher' : '/admin';
 
   const isEdit = !!courseId;
   const existing = isEdit ? courses.find(c => String(c.id) === String(courseId)) : null;
@@ -471,7 +473,7 @@ export default function CourseForm() {
       if (isEdit) await updateCourse(existing.id, payload);
       else        await createCourse(payload);
       showToast('Course saved successfully');
-      navigate('/admin/courses');
+      navigate(`${urlPrefix}/courses`);
     } catch { showToast('Failed to save course', 'error'); }
   };
 
@@ -490,9 +492,9 @@ export default function CourseForm() {
       <div className="flex items-center justify-between px-8 py-3"
         style={{ backgroundColor: C.card, borderBottom: `1px solid ${C.border}` }}>
         <nav className="flex items-center gap-2 text-sm" style={{ color: C.mutedFg }}>
-          <Link to="/admin/dashboard" style={{ color: C.mutedFg }} className="hover:underline">Dashboard</Link>
+          <Link to={`${urlPrefix}/dashboard`} style={{ color: C.mutedFg }} className="hover:underline">Dashboard</Link>
           <ChevronRight className="w-[13px] h-[13px]" />
-          <Link to="/admin/courses" style={{ color: C.mutedFg }} className="hover:underline">Courses</Link>
+          <Link to={`${urlPrefix}/courses`} style={{ color: C.mutedFg }} className="hover:underline">Courses</Link>
           <ChevronRight className="w-[13px] h-[13px]" />
           <span style={{ color: C.fg, fontWeight: 500 }}>{isEdit ? 'Edit' : 'Create'}</span>
         </nav>
@@ -971,7 +973,7 @@ export default function CourseForm() {
               )}
             </div>
             <div className="flex items-center gap-3">
-              <button type="button" onClick={() => navigate('/admin/courses')}
+              <button type="button" onClick={() => navigate(`${urlPrefix}/courses`)}
                 className="px-5 py-2.5 rounded-md text-sm font-semibold transition-colors hover:bg-gray-50"
                 style={{ border: `1px solid ${C.border}`, color: C.mutedFg }}>
                 Cancel
