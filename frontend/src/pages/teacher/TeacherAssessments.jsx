@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   ClipboardList, Plus, FileText, CheckSquare, Clock, Award, 
-  Search, Filter, ChevronRight, User, BookOpen, Calendar, HelpCircle, Mail 
+  Search, Filter, ChevronRight, User, BookOpen, Calendar, HelpCircle, Mail, FileSpreadsheet 
 } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import Button from '@/components/ui/Button';
@@ -37,6 +38,7 @@ const MOCK_COURSES = [
 
 export default function TeacherAssessments() {
   const { showToast } = useToast();
+  const navigate = useNavigate();
   
   // States
   const [assessments, setAssessments] = useState(INITIAL_ASSESSMENTS);
@@ -131,6 +133,39 @@ export default function TeacherAssessments() {
     showToast(`Successfully graded ${selectedSubmission.studentName}'s submission!`, "success");
   };
 
+  // Export submissions list to CSV (Excel compatible)
+  const handleExportToCSV = () => {
+    // Define headers
+    const headers = ["Student Name", "Enrollment No", "Email Address", "Assessment Title", "Type", "Submission Date", "Status", "Score (%)"];
+    
+    // Map entries
+    const rows = submissions.map(sub => [
+      `"${sub.studentName.replace(/"/g, '""')}"`,
+      `"${sub.enrollmentNo.replace(/"/g, '""')}"`,
+      `"${sub.email.replace(/"/g, '""')}"`,
+      `"${sub.assessmentTitle.replace(/"/g, '""')}"`,
+      `"${sub.type}"`,
+      `"${sub.submittedDate}"`,
+      `"${sub.status}"`,
+      sub.score !== null ? `"${sub.score}%"` : '"N/A"'
+    ]);
+
+    // Build content
+    const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+
+    // Download File
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `student_submissions_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showToast("Spreadsheet exported successfully!", "success");
+  };
+
   return (
     <div className="space-y-8 pb-12 px-6">
       {/* Page Header */}
@@ -139,7 +174,7 @@ export default function TeacherAssessments() {
         description="Create quizzes, evaluate programming assignments, and view grading statistics."
         action={
           <Button 
-            onClick={() => setCreateModalOpen(true)}
+            onClick={() => navigate('/teacher/assessments/create')}
             variant="primary" 
             className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-md cursor-pointer border-0 text-white font-semibold"
           >
@@ -197,7 +232,18 @@ export default function TeacherAssessments() {
 
       {/* Bottom Section: Student Submissions Full-Width Table */}
       <div className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-white/[0.05] dark:bg-white/[0.02]">
-        <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4">Student Submissions</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100">Student Submissions</h3>
+          <Button 
+            onClick={handleExportToCSV}
+            variant="outline" 
+            size="sm"
+            className="flex items-center gap-2 border-emerald-500/20 bg-emerald-505/5 text-emerald-600 hover:bg-emerald-500/10 dark:text-emerald-400 font-semibold rounded-xl cursor-pointer"
+          >
+            <FileSpreadsheet className="h-4 w-4" />
+            <span>Export Excel (CSV)</span>
+          </Button>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-sm">
             <thead>

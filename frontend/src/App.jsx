@@ -52,6 +52,7 @@ import TeacherLoginPage from '@/pages/teacher/Login';
 import TeacherDashboard from '@/pages/teacher/Dashboard';
 import TeacherStudentTracker from '@/pages/teacher/StudentTracker';
 import TeacherAssessments from '@/pages/teacher/TeacherAssessments';
+import CreateAssignment from '@/pages/teacher/CreateAssignment';
 
 function RouteTitle({ title, children }) {
   React.useEffect(() => {
@@ -239,6 +240,12 @@ export default function App() {
                   <Route path="assessments" element={
                     <RouteTitle title="Assessments Management">
                       <TeacherAssessments />
+                    </RouteTitle>
+                  } />
+
+                  <Route path="assessments/create" element={
+                    <RouteTitle title="Create Assignment">
+                      <CreateAssignment />
                     </RouteTitle>
                   } />
                   
