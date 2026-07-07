@@ -50,3 +50,7 @@ Desktop.ini
 # Vendor tools
 .tools/
 .jdk/
+
+# Local Documentation Reports
+LMS_PROJECT_MASTER_DOCUMENTATION.md
+lms_project_documentation.md
