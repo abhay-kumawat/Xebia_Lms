@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import {
   Plus, ChevronRight, CheckCircle, Circle, Save, Clock, Tag, Smile, Check,
-  Upload, Link2, ImageIcon, X, HelpCircle
+  Upload, Link2, ImageIcon, X, HelpCircle, BookOpen, User
 } from 'lucide-react';
 import { useCatalog } from '@/hooks/useCatalog';
 import Button from '@/components/ui/Button';
