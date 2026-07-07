@@ -4,45 +4,47 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import {
   Plus, ChevronRight, CheckCircle, Circle, Save, Clock, Tag, Smile, Check,
-  Upload, Link2, ImageIcon, X,
+  Upload, Link2, ImageIcon, X, HelpCircle
 } from 'lucide-react';
 import { useCatalog } from '@/hooks/useCatalog';
+import Button from '@/components/ui/Button';
+import Badge from '@/components/ui/Badge';
+import PageHeader from '@/components/layout/PageHeader';
 
-/* ─── Design-token palette (matches createcategory.html) ─── */
 const SWATCH_PALETTE = [
-  { hex: '#6c1d5f', label: 'Plum'       },
-  { hex: '#01ac9f', label: 'Teal'       },
-  { hex: '#ff6200', label: 'Orange'     },
-  { hex: '#84117c', label: 'Magenta'    },
-  { hex: '#5c4f61', label: 'Slate'      },
-  { hex: '#793b74', label: 'Violet'     },
+  { hex: '#6C1D5F', label: 'Plum'       },
+  { hex: '#01AC9F', label: 'Teal'       },
+  { hex: '#FF6200', label: 'Orange'     },
+  { hex: '#84117C', label: 'Magenta'    },
+  { hex: '#5C4F61', label: 'Slate'      },
+  { hex: '#793B74', label: 'Violet'     },
 ];
 
 const MORE_COLORS = [
-  { hex: '#3b82f6', label: 'Blue' },
-  { hex: '#60a5fa', label: 'Blue Light' },
-  { hex: '#2563eb', label: 'Blue Dark' },
-  { hex: '#0d9488', label: 'Teal' },
-  { hex: '#14b8a6', label: 'Teal Light' },
-  { hex: '#06b6d4', label: 'Cyan' },
-  { hex: '#22d3ee', label: 'Cyan Light' },
-  { hex: '#10b981', label: 'Green' },
-  { hex: '#34d399', label: 'Green Light' },
+  { hex: '#3B82F6', label: 'Blue' },
+  { hex: '#60A5FA', label: 'Blue Light' },
+  { hex: '#2563EB', label: 'Blue Dark' },
+  { hex: '#0D9488', label: 'Teal' },
+  { hex: '#14B8A6', label: 'Teal Light' },
+  { hex: '#06B6D4', label: 'Cyan' },
+  { hex: '#22D3EE', label: 'Cyan Light' },
+  { hex: '#10B981', label: 'Green' },
+  { hex: '#34D399', label: 'Green Light' },
   { hex: '#059669', label: 'Green Dark' },
-  { hex: '#84cc16', label: 'Lime' },
-  { hex: '#f97316', label: 'Orange' },
-  { hex: '#fb923c', label: 'Orange Light' },
-  { hex: '#f59e0b', label: 'Yellow' },
-  { hex: '#facc15', label: 'Yellow Light' },
-  { hex: '#ef4444', label: 'Red' },
-  { hex: '#f87171', label: 'Red Light' },
-  { hex: '#dc2626', label: 'Red Dark' },
-  { hex: '#f43f5e', label: 'Rose' },
-  { hex: '#ec4899', label: 'Pink' },
-  { hex: '#f472b6', label: 'Pink Light' },
-  { hex: '#d946ef', label: 'Fuchsia' },
-  { hex: '#8b5cf6', label: 'Purple' },
-  { hex: '#6b7280', label: 'Gray' }
+  { hex: '#84CC16', label: 'Lime' },
+  { hex: '#F97316', label: 'Orange' },
+  { hex: '#FB923C', label: 'Orange Light' },
+  { hex: '#F59E0B', label: 'Yellow' },
+  { hex: '#FACC15', label: 'Yellow Light' },
+  { hex: '#EF4444', label: 'Red' },
+  { hex: '#F87171', label: 'Red Light' },
+  { hex: '#DC2626', label: 'Red Dark' },
+  { hex: '#F43F5E', label: 'Rose' },
+  { hex: '#EC4899', label: 'Pink' },
+  { hex: '#F472B6', label: 'Pink Light' },
+  { hex: '#D946EF', label: 'Fuchsia' },
+  { hex: '#8B5CF6', label: 'Purple' },
+  { hex: '#6B7280', label: 'Gray' }
 ];
 
 const EMOJI_OPTIONS = [
@@ -59,28 +61,24 @@ const EMPTY_FORM = {
   color:       '#01AC9F',
 };
 
-/* ─── Small sub-components ──────────────────────────────── */
-
-/** Pill toggle: Emoji | Image */
+/** Media Type Selector (Emoji vs Image) */
 function MediaToggle({ mode, onChange }) {
   const tabs = [
-    { id: 'emoji',  label: 'Emoji' },
-    { id: 'upload', label: 'Image' },
+    { id: 'emoji',  label: 'Emoji Icon' },
+    { id: 'upload', label: 'Upload Image' },
   ];
   return (
-    <div className="inline-flex rounded-full border p-0.5 mb-3"
-      style={{ borderColor: '#dadcea', backgroundColor: '#f7f8fc' }}>
+    <div className="inline-flex rounded-full border border-slate-200 dark:border-[#334155] p-0.5 mb-4 bg-slate-105/50 dark:bg-[#1E293B]/60">
       {tabs.map((t) => (
         <button
           key={t.id}
           type="button"
           onClick={() => onChange(t.id)}
-          className="px-4 py-1 rounded-full text-xs font-semibold transition-colors"
-          style={
+          className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer border-0 ${
             mode === t.id
-              ? { backgroundColor: '#6c1d5f', color: '#fff' }
-              : { color: '#5a5a5a' }
-          }
+              ? 'bg-emerald-600 dark:bg-emerald-500 text-white shadow-sm'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 bg-transparent'
+          }`}
         >
           {t.label}
         </button>
@@ -95,49 +93,43 @@ function EmojiPicker({ value, onChange }) {
   const ref = useRef(null);
 
   useEffect(() => {
-    const h = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    document.addEventListener('mousedown', h);
-    return () => document.removeEventListener('mousedown', h);
+    const clickHandler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', clickHandler);
+    return () => document.removeEventListener('mousedown', clickHandler);
   }, []);
 
   return (
-    <div className="flex items-center gap-3" ref={ref}>
-      {/* Preview swatch */}
-      <div
-        className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 overflow-hidden"
-        style={{ border: '1px solid #dadcea', backgroundColor: '#fff', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
-      >
+    <div className="flex items-center gap-4" ref={ref}>
+      {/* Icon Display */}
+      <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl font-black shrink-0 border border-slate-200 bg-slate-50 dark:border-[#334155] dark:bg-[#1E293B] shadow-inner select-none">
         {value && (value.startsWith('http') || value.startsWith('/') || value.startsWith('data:') || value.startsWith('blob:')) ? (
-          <img src={value} alt="icon" className="w-full h-full object-cover" />
+          <img src={value} alt="category thumbnail" className="w-full h-full object-cover rounded-2xl" />
         ) : (
           value || '💻'
         )}
       </div>
 
-      {/* Trigger input */}
+      {/* Select Dropdown Button */}
       <div className="relative flex-1">
         <button
           type="button"
           onClick={() => setOpen(!open)}
-          className="w-full flex items-center justify-between px-4 py-3 rounded-md text-sm text-left"
-          style={{ border: '1px solid #dadcea', backgroundColor: '#fff', color: '#5a5a5a' }}
+          className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl border border-slate-200 dark:border-[#334155] bg-white dark:bg-[#1E293B] text-slate-700 dark:text-slate-300 text-sm font-semibold text-left shadow-sm hover:border-slate-350 dark:hover:border-slate-600 transition-all cursor-pointer"
         >
-          <span>{value ? `${value} Selected` : 'Click to pick an emoji…'}</span>
-          <Smile className="w-[15px] h-[15px] shrink-0" style={{ color: '#5a5a5a' }} />
+          <span>{value ? `${value} Emoji Selected` : 'Select Category Emoji...'}</span>
+          <Smile className="w-5 h-5 text-slate-400" />
         </button>
 
         {open && (
-          <div
-            className="absolute left-0 top-full z-20 mt-1 grid grid-cols-8 gap-1.5 p-2.5 rounded-xl shadow-lg"
-            style={{ border: '1px solid #dadcea', backgroundColor: '#fff', width: '100%' }}
-          >
+          <div className="absolute left-0 top-full z-20 mt-2 grid grid-cols-8 gap-2 p-3.5 rounded-2xl shadow-xl border border-slate-200 dark:border-[#334155] bg-white dark:bg-[#1E293B] w-full max-w-sm">
             {EMOJI_OPTIONS.map((em) => (
               <button
                 key={em}
                 type="button"
                 onClick={() => { onChange(em); setOpen(false); }}
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-lg hover:bg-gray-100"
-                style={value === em ? { backgroundColor: '#01ac9f18', outline: '1.5px solid #01ac9f' } : {}}
+                className={`flex h-10 w-10 items-center justify-center rounded-xl text-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer border-0 bg-transparent ${
+                  value === em ? 'ring-2 ring-emerald-500 bg-emerald-500/10' : ''
+                }`}
               >
                 {em}
               </button>
@@ -149,14 +141,13 @@ function EmojiPicker({ value, onChange }) {
   );
 }
 
-/** File upload + URL picker for the icon/thumbnail */
+/** File upload + URL picker */
 function ImageMedia({ value, onChange }) {
   const [subTab, setSubTab] = useState('upload'); // upload | url
   const [urlInput, setUrlInput] = useState('');
   const [dragOver, setDragOver] = useState(false);
   const fileRef = useRef(null);
 
-  // Determine if current value is an image URL/data URL
   const isImageValue = value && (value.startsWith('http') || value.startsWith('data:') || value.startsWith('blob:'));
 
   const handleFile = (file) => {
@@ -176,121 +167,102 @@ function ImageMedia({ value, onChange }) {
   };
 
   return (
-    <div>
-      {/* Sub-tab: Upload | URL */}
-      <div className="flex gap-2 mb-3">
-        {[{ id: 'upload', label: 'Upload File' }, { id: 'url', label: 'Paste URL' }].map((t) => (
+    <div className="space-y-4">
+      {/* Sub-Tabs */}
+      <div className="flex gap-2">
+        {[{ id: 'upload', label: 'Upload File' }, { id: 'url', label: 'Image URL' }].map((t) => (
           <button
             key={t.id}
             type="button"
             onClick={() => setSubTab(t.id)}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border transition-colors"
-            style={
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
               subTab === t.id
-                ? { backgroundColor: '#01ac9f18', borderColor: '#01ac9f', color: '#01ac9f' }
-                : { borderColor: '#dadcea', color: '#5a5a5a', backgroundColor: '#fff' }
-            }
+                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400'
+                : 'border-slate-200 dark:border-[#334155] text-slate-500 dark:text-slate-400 bg-transparent hover:bg-slate-50 dark:hover:bg-slate-800'
+            }`}
           >
-            {t.id === 'upload' ? <Upload className="w-3 h-3" /> : <Link2 className="w-3 h-3" />}
+            {t.id === 'upload' ? <Upload className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
             {t.label}
           </button>
         ))}
       </div>
 
-      <div className="flex items-start gap-3">
-        {/* Preview */}
-        <div
-          className="w-16 h-16 rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden"
-          style={{ border: '1.5px solid #dadcea', backgroundColor: '#f7f8fc' }}
-        >
-          {isImageValue ? (
-            <img src={value} alt="preview" className="w-full h-full object-cover" />
-          ) : (
-            <ImageIcon className="w-6 h-6" style={{ color: '#dadcea' }} />
-          )}
-        </div>
-
-        {/* Right side */}
-        <div className="flex-1">
-          {subTab === 'upload' ? (
-            /* ── Drag-and-drop zone ── */
-            <div
-              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-              onDragLeave={() => setDragOver(false)}
-              onDrop={handleDrop}
-              onClick={() => fileRef.current?.click()}
-              className="cursor-pointer flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed py-6 transition-colors"
-              style={{
-                borderColor: dragOver ? '#01ac9f' : '#dadcea',
-                backgroundColor: dragOver ? '#01ac9f08' : '#fafafa',
-              }}
-            >
+      <div className="flex items-start gap-4">
+        {/* Upload Container */}
+        {subTab === 'upload' ? (
+          <div
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={handleDrop}
+            onClick={() => fileRef.current?.click()}
+            className={`flex-1 border-2 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer select-none transition-all ${
+              dragOver 
+                ? 'border-emerald-500 bg-emerald-500/5' 
+                : 'border-slate-200 dark:border-[#334155] bg-slate-50/50 dark:bg-[#1E293B]/20 hover:border-emerald-500 dark:hover:border-emerald-400'
+            }`}
+          >
+            <input
+              type="file"
+              ref={fileRef}
+              accept="image/*"
+              onChange={(e) => handleFile(e.target.files?.[0])}
+              className="hidden"
+            />
+            {isImageValue ? (
+              <div className="relative w-14 h-14 rounded-xl overflow-hidden border border-slate-250 dark:border-slate-700 shadow-sm">
+                <img src={value} alt="thumbnail preview" className="w-full h-full object-cover" />
+              </div>
+            ) : (
+              <>
+                <Upload className="w-8 h-8 text-slate-400 mb-2" />
+                <p className="text-xs font-bold text-slate-750 dark:text-slate-355">Click to choose or drag image file</p>
+                <p className="text-[10px] text-slate-400 mt-0.5">JPG, PNG, WEBP, or SVG up to 5MB</p>
+              </>
+            )}
+          </div>
+        ) : (
+          <div className="flex-1 space-y-2">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-[#334155] bg-slate-50 dark:bg-[#1E293B]">
+              <Link2 className="w-4 h-4 text-slate-400 shrink-0" />
               <input
-                ref={fileRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => handleFile(e.target.files[0])}
+                type="url"
+                placeholder="https://images.unsplash.com/photo-..."
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleUrlApply()}
+                className="flex-1 py-2 text-xs text-slate-800 dark:text-white bg-transparent outline-none border-0 focus:ring-0"
               />
-              <Upload className="w-5 h-5" style={{ color: dragOver ? '#01ac9f' : '#9ca3af' }} />
-              <div className="text-center">
-                <p className="text-xs font-semibold" style={{ color: dragOver ? '#01ac9f' : '#5a5a5a' }}>
-                  Drop image here or <span style={{ color: '#6c1d5f', textDecoration: 'underline' }}>browse</span>
-                </p>
-                <p className="text-xs mt-0.5" style={{ color: '#9ca3af' }}>PNG, JPG, SVG, WEBP up to 5 MB</p>
-              </div>
+              {urlInput && (
+                <button
+                  type="button"
+                  onClick={() => setUrlInput('')}
+                  className="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 border-0 bg-transparent cursor-pointer"
+                >
+                  <X className="w-3.5 h-3.5 text-slate-400" />
+                </button>
+              )}
             </div>
-          ) : (
-            /* ── URL input ── */
-            <div>
-              <div
-                className="flex items-center gap-2 rounded-md overflow-hidden"
-                style={{ border: '1px solid #dadcea', backgroundColor: '#fff' }}
-              >
-                <Link2 className="w-4 h-4 ml-3 flex-shrink-0" style={{ color: '#9ca3af' }} />
-                <input
-                  type="url"
-                  placeholder="https://cdn.example.com/icon.png"
-                  value={urlInput}
-                  onChange={(e) => setUrlInput(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleUrlApply()}
-                  className="flex-1 py-3 text-sm focus:outline-none"
-                  style={{ color: '#000', backgroundColor: 'transparent' }}
-                />
-                {urlInput && (
-                  <button
-                    type="button"
-                    onClick={() => setUrlInput('')}
-                    className="mr-1 p-1 rounded hover:bg-gray-100"
-                  >
-                    <X className="w-3 h-3" style={{ color: '#9ca3af' }} />
-                  </button>
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={handleUrlApply}
-                className="mt-2 px-4 py-1.5 rounded-md text-xs font-semibold text-white"
-                style={{ backgroundColor: '#01ac9f' }}
-              >
-                Apply URL
-              </button>
-            </div>
-          )}
-
-          {/* Clear button */}
-          {isImageValue && (
-            <button
+            <Button
               type="button"
-              onClick={() => onChange('')}
-              className="mt-2 flex items-center gap-1 text-xs font-medium hover:underline"
-              style={{ color: '#ef4444' }}
+              onClick={handleUrlApply}
+              variant="primary"
+              className="rounded-xl px-4 py-1.5 text-xs font-bold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 border-0 text-white cursor-pointer"
             >
-              <X className="w-3 h-3" /> Clear image
-            </button>
-          )}
-        </div>
+              Apply Image Link
+            </Button>
+          </div>
+        )}
       </div>
+
+      {isImageValue && (
+        <button
+          type="button"
+          onClick={() => onChange('')}
+          className="flex items-center gap-1.5 text-xs font-bold text-rose-500 hover:underline border-0 bg-transparent cursor-pointer"
+        >
+          <X className="w-3.5 h-3.5" /> Clear Image
+        </button>
+      )}
     </div>
   );
 }
@@ -310,37 +282,33 @@ function AccentColorPicker({ value, onChange }) {
   };
 
   return (
-    <div>
-      <label className="block text-sm font-semibold mb-2" style={{ color: '#000' }}>
+    <div className="space-y-3.5">
+      <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">
         Accent Color
       </label>
-      <div className="rounded-lg p-4" style={{ border: '1px solid #dadcea', backgroundColor: '#fff' }}>
-        {/* Big preview + hex input */}
-        <div className="flex items-center gap-3 mb-3">
+      <div className="rounded-[20px] p-5 border border-slate-200 dark:border-[#334155] bg-white dark:bg-[#111827] shadow-sm space-y-4">
+        {/* Swatch & Input Row */}
+        <div className="flex items-center gap-3">
           <div
-            className="w-10 h-10 rounded-full border-2 border-white flex-shrink-0"
+            className="w-10 h-10 rounded-full border-2 border-white dark:border-[#1E293B] shrink-0 shadow"
             style={{
               backgroundColor: value || '#01AC9F',
               boxShadow: `0 0 0 2px ${value || '#01AC9F'}`,
             }}
           />
-          <div
-            className="flex-1 flex items-center gap-1.5 px-3 py-2 rounded-md text-sm"
-            style={{ border: '1px solid #dadcea', backgroundColor: '#f7f8fc' }}
-          >
-            <span style={{ color: '#5a5a5a' }}>#</span>
+          <div className="flex-1 flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-[#334155] bg-slate-50 dark:bg-[#1E293B]">
+            <span className="text-slate-400 font-bold text-sm">#</span>
             <input
               type="text"
               maxLength={6}
               value={hex}
               onChange={(e) => handleHexInput(e.target.value)}
-              className="flex-1 bg-transparent font-mono font-medium focus:outline-none text-sm"
-              style={{ color: '#000', fontFamily: 'IBM Plex Mono, monospace' }}
+              className="flex-1 bg-transparent font-mono font-bold text-slate-800 dark:text-slate-200 focus:outline-none text-xs uppercase"
             />
           </div>
         </div>
 
-        {/* Swatches */}
+        {/* Preset Swatches */}
         <div className="flex flex-wrap items-center gap-2">
           {SWATCH_PALETTE.map((s) => (
             <button
@@ -348,112 +316,104 @@ function AccentColorPicker({ value, onChange }) {
               type="button"
               aria-label={s.label}
               onClick={() => onChange(s.hex.toUpperCase())}
-              className="w-6 h-6 rounded-full flex-shrink-0 transition-transform hover:scale-110"
-              style={{
-                backgroundColor: s.hex,
-                boxShadow:
-                  value?.toLowerCase() === s.hex.toLowerCase()
-                    ? '0 0 0 2px white, 0 0 0 3.5px ' + s.hex
-                    : 'none',
-              }}
-            />
+              className={`w-7 h-7 rounded-full border-2 border-white dark:border-[#1E293B] cursor-pointer hover:scale-110 active:scale-95 transition-all shadow-sm relative ${
+                value?.toUpperCase() === s.hex.toUpperCase() ? 'ring-2 ring-emerald-500 scale-105' : ''
+              }`}
+              style={{ backgroundColor: s.hex }}
+            >
+              {value?.toUpperCase() === s.hex.toUpperCase() && (
+                <Check className="w-3.5 h-3.5 text-white absolute inset-0 m-auto font-black" />
+              )}
+            </button>
           ))}
+          
           <button
             type="button"
             onClick={() => setShowMore(!showMore)}
-            className="text-xs font-semibold px-2 py-1 rounded border transition-all hover:bg-gray-50 ml-1"
-            style={{ borderColor: '#dadcea', color: '#5a5a5a', backgroundColor: '#fff' }}
+            className="rounded-xl px-2.5 py-1 text-[10px] font-bold border border-slate-200 dark:border-[#334155] text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer bg-transparent"
           >
-            {showMore ? 'Less' : 'More'}
+            {showMore ? 'Less Colors' : 'More...'}
           </button>
         </div>
 
+        {/* More Colors Grid */}
         {showMore && (
-          <div className="mt-3 grid grid-cols-6 gap-2 p-2.5 rounded-lg border bg-gray-50/50" style={{ borderColor: '#dadcea' }}>
-            {MORE_COLORS.map((s) => (
+          <div className="grid grid-cols-8 gap-2 pt-3 border-t border-slate-100 dark:border-[#334155]/60">
+            {MORE_COLORS.map((c) => (
               <button
-                key={s.hex}
+                key={c.hex}
                 type="button"
-                aria-label={s.label}
-                onClick={() => onChange(s.hex.toUpperCase())}
-                className="w-6 h-6 rounded-full mx-auto transition-transform hover:scale-110"
-                style={{
-                  backgroundColor: s.hex,
-                  boxShadow:
-                    value?.toLowerCase() === s.hex.toLowerCase()
-                      ? '0 0 0 2px white, 0 0 0 3px ' + s.hex
-                      : 'none',
-                }}
+                onClick={() => onChange(c.hex.toUpperCase())}
+                className={`w-6 h-6 rounded-full border border-white dark:border-[#1E293B] cursor-pointer hover:scale-110 active:scale-95 transition-all relative ${
+                  value?.toUpperCase() === c.hex.toUpperCase() ? 'ring-2 ring-emerald-500' : ''
+                }`}
+                style={{ backgroundColor: c.hex }}
+                title={c.label}
               />
             ))}
           </div>
         )}
-
-        <p className="text-xs mt-3" style={{ color: '#5a5a5a' }}>
-          Used for badges and highlights.
-        </p>
       </div>
     </div>
   );
 }
 
-/** Status toggle card */
+/** Status Card Toggle (Active / Inactive) */
 function StatusCard({ value, onChange }) {
   const isActive = value === 'active';
+
   return (
-    <div>
-      <label className="block text-sm font-semibold mb-2" style={{ color: '#000' }}>
+    <div className="space-y-3.5">
+      <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">
         Status
       </label>
-      <div className="rounded-lg p-4" style={{ border: '1px solid #dadcea', backgroundColor: '#fff' }}>
-        {/* Toggle + label */}
-        <div className="flex items-center gap-3 mb-4">
+      <div className="rounded-[20px] p-5 border border-slate-200 dark:border-[#334155] bg-white dark:bg-[#111827] shadow-sm space-y-4">
+        {/* Toggle Switch */}
+        <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => onChange(isActive ? 'inactive' : 'active')}
-            className="flex h-6 w-12 items-center rounded-full px-0.5 transition-colors"
-            style={{ backgroundColor: isActive ? '#01ac9f' : '#dadcea' }}
+            className={`flex h-6 w-11 items-center rounded-full px-0.5 transition-all outline-none border-0 cursor-pointer ${
+              isActive ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-slate-700'
+            }`}
           >
             <div
-              className="h-5 w-5 rounded-full bg-white shadow-sm transition-transform"
-              style={{ transform: isActive ? 'translateX(24px)' : 'translateX(0)' }}
+              className={`h-5 w-5 rounded-full bg-white shadow transition-transform ${
+                isActive ? 'translate-x-5' : 'translate-x-0'
+              }`}
             />
           </button>
-          <span className="text-sm font-semibold" style={{ color: isActive ? '#01ac9f' : '#5a5a5a' }}>
+          <span className={`text-xs font-bold ${isActive ? 'text-emerald-500' : 'text-slate-400'}`}>
             {isActive ? 'Active' : 'Inactive'}
           </span>
         </div>
 
-        {/* Status badge */}
+        {/* Status helper badge */}
         {isActive ? (
-          <div
-            className="flex items-center gap-2 p-3 rounded-lg"
-            style={{ backgroundColor: '#01ac9f12' }}
-          >
-            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#01ac9f' }} />
-            <span className="text-xs font-medium" style={{ color: '#01ac9f' }}>
+          <div className="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-450 uppercase tracking-wider">
               Visible to all learners
             </span>
           </div>
         ) : (
-          <div
-            className="flex items-center gap-2 p-3 rounded-lg"
-            style={{ backgroundColor: '#f7f8fc' }}
-          >
-            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#9ca3af' }} />
-            <span className="text-xs font-medium text-gray-400">Hidden from learners</span>
+          <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-150 dark:bg-slate-800/40 border border-slate-200/50 dark:border-white/[0.04]">
+            <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+            <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+              Hidden from learners
+            </span>
           </div>
         )}
 
-        <p className="text-xs mt-3" style={{ color: '#5a5a5a' }}>
-          Inactive categories won't be visible to learners.
+        <p className="text-[10px] text-slate-400 leading-normal">
+          Inactive categories won't display in students catalog dashboards.
         </p>
       </div>
     </div>
   );
 }
 
-/* ─── Main component ────────────────────────────────────── */
+/* ─── Main CategoryForm Component ─── */
 export default function CategoryForm() {
   const { categoryId } = useParams();
   const navigate       = useNavigate();
@@ -465,7 +425,7 @@ export default function CategoryForm() {
   const [form,   setForm]   = useState(EMPTY_FORM);
   const [errors, setErrors] = useState({});
   const [saved,  setSaved]  = useState(false);
-  const [media,  setMedia]  = useState('emoji'); // emoji | url
+  const [media,  setMedia]  = useState('emoji'); // emoji | upload
 
   useEffect(() => {
     if (existing) {
@@ -487,21 +447,33 @@ export default function CategoryForm() {
   }, [existing]);
 
   const fieldChecks = useMemo(() => [
-    { label: 'Name',        done: !!form.name.trim() },
-    { label: 'Icon',        done: !!form.icon },
-    { label: 'Description', done: !!form.description.trim() },
-    { label: 'Color',       done: !!form.color },
-    { label: 'Status',      done: !!form.status },
+    { label: 'Category Name', done: !!form.name.trim() },
+    { label: 'Icon/Thumbnail', done: !!form.icon },
+    { label: 'Description',  done: !!form.description.trim() },
+    { label: 'Accent Color', done: !!form.color },
+    { label: 'Status',       done: !!form.status },
   ], [form]);
 
-  if (!hydrated) return null;
+  if (!hydrated) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-slate-50 dark:bg-[#0B1120]">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
+      </div>
+    );
+  }
+
   if (isEdit && !existing) {
     return (
-      <div className="p-10 text-center text-gray-500">
-        Category not found.{' '}
-        <button className="font-semibold" style={{ color: '#01ac9f' }} onClick={() => navigate('/admin/categories')}>
-          Go back
-        </button>
+      <div className="p-16 text-center text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-[#0B1120] h-screen flex flex-col justify-center items-center">
+        <h3 className="text-xl font-bold text-slate-900 dark:text-white">Category Not Found</h3>
+        <p className="text-sm text-slate-400 mt-2">The category you are trying to edit does not exist.</p>
+        <Button 
+          className="mt-6 rounded-xl cursor-pointer" 
+          variant="primary" 
+          onClick={() => navigate('/admin/categories')}
+        >
+          Go Back to Categories
+        </Button>
       </div>
     );
   }
@@ -522,371 +494,326 @@ export default function CategoryForm() {
       else        await createCategory(payload);
       setSaved(true);
       setTimeout(() => navigate('/admin/categories'), 1200);
-    } catch { /* toast shown in useCatalog */ }
+    } catch { /* error handled by useCatalog */ }
   };
 
   const accentColor = form.color || '#01AC9F';
 
   return (
-    <div className="flex min-h-screen flex-col" style={{ backgroundColor: '#f7f8fc' }}>
-
-      {/* ── Top breadcrumb bar ──────────────────────────── */}
-      <div
-        className="flex items-center justify-between px-8 py-3"
-        style={{ backgroundColor: '#fff', borderBottom: '1px solid #dadcea' }}
-      >
-        {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-sm" style={{ color: '#5a5a5a' }}>
-          <Link to="/admin/dashboard" className="hover:underline" style={{ color: '#5a5a5a' }}>
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0B1120] text-slate-800 dark:text-slate-100 pb-16 transition-colors duration-300">
+      
+      {/* Breadcrumb Bar */}
+      <div className="bg-white dark:bg-[#111827] border-b border-slate-200 dark:border-[#334155] px-8 py-3.5 flex items-center justify-between">
+        <nav className="flex items-center gap-2 text-xs font-bold text-slate-400 tracking-wider">
+          <Link to="/admin/dashboard" className="hover:text-slate-650 dark:hover:text-slate-250 transition-colors">
             Dashboard
           </Link>
-          <ChevronRight className="h-[13px] w-[13px]" />
-          <Link to="/admin/categories" className="hover:underline" style={{ color: '#5a5a5a' }}>
+          <ChevronRight className="h-3 w-3 text-slate-400" />
+          <Link to="/admin/categories" className="hover:text-slate-650 dark:hover:text-slate-250 transition-colors">
             Categories
           </Link>
-          <ChevronRight className="h-[13px] w-[13px]" />
-          <span style={{ color: '#000', fontWeight: 500 }}>{isEdit ? 'Edit' : 'Create'}</span>
+          <ChevronRight className="h-3 w-3 text-slate-400" />
+          <span className="text-emerald-500 font-extrabold">{isEdit ? 'Edit' : 'Create'}</span>
         </nav>
 
-        {/* Draft badge + avatar */}
         <div className="flex items-center gap-3">
-          <span
-            className="flex items-center gap-1.5 text-xs rounded-full px-3 py-1"
-            style={{ border: '1px solid #dadcea', color: '#5a5a5a' }}
-          >
-            <Clock className="w-3 h-3" />
-            Draft recovered
+          <span className="flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-wider rounded-full px-3 py-1 border border-slate-200 dark:border-[#334155] bg-slate-50 dark:bg-[#1E293B] text-slate-450 dark:text-slate-400">
+            <Clock className="w-3 h-3 text-emerald-500" />
+            <span>Draft recovered</span>
           </span>
-          <div
-            className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white"
-            style={{ backgroundColor: '#6c1d5f' }}
-          >
+          <div className="h-7 w-7 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-600 text-white flex items-center justify-center text-[10px] font-black shadow-sm select-none">
             A
           </div>
         </div>
       </div>
 
-      {/* ── Body ─────────────────────────────────────────── */}
-      <div className="flex flex-1">
-
-        {/* ── Left: form ───────────────────────────────── */}
-        <div className="flex-1 min-w-0 px-10 py-8" style={{ backgroundColor: '#f7f8fc' }}>
-
-          {/* Page title row */}
-          <div className="flex items-start justify-between mb-8">
-            <div>
-              <div className="flex items-center gap-3 mb-1">
-                <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ backgroundColor: '#6c1d5f18' }}
-                >
-                  <Tag className="w-4 h-4" style={{ color: '#6c1d5f' }} />
+      {/* Main Grid Workspace */}
+      <div className="max-w-7xl mx-auto px-8 mt-8 grid gap-8 lg:grid-cols-3">
+        
+        {/* Left Column (2/3 width) - Category Form fields */}
+        <div className="lg:col-span-2 space-y-8">
+          
+          {/* Main Card */}
+          <div className="rounded-[24px] border border-slate-200 dark:border-[#334155] bg-white dark:bg-[#111827] p-8 shadow-sm space-y-6">
+            
+            {/* Header Title inside card */}
+            <div className="flex items-start justify-between border-b border-slate-100 dark:border-[#334155]/60 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                  <Tag className="w-5 h-5" />
                 </div>
-                <h1 className="text-2xl font-bold" style={{ color: '#000' }}>
-                  {isEdit ? 'Edit Category' : 'Create New Category'}
-                </h1>
+                <div>
+                  <h1 className="text-xl font-bold text-slate-900 dark:text-white">
+                    {isEdit ? 'Edit Category' : 'Create New Category'}
+                  </h1>
+                  <p className="text-xs text-slate-500 dark:text-slate-450 mt-0.5">
+                    Fill in the details below to set up a new learning category.
+                  </p>
+                </div>
               </div>
-              <p className="text-sm ml-11" style={{ color: '#5a5a5a' }}>
-                Fill in the details below to set up a new learning category.
-              </p>
+
+              <div className="h-10 w-10 rounded-full bg-emerald-600/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-black select-none">
+                X
+              </div>
             </div>
-            {/* Xebia logo placeholder */}
-            <div
-              className="w-12 h-12 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-              style={{ backgroundColor: '#6c1d5f', opacity: 0.85 }}
-            >
-              X
-            </div>
-          </div>
 
-          {/* Success banner */}
-          {saved && (
-            <div
-              className="mb-6 flex items-center gap-3 rounded-lg px-5 py-3 text-white"
-              style={{ backgroundColor: '#01ac9f' }}
-            >
-              <CheckCircle className="h-4 w-4 shrink-0" />
-              <span className="text-sm font-medium">
-                Category {isEdit ? 'updated' : 'created'} successfully!
-              </span>
-              <button
-                type="button"
-                className="ml-auto text-xs font-semibold opacity-80 hover:opacity-100"
-                onClick={() => setSaved(false)}
-              >
-                Dismiss
-              </button>
-            </div>
-          )}
-
-          {/* ── Category Name ──────────────────────────── */}
-          <div className="mb-6">
-            <label className="block text-sm font-semibold mb-1.5" style={{ color: '#000' }}>
-              Category Name <span style={{ color: '#ff6200' }}>*</span>
-            </label>
-            <div
-              className="flex items-center gap-3 px-4 py-3 rounded-md text-sm"
-              style={{
-                border: '1px solid #dadcea',
-                borderLeft: errors.name ? '3px solid #ef4444' : '3px solid #6c1d5f',
-                backgroundColor: '#fff',
-              }}
-            >
-              <input
-                type="text"
-                maxLength={100}
-                placeholder="e.g. Web Development"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="flex-1 bg-transparent focus:outline-none text-sm"
-                style={{ color: '#000' }}
-              />
-              {form.name.trim() && (
-                <span
-                  className="flex items-center gap-1 text-xs font-semibold shrink-0"
-                  style={{ color: '#01ac9f' }}
-                >
-                  <CheckCircle className="w-[13px] h-[13px]" />
-                  Unique
-                </span>
-              )}
-            </div>
-            <div className="flex justify-between mt-1.5">
-              {errors.name
-                ? <p className="text-xs" style={{ color: '#ef4444' }}>{errors.name}</p>
-                : <span className="text-xs" style={{ color: '#5a5a5a' }}>Must be unique. Checked in real-time.</span>
-              }
-              <span className="text-xs" style={{ color: '#5a5a5a' }}>{form.name.length}/100</span>
-            </div>
-          </div>
-
-          {/* ── Icon / Thumbnail ────────────────────────── */}
-          <div className="mb-6">
-            <label className="block text-sm font-semibold mb-1.5" style={{ color: '#000' }}>
-              Icon / Thumbnail
-            </label>
-            <MediaToggle mode={media} onChange={setMedia} />
-            {media === 'emoji' ? (
-              <EmojiPicker value={form.icon} onChange={(icon) => setForm({ ...form, icon })} />
-            ) : (
-              <ImageMedia
-                value={typeof form.icon === 'string' && !EMOJI_OPTIONS.includes(form.icon) ? form.icon : ''}
-                onChange={(img) => setForm({ ...form, icon: img })}
-              />
-            )}
-            <p className="text-xs mt-2" style={{ color: '#5a5a5a' }}>
-              Upload a file or paste a CDN URL. Emoji or image will appear as the category thumbnail.
-            </p>
-          </div>
-
-          {/* ── Description ─────────────────────────────── */}
-          <div className="mb-6">
-            <label className="block text-sm font-semibold mb-1.5" style={{ color: '#000' }}>
-              Description <span style={{ color: '#ff6200' }}>*</span>
-            </label>
-            <textarea
-              rows={4}
-              placeholder="Describe what this category covers..."
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="w-full resize-none rounded-md px-4 py-3 text-sm focus:outline-none leading-relaxed"
-              style={{
-                border: '1px solid #dadcea',
-                borderLeft: errors.description ? '3px solid #ef4444' : '3px solid #dadcea',
-                backgroundColor: '#fff',
-                color: form.description ? '#000' : '#5a5a5a',
-                minHeight: 108,
-              }}
-            />
-            {errors.description && (
-              <p className="mt-1 text-xs" style={{ color: '#ef4444' }}>{errors.description}</p>
-            )}
-            <p className="text-xs mt-1.5" style={{ color: '#5a5a5a' }}>
-              No character limit. Appears in category listings and SEO previews.
-            </p>
-          </div>
-
-          {/* ── Accent Color + Status side by side ──────── */}
-          <div className="grid grid-cols-2 gap-5 mb-8">
-            <AccentColorPicker
-              value={form.color}
-              onChange={(color) => setForm({ ...form, color })}
-            />
-            <StatusCard
-              value={form.status}
-              onChange={(status) => setForm({ ...form, status })}
-            />
-          </div>
-
-          {/* ── Footer actions ────────────────────────────── */}
-          <div
-            className="flex items-center justify-between pt-5"
-            style={{ borderTop: '1px solid #dadcea' }}
-          >
-            <span className="flex items-center gap-2 text-xs" style={{ color: '#5a5a5a' }}>
-              <Save className="h-[13px] w-[13px]" />
-              Auto-saved · just now
-            </span>
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => navigate('/admin/categories')}
-                className="rounded-md px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-gray-50"
-                style={{ border: '1px solid #dadcea', color: '#5a5a5a' }}
-              >
-                Cancel
-              </button>
-              {!isEdit && (
+            {/* Success alert banner */}
+            {saved && (
+              <div className="flex items-center gap-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 px-5 py-3.5 text-emerald-600 dark:text-emerald-450 text-xs font-bold">
+                <CheckCircle className="h-4.5 w-4.5 shrink-0" />
+                <span>Category {isEdit ? 'updated' : 'created'} successfully! Redirecting...</span>
                 <button
                   type="button"
-                  onClick={() => handleSave(true)}
-                  className="rounded-md px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-purple-50"
-                  style={{ border: '1px solid #6c1d5f', color: '#6c1d5f' }}
+                  onClick={() => setSaved(false)}
+                  className="ml-auto text-[10px] font-black border-0 bg-transparent text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
                 >
-                  Save as Draft
+                  Dismiss
                 </button>
-              )}
-              <button
-                type="button"
-                onClick={() => handleSave(false)}
-                className="flex items-center gap-2 rounded-md px-6 py-2.5 text-sm font-semibold text-white hover:opacity-90"
-                style={{ backgroundColor: '#01ac9f' }}
-              >
-                <Plus className="h-[14px] w-[14px]" />
-                {isEdit ? 'Save Changes' : 'Create Category'}
-              </button>
+              </div>
+            )}
+
+            {/* Category Name Input */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">
+                Category Name <span className="text-red-500">*</span>
+              </label>
+              <div className={`flex items-center gap-3 px-4 py-3.5 rounded-xl border bg-slate-50 dark:bg-[#1E293B] transition-all ${
+                errors.name ? 'border-red-500 focus-within:border-red-500' : 'border-slate-200 dark:border-[#334155] focus-within:border-emerald-500 focus-within:bg-white dark:focus-within:bg-[#1E293B]'
+              }`}>
+                <input
+                  type="text"
+                  maxLength={100}
+                  placeholder="e.g. Web Development"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="flex-1 bg-transparent focus:outline-none text-sm text-slate-900 dark:text-white"
+                />
+                {form.name.trim() && (
+                  <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+                    <CheckCircle className="w-3.5 h-3.5" />
+                    <span>Unique</span>
+                  </span>
+                )}
+              </div>
+              <div className="flex justify-between text-[10px] text-slate-400 font-semibold mt-1">
+                {errors.name ? (
+                  <p className="text-red-500">{errors.name}</p>
+                ) : (
+                  <span>Must be unique. Checked in real-time.</span>
+                )}
+                <span>{form.name.length}/100</span>
+              </div>
             </div>
+
+            {/* Icon / Thumbnail selection */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">
+                Icon / Thumbnail
+              </label>
+              <MediaToggle mode={media} onChange={setMedia} />
+              {media === 'emoji' ? (
+                <EmojiPicker value={form.icon} onChange={(icon) => setForm({ ...form, icon })} />
+              ) : (
+                <ImageMedia
+                  value={typeof form.icon === 'string' && !EMOJI_OPTIONS.includes(form.icon) ? form.icon : ''}
+                  onChange={(img) => setForm({ ...form, icon: img })}
+                />
+              )}
+              <p className="text-[10px] text-slate-400 mt-1">
+                Upload a file or paste a CDN URL. Emoji or image will appear as the category thumbnail.
+              </p>
+            </div>
+
+            {/* Description textarea */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">
+                Description <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                rows={4}
+                placeholder="Describe what this category covers..."
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                className={`w-full resize-none rounded-xl px-4 py-3.5 text-sm focus:outline-none transition-all ${
+                  errors.description 
+                    ? 'border-red-500 focus:border-red-500 bg-slate-50 dark:bg-[#1E293B]' 
+                    : 'border-slate-200 dark:border-[#334155] bg-slate-50 dark:bg-[#1E293B] focus:border-emerald-500 focus:bg-white dark:focus:bg-[#1E293B]'
+                }`}
+                style={{ minHeight: 110 }}
+              />
+              {errors.description && (
+                <p className="text-[10px] font-semibold text-red-500 mt-1">{errors.description}</p>
+              )}
+              <p className="text-[10px] text-slate-400 mt-1">
+                No character limit. Appears in category listings and SEO previews.
+              </p>
+            </div>
+
+            {/* Accent Color and Status Pickers */}
+            <div className="grid gap-6 sm:grid-cols-2">
+              <AccentColorPicker
+                value={form.color}
+                onChange={(color) => setForm({ ...form, color })}
+              />
+              <StatusCard
+                value={form.status}
+                onChange={(status) => setForm({ ...form, status })}
+              />
+            </div>
+
+            {/* Actions Footer */}
+            <div className="flex items-center justify-between pt-5 border-t border-slate-100 dark:border-[#334155]/60 mt-8">
+              <span className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-slate-400">
+                <Save className="h-3.5 w-3.5 text-emerald-500" />
+                <span>Auto-saved · just now</span>
+              </span>
+
+              <div className="flex items-center gap-3">
+                <Button
+                  onClick={() => navigate('/admin/categories')}
+                  variant="ghost"
+                  className="rounded-xl border border-slate-200 dark:border-[#334155] text-slate-650 dark:text-slate-350 cursor-pointer font-bold px-5 py-2.5 bg-transparent"
+                >
+                  Cancel
+                </Button>
+                {!isEdit && (
+                  <Button
+                    onClick={() => handleSave(true)}
+                    variant="outline"
+                    className="rounded-xl border-emerald-500/20 bg-emerald-500/5 text-emerald-600 dark:text-emerald-400 font-bold px-5 py-2.5 cursor-pointer"
+                  >
+                    Save as Draft
+                  </Button>
+                )}
+                <Button
+                  onClick={() => handleSave(false)}
+                  variant="primary"
+                  className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold px-6 py-2.5 shadow-md cursor-pointer border-0"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>{isEdit ? 'Save Changes' : 'Create Category'}</span>
+                </Button>
+              </div>
+            </div>
+
           </div>
+
         </div>
 
-        {/* ── Right: preview sidebar ───────────────────── */}
-        <div
-          className="w-80 shrink-0 px-7 py-8 flex flex-col gap-6"
-          style={{ borderLeft: '1px solid #dadcea', backgroundColor: '#fff' }}
-        >
-          {/* Live Preview label */}
-          <div
-            className="text-xs font-bold uppercase tracking-widest"
-            style={{ color: '#5a5a5a', letterSpacing: '0.1em' }}
-          >
-            Live Preview
-          </div>
-
-          {/* Preview card */}
-          <div
-            className="rounded-xl overflow-hidden"
-            style={{ border: '1px solid #dadcea', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
-          >
-            {/* Color stripe */}
-            <div className="h-2 w-full" style={{ backgroundColor: accentColor }} />
-
-            {/* Card body */}
-            <div
-              className="px-5 pt-5 pb-4"
-              style={{ background: `linear-gradient(135deg, ${accentColor}18 0%, #ffffff 60%)` }}
-            >
-              <div className="flex items-start gap-4">
-                <div
-                  className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl flex-shrink-0 overflow-hidden"
-                  style={{ backgroundColor: `${accentColor}20`, border: `1.5px solid ${accentColor}40` }}
-                >
-                  {form.icon && (form.icon.startsWith('http') || form.icon.startsWith('data:') || form.icon.startsWith('blob:'))
-                    ? <img src={form.icon} alt="icon" className="w-full h-full object-cover" />
-                    : (form.icon || '💻')
-                  }
-                </div>
-                <div className="flex-1 min-w-0 pt-1">
-                  <div className="text-base font-bold leading-tight" style={{ color: '#000' }}>
-                    {form.name || 'Category Name'}
+        {/* Right Column (1/3 width) - Live Preview, checklist */}
+        <div className="space-y-8">
+          
+          {/* Live Preview Card */}
+          <div className="space-y-3.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">
+              Live Preview
+            </label>
+            <div className="rounded-[24px] border border-slate-200 dark:border-[#334155] bg-white dark:bg-[#111827] shadow-xl overflow-hidden">
+              {/* Color Bar */}
+              <div className="h-2 w-full" style={{ backgroundColor: accentColor }} />
+              
+              <div 
+                className="p-6 transition-all duration-300"
+                style={{ background: `linear-gradient(135deg, ${accentColor}12 0%, transparent 65%)` }}
+              >
+                <div className="flex items-start gap-4">
+                  {/* Category Icon Display */}
+                  <div
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl font-black shrink-0 border select-none overflow-hidden"
+                    style={{ backgroundColor: `${accentColor}18`, borderColor: `${accentColor}35` }}
+                  >
+                    {form.icon && (form.icon.startsWith('http') || form.icon.startsWith('/') || form.icon.startsWith('data:') || form.icon.startsWith('blob:')) ? (
+                      <img src={form.icon} alt="icon preview" className="w-full h-full object-cover" />
+                    ) : (
+                      form.icon || '💻'
+                    )}
                   </div>
-                  <div className="flex items-center gap-1.5 mt-1.5">
-                    <span
-                      className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full"
-                      style={
-                        form.status === 'active'
-                          ? { backgroundColor: `${accentColor}18`, color: accentColor }
-                          : { backgroundColor: '#f1f1f7', color: '#6b7280' }
-                      }
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: accentColor }} />
-                      {form.status === 'active' ? 'Active' : 'Inactive'}
-                    </span>
+
+                  <div className="min-w-0 pt-1.5">
+                    <h4 className="text-base font-extrabold text-slate-900 dark:text-white truncate">
+                      {form.name || 'Category Name'}
+                    </h4>
+                    
+                    {/* Active/Inactive badge */}
+                    <div className="mt-1.5">
+                      <span 
+                        className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border"
+                        style={{ backgroundColor: `${accentColor}15`, borderColor: `${accentColor}25`, color: accentColor }}
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: accentColor }} />
+                        {form.status === 'active' ? 'Active' : 'Inactive'}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <p className="text-xs leading-relaxed mt-3 line-clamp-3" style={{ color: '#5a5a5a' }}>
-                {form.description || 'Learn the fundamentals of building modern web applications using industry-standard tools and best practices.'}
-              </p>
-              {/* Stats row */}
-              <div className="flex items-center gap-3 text-xs mt-3.5" style={{ color: '#5a5a5a' }}>
-                <span className="flex items-center gap-1">📖 0 Courses</span>
-                <span className="flex items-center gap-1">👥 0 Learners</span>
-              </div>
-            </div>
 
-            {/* Card footer */}
-            <div
-              className="px-5 py-3 flex items-center justify-between"
-              style={{ borderTop: '1px solid #dadcea', backgroundColor: '#fafafd' }}
-            >
-              <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: accentColor }} />
-                <span className="text-xs font-mono" style={{ color: '#5a5a5a' }}>
-                  {accentColor.toUpperCase()}
-                </span>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-4 leading-relaxed line-clamp-3">
+                  {form.description || 'Learn the fundamentals of building modern web applications using industry-standard tools and best practices.'}
+                </p>
+
+                {/* Sub-Stats */}
+                <div className="flex items-center gap-4 text-xs font-bold text-slate-400 dark:text-slate-500 border-t border-slate-100 dark:border-white/[0.03] pt-4 mt-4">
+                  <span className="flex items-center gap-1.5"><BookOpen className="w-3.5 h-3.5 text-emerald-500" /> 0 Courses</span>
+                  <span className="flex items-center gap-1.5"><User className="w-3.5 h-3.5 text-emerald-500" /> 0 Learners</span>
+                </div>
+              </div>
+
+              {/* Bottom hex code string footer */}
+              <div className="bg-slate-50 dark:bg-white/[0.01] px-6 py-3 border-t border-slate-100 dark:border-white/[0.03] flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: accentColor }} />
+                  <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider">
+                    {accentColor}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Field Summary */}
-          <div className="rounded-lg overflow-hidden" style={{ border: '1px solid #dadcea' }}>
-            <div
-              className="px-4 py-3 text-xs font-semibold"
-              style={{ borderBottom: '1px solid #dadcea', backgroundColor: '#fafafd', color: '#000' }}
-            >
-              Field Summary
-            </div>
-            <div>
-              {fieldChecks.map((f, i) => (
-                <div
-                  key={f.label}
-                  className="flex items-center justify-between px-4 py-2.5"
-                  style={i < fieldChecks.length - 1 ? { borderBottom: '1px solid #dadcea' } : {}}
-                >
-                  <span className="text-xs" style={{ color: '#5a5a5a' }}>{f.label}</span>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-medium" style={{ color: f.done ? '#000' : '#9ca3af' }}>
-                      {f.done ? 'Filled' : 'Not filled'}
-                    </span>
-                    {f.done
-                      ? <CheckCircle className="w-3 h-3" style={{ color: '#01ac9f' }} />
-                      : <Circle     className="w-3 h-3" style={{ color: '#dadcea' }} />
-                    }
+          {/* Field Summary Checklist */}
+          <div className="space-y-3.5">
+            <div className="rounded-[24px] border border-slate-200 dark:border-[#334155] bg-white dark:bg-[#111827] overflow-hidden shadow-sm">
+              <div className="px-5 py-4 border-b border-slate-100 dark:border-[#334155]/60 bg-slate-50 dark:bg-white/[0.01] text-xs font-bold uppercase tracking-wider text-slate-450 dark:text-slate-350">
+                Field Summary
+              </div>
+              <div className="divide-y divide-slate-100 dark:divide-white/[0.03]">
+                {fieldChecks.map((f) => (
+                  <div key={f.label} className="flex items-center justify-between px-5 py-3">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{f.label}</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`text-[10px] font-bold uppercase tracking-wider ${f.done ? 'text-emerald-500' : 'text-slate-400'}`}>
+                        {f.done ? 'Filled' : 'Not Filled'}
+                      </span>
+                      {f.done ? (
+                        <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
+                      ) : (
+                        <Circle className="w-4 h-4 text-slate-200 dark:text-slate-700 shrink-0" />
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
           {/* Quick Tips */}
-          <div
-            className="rounded-lg p-4"
-            style={{ backgroundColor: '#6c1d5f08', border: '1px solid #6c1d5f20' }}
-          >
-            <p className="text-xs font-bold mb-2 flex items-center gap-1" style={{ color: '#6c1d5f' }}>
-              💡 Quick Tips
+          <div className="rounded-[24px] p-5 border border-emerald-500/10 dark:border-[#334155] bg-emerald-500/[0.02] dark:bg-[#111827]">
+            <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mb-3 flex items-center gap-1.5">
+              <HelpCircle className="w-4 h-4" />
+              <span>Quick Tips</span>
             </p>
-            <ul className="space-y-1.5 text-xs" style={{ color: '#5a5a5a' }}>
-              <li className="flex items-start gap-1.5"><span style={{ color: '#01ac9f' }}>→</span>Use a clear, descriptive name</li>
-              <li className="flex items-start gap-1.5"><span style={{ color: '#01ac9f' }}>→</span>Pick a brand-aligned accent color</li>
-              <li className="flex items-start gap-1.5"><span style={{ color: '#01ac9f' }}>→</span>Write a short SEO-friendly description</li>
-              <li className="flex items-start gap-1.5"><span style={{ color: '#ff6200' }}>→</span>Keep inactive until content is ready</li>
+            <ul className="space-y-2.5 text-xs text-slate-500 dark:text-slate-400">
+              <li className="flex items-start gap-1.5"><span className="text-emerald-500 font-bold">→</span>Use a clear, descriptive category name.</li>
+              <li className="flex items-start gap-1.5"><span className="text-emerald-500 font-bold">→</span>Pick a brand-aligned accent color swatch.</li>
+              <li className="flex items-start gap-1.5"><span className="text-emerald-500 font-bold">→</span>Write a short, SEO-friendly summary description.</li>
+              <li className="flex items-start gap-1.5"><span className="text-amber-500 font-bold">→</span>Keep status inactive until courses are published.</li>
             </ul>
           </div>
 
-
         </div>
+
       </div>
+
     </div>
   );
 }
