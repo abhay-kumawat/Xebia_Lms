@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lock, ShieldAlert, CheckCircle, Eye, EyeOff } from 'lucide-react';
-import { studentAuthService } from '@/auth/student/studentAuthService';
+import { studentAuthService } from '@/services/studentAuthService';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Logo from '@/components/ui/Logo';

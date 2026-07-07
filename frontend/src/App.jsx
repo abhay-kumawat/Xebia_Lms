@@ -5,30 +5,30 @@ import AppLayout from '@/components/layout/AppLayout';
 import StudentLayout from '@/components/layout/StudentLayout';
 
 // Features
-import Dashboard from '@/features/dashboard/Dashboard';
-import CategoryManagement from '@/features/category/CategoryManagement';
-import CategoryForm from '@/features/category/CategoryForm';
-import MediaLibrary from '@/features/content/MediaLibrary';
+import Dashboard from '@/pages/admin/Dashboard';
+import CategoryManagement from '@/pages/admin/CategoryManagement';
+import CategoryForm from '@/pages/admin/CategoryForm';
+import MediaLibrary from '@/pages/admin/MediaLibrary';
 
 // Student Features & Pages
-import StudentPortal from '@/features/student/StudentPortal';
-import StudentCoursesPage from '@/features/student/StudentCoursesPage';
-import StudentCourseDetailsPage from '@/features/student/StudentCourseDetailsPage';
-import StudentLearningContentPage from '@/features/student/StudentLearningContentPage';
-import StudentAssignmentsPage from '@/features/student/StudentAssignmentsPage';
-import StudentAssessmentsPage from '@/features/student/StudentAssessmentsPage';
-import StudentProgressPage from '@/features/student/StudentProgressPage';
-import StudentNotificationsPage from '@/features/student/StudentNotificationsPage';
-import StudentProfilePage from '@/features/student/StudentProfilePage';
-import StudentSettingsPage from '@/features/student/StudentSettingsPage';
-import StudentDiscussionPage from '@/features/student/StudentDiscussionPage';
-import StudentLeaderboardPage from '@/features/student/StudentLeaderboardPage';
+import StudentPortal from '@/pages/student/StudentPortal';
+import StudentCoursesPage from '@/pages/student/StudentCoursesPage';
+import StudentCourseDetailsPage from '@/pages/student/StudentCourseDetailsPage';
+import StudentLearningContentPage from '@/pages/student/StudentLearningContentPage';
+import StudentAssignmentsPage from '@/pages/student/StudentAssignmentsPage';
+import StudentAssessmentsPage from '@/pages/student/StudentAssessmentsPage';
+import StudentProgressPage from '@/pages/student/StudentProgressPage';
+import StudentNotificationsPage from '@/pages/student/StudentNotificationsPage';
+import StudentProfilePage from '@/pages/student/StudentProfilePage';
+import StudentSettingsPage from '@/pages/student/StudentSettingsPage';
+import StudentDiscussionPage from '@/pages/student/StudentDiscussionPage';
+import StudentLeaderboardPage from '@/pages/student/StudentLeaderboardPage';
 
 // Pages
-import CategoryCoursesPage from './pages/CategoryCoursesPage';
-import AllCoursesPage from './pages/AllCoursesPage';
-import CourseBuilderPage from './pages/CourseBuilderPage';
-import CourseFormPage from './pages/CourseFormPage';
+
+
+
+
 import LoginPage from './pages/LoginPage';
 import LoginSelectorPage from './pages/LoginSelectorPage';
 import LandingPage from './pages/LandingPage';
@@ -36,7 +36,7 @@ import UploadContentPage from './pages/UploadContentPage';
 import ProtectedRoute from '@/components/layout/ProtectedRoute';
 
 // Student Auth & Pages
-import StudentProtectedRoute from '@/auth/student/StudentProtectedRoute';
+import StudentProtectedRoute from '@/components/layout/StudentProtectedRoute';
 import StudentLoginPage from '@/pages/student/Login';
 import StudentRegisterPage from '@/pages/student/Register';
 import StudentForgotPasswordPage from '@/pages/student/ForgotPassword';
@@ -232,31 +232,31 @@ export default function App() {
                   
                   <Route path="/admin/categories/:categoryId" element={
                     <RouteTitle title="Category Courses">
-                      <CategoryCoursesPage />
+                      <CourseManagement />
                     </RouteTitle>
                   } />
                   
                   <Route path="/admin/courses" element={
                     <RouteTitle title="All Courses">
-                      <AllCoursesPage />
+                      <CourseManagement />
                     </RouteTitle>
                   } />
 
                   <Route path="/admin/courses/new" element={
                     <RouteTitle title="Create Course">
-                      <CourseFormPage />
+                      <CourseForm />
                     </RouteTitle>
                   } />
 
                   <Route path="/admin/courses/:courseId/edit" element={
                     <RouteTitle title="Edit Course">
-                      <CourseFormPage />
+                      <CourseForm />
                     </RouteTitle>
                   } />
                   
                   <Route path="/admin/courses/:courseId/builder" element={
                     <RouteTitle title="Course Builder">
-                      <CourseBuilderPage />
+                      <CourseBuilder />
                     </RouteTitle>
                   } />
                   

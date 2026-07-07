@@ -11,10 +11,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.geeknito</groupId>
-    <artifactId>LMS_backend</artifactId>
+    <groupId>com.abhay</groupId>
+    <artifactId>lms-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>LMS_backend</name>
+    <name>lms-backend</name>
     <description>LMS Backend CRUD APIs using Spring Boot and PostgreSQL</description>
 
     <properties>

@@ -16,7 +16,7 @@ A production-ready Spring Boot REST API for a Learning Management System (LMS). 
 ## Project Structure
 
 ```text
-com.geeknito.LMS_backend
+com.abhay.lms
 │
 ├── LMSBackendApplication.java     # Entry Point
 │

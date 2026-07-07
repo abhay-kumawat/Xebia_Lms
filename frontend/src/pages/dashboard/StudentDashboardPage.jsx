@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 import Button from '@/components/ui/Button';
 
 // Hooks & Services
-import { useStudentAuth } from '@/auth/student/studentAuthHooks';
+import { useStudentAuth } from '@/hooks/useStudentAuth';
 import { useToast } from '@/hooks/useToast';
 import { useCatalog } from '@/hooks/useCatalog';
 import {

@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import StudentLogo from '@/components/ui/StudentLogo';
 import { cn } from '@/utils';
-import { useStudentAuth } from '@/auth/student/studentAuthHooks';
+import { useStudentAuth } from '@/hooks/useStudentAuth';
 import { useTheme } from '@/context/ThemeContext';
 
 const STUDENT_NAV_ITEMS = [

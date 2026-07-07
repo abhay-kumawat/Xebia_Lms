@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, User, Check, AlertTriangle, Eye, EyeOff } from 'lucide-react';
-import { useStudentAuth } from '@/auth/student/studentAuthHooks';
+import { useStudentAuth } from '@/hooks/useStudentAuth';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import StudentLogo from '@/components/ui/StudentLogo';

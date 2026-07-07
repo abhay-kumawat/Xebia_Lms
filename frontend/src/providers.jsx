@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { CatalogProvider } from '@/hooks/useCatalog';
 import { ToastProvider } from '@/hooks/useToast';
 import { AuthProvider } from '@/hooks/useAuth';
-import { StudentAuthProvider } from '@/auth/student/StudentAuthProvider';
+import { StudentAuthProvider } from '@/hooks/useStudentAuth';
 import { ThemeProvider } from '@/context/ThemeContext';
 
 export function Providers({ children }) {

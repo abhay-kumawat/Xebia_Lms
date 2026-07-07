@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Lock, ShieldAlert, CheckCircle, Eye, EyeOff, ArrowRight, Sparkles, BookOpen, Trophy, Users } from 'lucide-react';
-import { useStudentAuth } from '@/auth/student/studentAuthHooks';
+import { useStudentAuth } from '@/hooks/useStudentAuth';
 
 export default function StudentLoginPage() {
   const { login } = useStudentAuth();

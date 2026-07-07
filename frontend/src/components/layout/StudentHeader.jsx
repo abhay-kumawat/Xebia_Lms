@@ -3,7 +3,7 @@ import { Bell, Sun, Moon, LogOut, User, Settings, X, Menu } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCatalog } from '@/hooks/useCatalog';
-import { useStudentAuth } from '@/auth/student/studentAuthHooks';
+import { useStudentAuth } from '@/hooks/useStudentAuth';
 import { useTheme } from '@/context/ThemeContext';
 import { cn, formatDateTime } from '@/utils';
 

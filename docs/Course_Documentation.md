@@ -7,9 +7,9 @@ This document outlines the data fields and the end-to-end frontend-to-backend re
 ## 1. Course Entity Fields
 
 *   **Database Table:** `courses`
-*   **Entity File:** backend/src/main/java/com/geeknito/LMS_backend/entity/learning/CourseEntity.java
-*   **Request DTO:** backend/src/main/java/com/geeknito/LMS_backend/dto/CourseRequestDTO.java
-*   **Response DTO:** backend/src/main/java/com/geeknito/LMS_backend/dto/CourseResponseDTO.java
+*   **Entity File:** backend/src/main/java/com/geeknito/lms-backend/entity/learning/CourseEntity.java
+*   **Request DTO:** backend/src/main/java/com/geeknito/lms-backend/dto/CourseRequestDTO.java
+*   **Response DTO:** backend/src/main/java/com/geeknito/lms-backend/dto/CourseResponseDTO.java
 
 ### Field List
 1.  `id` (`Long`, Primary Key, Generated Identity)
@@ -48,8 +48,8 @@ graph TD
 1.  **Frontend trigger:** User fills out form fields in frontend/src/features/course/CourseForm.jsx and clicks "Create Course".
 2.  **State Hook:** frontend/src/hooks/useCatalog.jsx runs `createCourse(payload)`, preparing the DTO payload.
 3.  **Axios API layer:** frontend/src/services/api.js dispatches the POST request to `POST /api/courses`.
-4.  **REST Controller:** backend/src/main/java/com/geeknito/LMS_backend/controller/CourseController.java maps payload to `CourseRequestDTO` in `createCourse()`.
-5.  **Service Impl:** backend/src/main/java/com/geeknito/LMS_backend/serviceImpl/CourseServiceImpl.java transforms the DTO into database domain entity mapping via backend/src/main/java/com/geeknito/LMS_backend/mapper/CourseMapper.java.
-6.  **Repository save:** backend/src/main/java/com/geeknito/LMS_backend/repository/CourseRepository.java executes hibernate inserts into the `courses` database table.
+4.  **REST Controller:** backend/src/main/java/com/geeknito/lms-backend/controller/CourseController.java maps payload to `CourseRequestDTO` in `createCourse()`.
+5.  **Service Impl:** backend/src/main/java/com/geeknito/lms-backend/serviceImpl/CourseServiceImpl.java transforms the DTO into database domain entity mapping via backend/src/main/java/com/geeknito/lms-backend/mapper/CourseMapper.java.
+6.  **Repository save:** backend/src/main/java/com/geeknito/lms-backend/repository/CourseRepository.java executes hibernate inserts into the `courses` database table.
 
 ---

@@ -8,9 +8,9 @@ This document outlines the data fields and the end-to-end frontend-to-backend re
 
 ### 1.1 Modules
 *   **Database Table:** `modules`
-*   **Entity File:** backend/src/main/java/com/geeknito/LMS_backend/entity/learning/ModuleEntity.java
-*   **Request DTO:** backend/src/main/java/com/geeknito/LMS_backend/dto/ModuleRequestDTO.java
-*   **Response DTO:** backend/src/main/java/com/geeknito/LMS_backend/dto/ModuleResponseDTO.java
+*   **Entity File:** backend/src/main/java/com/geeknito/lms-backend/entity/learning/ModuleEntity.java
+*   **Request DTO:** backend/src/main/java/com/geeknito/lms-backend/dto/ModuleRequestDTO.java
+*   **Response DTO:** backend/src/main/java/com/geeknito/lms-backend/dto/ModuleResponseDTO.java
 
 #### Core Fields
 1.  `id` (`Long`, Primary Key, Generated Identity)
@@ -24,9 +24,9 @@ This document outlines the data fields and the end-to-end frontend-to-backend re
 
 ### 1.2 Submodules
 *   **Database Table:** `submodules`
-*   **Entity File:** backend/src/main/java/com/geeknito/LMS_backend/entity/learning/SubmoduleEntity.java
-*   **Request DTO:** backend/src/main/java/com/geeknito/LMS_backend/dto/SubmoduleRequestDTO.java
-*   **Response DTO:** backend/src/main/java/com/geeknito/LMS_backend/dto/SubmoduleResponseDTO.java
+*   **Entity File:** backend/src/main/java/com/geeknito/lms-backend/entity/learning/SubmoduleEntity.java
+*   **Request DTO:** backend/src/main/java/com/geeknito/lms-backend/dto/SubmoduleRequestDTO.java
+*   **Response DTO:** backend/src/main/java/com/geeknito/lms-backend/dto/SubmoduleResponseDTO.java
 
 #### Core Fields
 1.  `id` (`Long`, Primary Key, Generated Identity)
@@ -42,9 +42,9 @@ This document outlines the data fields and the end-to-end frontend-to-backend re
 
 ### 1.3 Contents
 *   **Database Table:** `contents`
-*   **Entity File:** backend/src/main/java/com/geeknito/LMS_backend/entity/learning/ContentEntity.java
-*   **Request DTO:** backend/src/main/java/com/geeknito/LMS_backend/dto/ContentRequestDTO.java
-*   **Response DTO:** backend/src/main/java/com/geeknito/LMS_backend/dto/ContentResponseDTO.java
+*   **Entity File:** backend/src/main/java/com/geeknito/lms-backend/entity/learning/ContentEntity.java
+*   **Request DTO:** backend/src/main/java/com/geeknito/lms-backend/dto/ContentRequestDTO.java
+*   **Response DTO:** backend/src/main/java/com/geeknito/lms-backend/dto/ContentResponseDTO.java
 
 #### Core Fields
 1.  `id` (`Long`, Primary Key, Generated Identity)
@@ -85,9 +85,9 @@ graph TD
 1.  **Frontend trigger:** Within frontend/src/features/course/CourseBuilderWorkspace.jsx, the user clicks "Add Module", enters a title, and confirms.
 2.  **State Hook:** frontend/src/hooks/useCatalog.jsx triggers `addModule(courseId, payload)`, computing `moduleOrder` index dynamically.
 3.  **Axios API layer:** frontend/src/services/api.js sends JSON body to `POST /api/modules`.
-4.  **REST Controller:** backend/src/main/java/com/geeknito/LMS_backend/controller/ModuleController.java binds the parameter attributes to `ModuleRequestDTO`.
-5.  **Service Impl:** backend/src/main/java/com/geeknito/LMS_backend/serviceImpl/ModuleServiceImpl.java transforms the mapping using backend/src/main/java/com/geeknito/LMS_backend/mapper/ModuleMapper.java.
-6.  **Repository save:** backend/src/main/java/com/geeknito/LMS_backend/repository/ModuleRepository.java commits records to the `modules` database table.
+4.  **REST Controller:** backend/src/main/java/com/geeknito/lms-backend/controller/ModuleController.java binds the parameter attributes to `ModuleRequestDTO`.
+5.  **Service Impl:** backend/src/main/java/com/geeknito/lms-backend/serviceImpl/ModuleServiceImpl.java transforms the mapping using backend/src/main/java/com/geeknito/lms-backend/mapper/ModuleMapper.java.
+6.  **Repository save:** backend/src/main/java/com/geeknito/lms-backend/repository/ModuleRepository.java commits records to the `modules` database table.
 
 ---
 
@@ -111,9 +111,9 @@ graph TD
 1.  **Frontend trigger:** In the course building panel (frontend/src/features/course/CourseBuilderWorkspace.jsx), the user clicks "Add Submodule" inside a module card.
 2.  **State Hook:** frontend/src/hooks/useCatalog.jsx calls `addSubmodule(courseId, moduleId, payload)`.
 3.  **Axios API layer:** frontend/src/services/api.js dispatches data payload to `POST /api/submodules`.
-4.  **REST Controller:** backend/src/main/java/com/geeknito/LMS_backend/controller/SubmoduleController.java receives request parameters in `createSubmodule()`.
-5.  **Service Impl:** backend/src/main/java/com/geeknito/LMS_backend/serviceImpl/SubmoduleServiceImpl.java maps inputs using backend/src/main/java/com/geeknito/LMS_backend/mapper/SubmoduleMapper.java and saves.
-6.  **Repository save:** backend/src/main/java/com/geeknito/LMS_backend/repository/SubmoduleRepository.java saves submodule details.
+4.  **REST Controller:** backend/src/main/java/com/geeknito/lms-backend/controller/SubmoduleController.java receives request parameters in `createSubmodule()`.
+5.  **Service Impl:** backend/src/main/java/com/geeknito/lms-backend/serviceImpl/SubmoduleServiceImpl.java maps inputs using backend/src/main/java/com/geeknito/lms-backend/mapper/SubmoduleMapper.java and saves.
+6.  **Repository save:** backend/src/main/java/com/geeknito/lms-backend/repository/SubmoduleRepository.java saves submodule details.
 
 ---
 
@@ -137,9 +137,9 @@ graph TD
 1.  **Frontend trigger:** Inside a submodule's dropdown builder, the user chooses a content type (notes, video, code, heading) and clicks "Add Content Item".
 2.  **State Hook:** frontend/src/hooks/useCatalog.jsx calls `addContent(courseId, moduleId, submoduleId, payload)`.
 3.  **Axios API layer:** frontend/src/services/api.js dispatches the details to `POST /api/contents`.
-4.  **REST Controller:** backend/src/main/java/com/geeknito/LMS_backend/controller/ContentController.java parses request into `ContentRequestDTO`.
-5.  **Service Impl:** backend/src/main/java/com/geeknito/LMS_backend/serviceImpl/ContentServiceImpl.java converts DTO to Entity using backend/src/main/java/com/geeknito/LMS_backend/mapper/ContentMapper.java and runs the transaction.
-6.  **Repository save:** backend/src/main/java/com/geeknito/LMS_backend/repository/ContentRepository.java inserts content attributes into table.
+4.  **REST Controller:** backend/src/main/java/com/geeknito/lms-backend/controller/ContentController.java parses request into `ContentRequestDTO`.
+5.  **Service Impl:** backend/src/main/java/com/geeknito/lms-backend/serviceImpl/ContentServiceImpl.java converts DTO to Entity using backend/src/main/java/com/geeknito/lms-backend/mapper/ContentMapper.java and runs the transaction.
+6.  **Repository save:** backend/src/main/java/com/geeknito/lms-backend/repository/ContentRepository.java inserts content attributes into table.
 
 For **PDF, PPT, Video, and Image** content blocks, the same endpoint and flow above is used to persist the content record, but it is always preceded by a **separate file upload call** to Cloudinary — documented in full in Section 3 below.
 
@@ -153,10 +153,10 @@ The Curriculum Builder's file-backed content blocks (`pdf`, `ppt`, `image`, and 
 
 | Component | File | Responsibility |
 | --- | --- | --- |
-| `CloudinaryService` (interface) | backend/src/main/java/com/geeknito/LMS_backend/service/CloudinaryService.java | Defines `uploadFile(MultipartFile)` and `isConfigured()` |
-| `CloudinaryServiceImpl` | backend/src/main/java/com/geeknito/LMS_backend/serviceImpl/CloudinaryServiceImpl.java | Initializes the Cloudinary SDK client (`com.cloudinary:cloudinary-http44:1.36.0`) from `@Value` injected credentials and performs the actual upload |
-| `MediaUploadController` | backend/src/main/java/com/geeknito/LMS_backend/controller/MediaUploadController.java | Exposes `POST /api/media/upload`, orchestrates the Cloudinary-first / local-disk-fallback logic, and normalizes the response |
-| `LMSBackendApplication` | backend/src/main/java/com/geeknito/LMS_backend/LMSBackendApplication.java | Boot-time `.env` loader that copies `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` into JVM system properties so `@Value("${cloudinary.cloud-name}")` etc. resolve correctly |
+| `CloudinaryService` (interface) | backend/src/main/java/com/geeknito/lms-backend/service/CloudinaryService.java | Defines `uploadFile(MultipartFile)` and `isConfigured()` |
+| `CloudinaryServiceImpl` | backend/src/main/java/com/geeknito/lms-backend/serviceImpl/CloudinaryServiceImpl.java | Initializes the Cloudinary SDK client (`com.cloudinary:cloudinary-http44:1.36.0`) from `@Value` injected credentials and performs the actual upload |
+| `MediaUploadController` | backend/src/main/java/com/geeknito/lms-backend/controller/MediaUploadController.java | Exposes `POST /api/media/upload`, orchestrates the Cloudinary-first / local-disk-fallback logic, and normalizes the response |
+| `LMSBackendApplication` | backend/src/main/java/com/geeknito/lms-backend/LMSBackendApplication.java | Boot-time `.env` loader that copies `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` into JVM system properties so `@Value("${cloudinary.cloud-name}")` etc. resolve correctly |
 
 ### 3.2 Configuration
 
@@ -251,12 +251,12 @@ graph TD
 #### Step-by-Step Execution Sequence
 1.  **File selection:** Inside the PDF/PPT block editor in frontend/src/features/course/CourseBuilderWorkspace.jsx, the user either drags a file into the drop zone or clicks "Click to upload PDF/PPT file", and separately types in a `Page Count` / `Slide Count` value.
 2.  **Upload call:** `handleInlineFileUpload(file)` wraps the file in a `FormData` object and issues `api.post('/media/upload', formData)`, tracking progress via `onUploadProgress`.
-3.  **Backend routing:** backend/src/main/java/com/geeknito/LMS_backend/controller/MediaUploadController.java checks `CloudinaryService.isConfigured()`.
-4.  **Cloudinary upload:** If configured, backend/src/main/java/com/geeknito/LMS_backend/serviceImpl/CloudinaryServiceImpl.java uploads the raw bytes with `resource_type=auto`; Cloudinary auto-classifies PDFs/PPTs as `raw` assets and returns a `secure_url` plus `bytes` (file size).
+3.  **Backend routing:** backend/src/main/java/com/geeknito/lms-backend/controller/MediaUploadController.java checks `CloudinaryService.isConfigured()`.
+4.  **Cloudinary upload:** If configured, backend/src/main/java/com/geeknito/lms-backend/serviceImpl/CloudinaryServiceImpl.java uploads the raw bytes with `resource_type=auto`; Cloudinary auto-classifies PDFs/PPTs as `raw` assets and returns a `secure_url` plus `bytes` (file size).
 5.  **Fallback:** If Cloudinary is not configured, or the SDK call throws, the controller writes the file to `backend/uploads/<uuid>.<ext>` and returns a relative `/uploads/...` URL instead.
 6.  **Form state update:** The returned `{ url, name, size }` populates `contentForm.fileUrl` and `contentForm.fileSize` in the React form — this is not yet saved to the database.
 7.  **Content save:** When the user clicks "Save", `addContent()`/`updateContent()` in frontend/src/hooks/useCatalog.jsx calls `mapContentToBackendPayload()`, which — because `pdf`/`ppt` are **not** in the plain-text type list (`text`, `notes`, `code`, `heading`, `callout`, `table`) — serializes `{ fileSize, fileUrl, duration, pageCount, slideCount }` into a JSON string and assigns it to the outgoing `text` field.
-8.  **Persistence:** `POST /api/contents` (or `PUT /api/contents/{id}`) is sent with `type: "pdf"` (or `"ppt"`) and this JSON string as `text`. backend/src/main/java/com/geeknito/LMS_backend/controller/ContentController.java → `ContentServiceImpl.java` → `ContentRepository.java` persist the row, storing the JSON blob directly in the `text` column.
+8.  **Persistence:** `POST /api/contents` (or `PUT /api/contents/{id}`) is sent with `type: "pdf"` (or `"ppt"`) and this JSON string as `text`. backend/src/main/java/com/geeknito/lms-backend/controller/ContentController.java → `ContentServiceImpl.java` → `ContentRepository.java` persist the row, storing the JSON blob directly in the `text` column.
 9.  **Read-back:** On the next fetch, frontend/src/hooks/useCatalog.jsx → `mapBackendContent()` detects the type is not a plain-text type, `JSON.parse()`s `ct.text`, and rehydrates `fileUrl`, `fileSize`, `pageCount`, and `slideCount` back onto the content object for the UI.
 10. **Rendering:** frontend/src/components/builder/ContentPreviewDrawer.jsx reads `content.pageCount` / `content.slideCount` to render "`N pages`" or "`N slides`" badges, and links out to `content.fileUrl` (the Cloudinary `secure_url`) for viewing/downloading the actual PDF/PPTX file.
 
