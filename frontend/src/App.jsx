@@ -45,6 +45,14 @@ import StudentRegisterPage from '@/pages/student/Register';
 import StudentForgotPasswordPage from '@/pages/student/ForgotPassword';
 import StudentResetPasswordPage from '@/pages/student/ResetPassword';
 
+// Teacher Auth, Layout, & Pages
+import TeacherProtectedRoute from '@/components/layout/TeacherProtectedRoute';
+import TeacherLayout from '@/components/layout/TeacherLayout';
+import TeacherLoginPage from '@/pages/teacher/Login';
+import TeacherDashboard from '@/pages/teacher/Dashboard';
+import TeacherStudentTracker from '@/pages/teacher/StudentTracker';
+import TeacherAssessments from '@/pages/teacher/TeacherAssessments';
+
 function RouteTitle({ title, children }) {
   React.useEffect(() => {
     document.title = `${title} — Xebia Academy`;
@@ -106,6 +114,13 @@ export default function App() {
           <Route path="/student/register" element={
             <RouteTitle title="Student Registration">
               <StudentRegisterPage />
+            </RouteTitle>
+          } />
+
+          {/* Teacher Login Flow (unprotected) */}
+          <Route path="/teacher/login" element={
+            <RouteTitle title="Teacher Login">
+              <TeacherLoginPage />
             </RouteTitle>
           } />
           <Route path="/student/forgot-password" element={
@@ -196,10 +211,47 @@ export default function App() {
                     </RouteTitle>
                   } />
 
-                  <Route path="*" element={<Navigate to="dashboard" replace />} />
+                   <Route path="*" element={<Navigate to="dashboard" replace />} />
                 </Routes>
               </StudentLayout>
             </StudentProtectedRoute>
+          } />
+
+          {/* Teacher Protected Routes */}
+          <Route path="/teacher/*" element={
+            <TeacherProtectedRoute>
+              <TeacherLayout>
+                <Routes>
+                  <Route path="/" element={<Navigate to="dashboard" replace />} />
+                  
+                  <Route path="dashboard" element={
+                    <RouteTitle title="Teacher Dashboard">
+                      <TeacherDashboard />
+                    </RouteTitle>
+                  } />
+                  
+                  <Route path="students" element={
+                    <RouteTitle title="Student Tracker">
+                      <TeacherStudentTracker />
+                    </RouteTitle>
+                  } />
+                  
+                  <Route path="assessments" element={
+                    <RouteTitle title="Assessments Management">
+                      <TeacherAssessments />
+                    </RouteTitle>
+                  } />
+                  
+                  <Route path="courses" element={
+                    <RouteTitle title="Courses Management">
+                      <CourseManagement />
+                    </RouteTitle>
+                  } />
+
+                  <Route path="*" element={<Navigate to="dashboard" replace />} />
+                </Routes>
+              </TeacherLayout>
+            </TeacherProtectedRoute>
           } />
 
           {/* Admin Protected Routes */}
@@ -208,13 +260,13 @@ export default function App() {
               <AppLayout>
                 <Routes>
                   <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
-                  
+
                   <Route path="/admin/dashboard" element={
                     <RouteTitle title="Dashboard">
                       <Dashboard />
                     </RouteTitle>
                   } />
-                  
+
                   <Route path="/admin/categories" element={
                     <RouteTitle title="Categories">
                       <CategoryManagement />
@@ -232,13 +284,13 @@ export default function App() {
                       <CategoryForm />
                     </RouteTitle>
                   } />
-                  
+
                   <Route path="/admin/categories/:categoryId" element={
                     <RouteTitle title="Category Courses">
                       <CourseManagement />
                     </RouteTitle>
                   } />
-                  
+
                   <Route path="/admin/courses" element={
                     <RouteTitle title="All Courses">
                       <CourseManagement />
@@ -256,19 +308,19 @@ export default function App() {
                       <CourseForm />
                     </RouteTitle>
                   } />
-                  
+
                   <Route path="/admin/courses/:courseId/builder" element={
                     <RouteTitle title="Course Builder">
                       <CourseBuilder />
                     </RouteTitle>
                   } />
-                  
+
                   <Route path="/admin/media" element={
                     <RouteTitle title="Media Library">
                       <MediaLibrary />
                     </RouteTitle>
                   } />
-                  
+
                   <Route path="/admin/upload-content" element={
                     <RouteTitle title="Upload Content">
                       <UploadContentPage />

@@ -49,3 +49,4 @@ Desktop.ini
 
 # Vendor tools
 .tools/
+.jdk/

@@ -1,72 +1,45 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { BookOpen, Tag, Layers, LayoutDashboard, LogOut, Sun, Moon } from 'lucide-react';
-import Logo from '@/components/ui/Logo';
+import {
+  BookOpen, LayoutDashboard, Users, ClipboardList, LogOut, Sun, Moon
+} from 'lucide-react';
+import StudentLogo from '@/components/ui/StudentLogo';
 import { cn } from '@/utils';
-import { useAuth } from '@/hooks/useAuth';
+import { useTeacherAuth } from '@/hooks/useTeacherAuth';
+import { useTheme } from '@/context/ThemeContext';
 
-const NAV_ITEMS = [
-  { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/categories', label: 'Categories', icon: Tag },
-  { href: '/admin/courses', label: 'Courses', icon: BookOpen },
+const TEACHER_NAV_ITEMS = [
+  { href: '/teacher/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/teacher/students', label: 'Student Tracker', icon: Users },
+  { href: '/teacher/assessments', label: 'Assessments', icon: ClipboardList },
+  { href: '/teacher/courses', label: 'Courses', icon: BookOpen },
 ];
 
-export default function Sidebar() {
+export default function TeacherSidebar() {
   const { pathname } = useLocation();
-  const { user, logout } = useAuth();
-  const [theme, setTheme] = useState('light');
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    const activeTheme = savedTheme || systemTheme;
-    setTheme(activeTheme);
-    if (activeTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const nextTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(nextTheme);
-    localStorage.setItem('theme', nextTheme);
-    if (nextTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
+  const { user, logout } = useTeacherAuth();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <aside
-      className="fixed left-0 top-0 z-40 flex h-screen flex-col bg-gradient-to-b from-[#181223] via-[#0E1017] to-[#08090E] border-r border-white/[0.04] text-slate-300 transition-all duration-300"
+      className="fixed left-0 top-0 z-40 flex h-screen flex-col bg-gradient-to-b from-[#0E1B15] via-[#09100D] to-[#040806] border-r border-white/[0.04] text-slate-300 transition-all duration-300"
       style={{ width: 240 }}
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-6 py-6 border-b border-white/[0.04]">
-        <Logo variant="dark" />
+        <StudentLogo size="lg" />
       </div>
 
       {/* Nav label */}
-      <p className="px-6 pt-6 pb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-purple-400/70">
-        Main Menu
+      <p className="px-6 pt-6 pb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-400/70">
+        Teacher Menu
       </p>
 
       {/* Navigation */}
       <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-4 pb-4 scrollbar-thin">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-          let active = false;
-          if (label === 'Curriculum') {
-            active = pathname === href || pathname.startsWith('/admin/curriculum/');
-          } else if (label === 'Courses') {
-            active = pathname === href || pathname.startsWith('/admin/courses/');
-          } else {
-            active = pathname === href || pathname.startsWith(`${href}/`);
-          }
-
+        {TEACHER_NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+          const active = pathname === href || pathname.startsWith(`${href}/`);
           return (
             <Link
               key={href}
@@ -79,18 +52,18 @@ export default function Sidebar() {
               {/* Active Indicator Background */}
               {active && (
                 <motion.div
-                  layoutId="activeNavBackgroundAdmin"
-                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-600/15 to-indigo-600/5 border-l-2 border-purple-500"
+                  layoutId="activeNavBackgroundTeacher"
+                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-600/15 to-teal-650/5 border-l-2 border-emerald-500"
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
               )}
-
-              <Icon
+              
+              <Icon 
                 className={cn(
                   'relative z-10 h-[18px] w-[18px] shrink-0 transition-all duration-300 group-hover:scale-110',
-                  active ? 'text-purple-400 drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]' : 'text-slate-400 group-hover:text-white'
+                  active ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'text-slate-400 group-hover:text-white'
                 )}
-                strokeWidth={active ? 2.5 : 2}
+                strokeWidth={active ? 2.5 : 2} 
               />
               <span className="relative z-10 transition-transform duration-300 group-hover:translate-x-0.5">
                 {label}
@@ -105,20 +78,20 @@ export default function Sidebar() {
         <div className="mt-auto p-4 border-t border-white/[0.04] bg-white/[0.01]">
           <div className="flex flex-col gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.04] hover:border-white/[0.08] transition-all duration-300 shadow-md">
             <div className="flex items-center gap-3">
-              <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-black text-white bg-gradient-to-tr from-purple-600 to-indigo-600 shadow-inner ring-2 ring-white/10">
-                {(user.fullName || 'A')[0].toUpperCase()}
+              <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-black text-white bg-gradient-to-tr from-emerald-600 to-teal-600 shadow-inner ring-2 ring-white/10">
+                {(user.fullName || 'T')[0].toUpperCase()}
                 <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-[#0F101A]" />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-xs font-bold text-white leading-tight">
-                  {user.fullName || 'Admin User'}
+                  {user.fullName || 'Teacher User'}
                 </p>
                 <p className="truncate text-[10px] text-slate-500 mt-0.5 font-medium leading-none">
-                  {user.email || 'admin@xebia.com'}
+                  {user.email || 'teacher@xebia.com'}
                 </p>
               </div>
             </div>
-
+            
             <div className="flex items-center justify-between border-t border-white/[0.04] pt-2.5 mt-1">
               {/* Theme Toggle */}
               <button

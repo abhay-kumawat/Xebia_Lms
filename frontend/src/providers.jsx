@@ -6,6 +6,7 @@ import { CatalogProvider } from '@/hooks/useCatalog';
 import { ToastProvider } from '@/hooks/useToast';
 import { AuthProvider } from '@/hooks/useAuth';
 import { StudentAuthProvider } from '@/hooks/useStudentAuth';
+import { TeacherAuthProvider } from '@/hooks/useTeacherAuth';
 import { ThemeProvider } from '@/context/ThemeContext';
 
 export function Providers({ children }) {
@@ -24,7 +25,9 @@ export function Providers({ children }) {
         <ToastProvider>
           <AuthProvider>
             <StudentAuthProvider>
-              <CatalogProvider>{children}</CatalogProvider>
+              <TeacherAuthProvider>
+                <CatalogProvider>{children}</CatalogProvider>
+              </TeacherAuthProvider>
             </StudentAuthProvider>
           </AuthProvider>
         </ToastProvider>
