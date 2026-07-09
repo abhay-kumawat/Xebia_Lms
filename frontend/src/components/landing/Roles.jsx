@@ -27,13 +27,13 @@ export default function Roles() {
       <div style={{ overflowX: 'auto', width: '100%', background: '#ffffff', borderRadius: '16px', border: '1px solid #E6E6E6', boxShadow: '0 4px 20px rgba(0,0,0,0.01)' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '600px', fontSize: '14px', fontFamily: 'var(--font-sans)' }}>
           <thead>
-            <tr style={{ borderBottom: '2px solid #E6E6E6', background: 'rgba(106,29,87,0.04)' }}>
+            <tr style={{ borderBottom: '2px solid #E6E6E6', background: 'rgba(108, 29, 95, 0.04)' }}>
               <th style={{ padding: '20px 24px', color: '#000000', fontWeight: '800', fontSize: '15px' }}>Role</th>
               <th style={{ padding: '20px 24px', color: '#000000', fontWeight: '800', fontSize: '15px' }}>Tailored Workspace View & Access</th>
             </tr>
           </thead>
           <tbody>
-            <tr style={{ borderBottom: '1px solid #E6E6E6', background: 'rgba(106, 29, 87, 0.01)' }}>
+            <tr style={{ borderBottom: '1px solid #E6E6E6', background: 'rgba(108, 29, 95, 0.01)' }}>
               <td style={{ padding: '20px 24px', fontWeight: '800', color: '#000000', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span>👑</span> Administrator
               </td>
@@ -45,7 +45,7 @@ export default function Roles() {
               </td>
               <td style={{ padding: '20px 24px', color: '#444444', lineHeight: '1.5' }}>Manage corporate organizations, departments, universities, assign local trainers, and track metrics.</td>
             </tr>
-            <tr style={{ borderBottom: '1px solid #E6E6E6', background: 'rgba(106, 29, 87, 0.01)' }}>
+            <tr style={{ borderBottom: '1px solid #E6E6E6', background: 'rgba(108, 29, 95, 0.01)' }}>
               <td style={{ padding: '20px 24px', fontWeight: '800', color: '#000000', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span>📝</span> Trainer / Organiser
               </td>

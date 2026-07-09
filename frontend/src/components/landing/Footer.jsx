@@ -45,8 +45,8 @@ export default function Footer() {
         {/* Column 1: Brand Info & Form */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <GraduationCap size={24} color="#6A1D57" />
-            <span style={{ fontSize: '20px', fontWeight: '800', color: '#6A1D57' }}>Xebia Academy</span>
+            <GraduationCap size={24} color="#6C1D5F" />
+            <span style={{ fontSize: '20px', fontWeight: '800', color: '#6C1D5F' }}>Xebia Academy</span>
           </div>
           
           <p style={{ color: '#444444', lineHeight: '1.6' }}>
@@ -59,7 +59,7 @@ export default function Footer() {
 
           {/* Newsletter form */}
           {isSubscribed ? (
-            <div style={{ background: '#F5E6F3', border: '1px solid #84117C', padding: '16px', borderRadius: '8px', color: '#6A1D57', fontWeight: '600' }}>
+            <div style={{ background: '#F5E6F3', border: '1px solid #84117C', padding: '16px', borderRadius: '8px', color: '#6C1D5F', fontWeight: '600' }}>
               ✓ Thank you for subscribing!
             </div>
           ) : (
@@ -113,7 +113,7 @@ export default function Footer() {
                   boxShadow: '0 4px 10px rgba(132, 17, 124, 0.25)',
                   transition: '0.2s'
                 }}
-                onMouseOver={(e) => e.currentTarget.style.background = '#6A1D57'}
+                onMouseOver={(e) => e.currentTarget.style.background = '#6C1D5F'}
                 onMouseOut={(e) => e.currentTarget.style.background = '#84117C'}
               >
                 Subscribe Now
@@ -145,9 +145,9 @@ export default function Footer() {
                   width: '14px', 
                   height: '14px', 
                   borderRadius: '50%', 
-                  background: 'radial-gradient(circle at 30% 30%, #a932ad, #6A1D57)', 
+                  background: 'radial-gradient(circle at 30% 30%, #a932ad, #6C1D5F)', 
                   display: 'inline-block',
-                  boxShadow: '0 2px 4px rgba(106,29,87,0.3)' 
+                  boxShadow: '0 2px 4px rgba(108,29,95,0.3)' 
                 }}></span>
                 <a href={`#${domain.toLowerCase().replace(/ /g, '-')}`} style={{ color: '#000000', textDecoration: 'none', fontWeight: '700', fontSize: '14px' }}>{domain}</a>
               </li>

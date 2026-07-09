@@ -2,15 +2,21 @@ import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import TeacherSidebar from './TeacherSidebar';
 import TeacherHeader from './TeacherHeader';
+import { useCatalog } from '@/hooks/useCatalog';
 import XebiaAssistant from '@/components/common/XebiaAssistant';
 
 export default function TeacherLayout({ children }) {
+  const { branding, hydrated } = useCatalog();
   const location = useLocation();
   const path = location.pathname;
 
   useEffect(() => {
     document.title = 'Xebia Academy | Teacher Portal';
-  }, []);
+    if (hydrated && branding) {
+      document.documentElement.style.setProperty('--brand-primary', branding.primaryColor || '#6C1D5F');
+      document.documentElement.style.setProperty('--brand-secondary', branding.secondaryColor || '#84117C');
+    }
+  }, [branding, hydrated]);
 
   let title = 'Teacher Portal';
   let subtitle = 'Curriculum management and student grading workspace';

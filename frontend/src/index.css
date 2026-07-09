@@ -12,11 +12,11 @@
     --brand-secondary:    #84117C;
     --brand-success:      #01AC9F;
     --brand-cta:          #01AC9F;
-    --brand-border:       #E5E7EB;
-    --brand-surface:      #F9F8F8;
+    --brand-border:       #DADCEA;
+    --brand-surface:      #F7F8FC;
     --brand-background:   #FFFFFF;
-    --text-primary:       #1A1A2E;
-    --text-secondary:     #6B7280;
+    --text-primary:       #000000;
+    --text-secondary:     #5A5A5A;
 
     --accent-teal:        #01AC9F;
     --accent-teal-dark:   #0B7F76;
@@ -26,16 +26,16 @@
     --accent-plum:        #6C1D5F;
 
     /* Landing page variables */
-    --xebia-velvet: #6A1D57;
-    --xebia-velvet-glow: rgba(106, 29, 87, 0.12);
+    --xebia-velvet: #6C1D5F;
+    --xebia-velvet-glow: rgba(108, 29, 95, 0.12);
     --xebia-velvet-light: #84117C;
     --xebia-dark-blue: #ffffff;
-    --xebia-black: #F9F8F8;
-    --xebia-grey-dark: #ffffff;
-    --xebia-grey-light: #fbfbfb;
-    --xebia-border: #E6E6E6;
+    --xebia-black: #F7F8FC;
+    --xebia-grey-dark: #5A5A5A;
+    --xebia-grey-light: #F7F8FC;
+    --xebia-border: #DADCEA;
     --xebia-border-hover: #84117C;
-    --accent-cyan: #06A99C;
+    --accent-cyan: #01AC9F;
     --accent-green: #5eb32a;
     --accent-coral: #E31818;
     
@@ -212,7 +212,7 @@
 .glass-panel:hover {
   background: rgba(255, 255, 255, 0.85);
   border-color: var(--xebia-border-hover);
-  box-shadow: 0 12px 40px rgba(106, 29, 87, 0.12);
+  box-shadow: 0 12px 40px rgba(108, 29, 95, 0.12);
   animation-play-state: paused;
 }
 

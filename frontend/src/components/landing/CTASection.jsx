@@ -3,8 +3,8 @@ import React from 'react';
 export default function CTASection({ onSignInClick }) {
   return (
     <section id="cta" style={{
-      background: 'linear-gradient(135deg, rgba(106, 29, 87, 0.03) 0%, rgba(132, 17, 124, 0.06) 100%)',
-      border: '1px solid rgba(106, 29, 87, 0.1)',
+      background: 'linear-gradient(135deg, rgba(108, 29, 95, 0.03) 0%, rgba(132, 17, 124, 0.06) 100%)',
+      border: '1px solid rgba(108, 29, 95, 0.1)',
       borderRadius: '24px',
       padding: '60px 40px',
       textAlign: 'center',
@@ -36,7 +36,7 @@ export default function CTASection({ onSignInClick }) {
             boxShadow: '0 4px 12px rgba(132, 17, 124, 0.25)',
             transition: 'background 0.2s'
           }}
-          onMouseOver={(e) => e.currentTarget.style.background = '#6A1D57'}
+          onMouseOver={(e) => e.currentTarget.style.background = '#6C1D5F'}
           onMouseOut={(e) => e.currentTarget.style.background = '#84117C'}
         >
           Get Started Now
@@ -45,7 +45,7 @@ export default function CTASection({ onSignInClick }) {
           onClick={onSignInClick} 
           style={{ 
             background: '#ffffff', 
-            color: '#6A1D57', 
+            color: '#6C1D5F', 
             border: '2px solid #84117C',
             padding: '12px 32px', 
             fontSize: '15px',
@@ -55,7 +55,7 @@ export default function CTASection({ onSignInClick }) {
             transition: 'background 0.2s, color 0.2s'
           }}
           onMouseOver={(e) => { e.currentTarget.style.background = '#84117C'; e.currentTarget.style.color = '#ffffff'; }}
-          onMouseOut={(e) => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.color = '#6A1D57'; }}
+          onMouseOut={(e) => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.color = '#6C1D5F'; }}
         >
           Talk to Our Team
         </button>

@@ -64,7 +64,7 @@ export default function Architecture() {
             onMouseOver={(e) => {
               e.currentTarget.style.transform = 'translateY(-4px)';
               e.currentTarget.style.borderColor = '#84117C';
-              e.currentTarget.style.boxShadow = '0 10px 25px rgba(106, 29, 87, 0.05)';
+              e.currentTarget.style.boxShadow = '0 10px 25px rgba(108, 29, 95, 0.05)';
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
@@ -89,8 +89,8 @@ export default function Architecture() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '6px',
-                background: 'rgba(106, 29, 87, 0.06)',
-                color: '#6A1D57',
+                background: 'rgba(108, 29, 95, 0.06)',
+                color: '#6C1D5F',
                 padding: '4px 10px',
                 borderRadius: '4px',
                 fontSize: '11px',

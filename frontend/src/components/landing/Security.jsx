@@ -47,7 +47,7 @@ export default function Security() {
         {securityFeatures.map((feature, idx) => (
           <div key={idx} style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
             <div style={{
-              background: 'rgba(106, 29, 87, 0.08)',
+              background: 'rgba(108, 29, 95, 0.08)',
               width: '32px',
               height: '32px',
               borderRadius: '50%',
@@ -56,7 +56,7 @@ export default function Security() {
               justifyContent: 'center',
               flexShrink: 0
             }}>
-              <Check size={16} color="#6A1D57" strokeWidth={3} />
+              <Check size={16} color="#6C1D5F" strokeWidth={3} />
             </div>
             <span style={{ fontSize: '14px', fontWeight: '700', color: '#000000' }}>
               {feature}
