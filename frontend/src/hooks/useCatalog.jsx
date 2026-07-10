@@ -347,7 +347,16 @@ function loadBranding() {
   if (typeof window === 'undefined') return BRAND_DEFAULTS;
   try {
     const stored = localStorage.getItem(BRAND_KEY);
-    if (stored) return { ...BRAND_DEFAULTS, ...JSON.parse(stored) };
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      // Auto-migrate old color codes to the new official Xebia palette
+      if (parsed.primaryColor === '#831B84' || parsed.secondaryColor === '#FF6200') {
+        parsed.primaryColor = BRAND_DEFAULTS.primaryColor;
+        parsed.secondaryColor = BRAND_DEFAULTS.secondaryColor;
+        localStorage.setItem(BRAND_KEY, JSON.stringify(parsed));
+      }
+      return { ...BRAND_DEFAULTS, ...parsed };
+    }
   } catch {
     /* use defaults */
   }

@@ -18,7 +18,7 @@ export default function StudentProfilePage() {
       <div className="mt-6 grid gap-6 xl:grid-cols-[0.75fr_1.25fr]">
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="rounded-3xl border border-brand-border/70 bg-white p-6 shadow-card dark:border-slate-800 dark:bg-slate-900">
           <div className="flex flex-col items-center text-center">
-            <div className="h-28 w-28 rounded-full flex items-center justify-center text-3xl font-black bg-[#6C1D5F] text-white ring-4 ring-brand-surface select-none">
+            <div className="h-28 w-28 rounded-full flex items-center justify-center text-3xl font-black bg-[#831B84] text-white ring-4 ring-brand-surface select-none">
               {getInitials(studentProfile.fullName)}
             </div>
             <h3 className="mt-4 text-xl font-bold text-brand-text-primary dark:text-slate-100">{studentProfile.fullName}</h3>

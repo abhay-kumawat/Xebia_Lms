@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   BarChart2, BookOpen, Award, Brain, History, Trophy, Sparkles,
   ArrowRight, Search, Bell, RefreshCw, AlertTriangle, Flame,
   Tv, Calendar, Target, Clock, GraduationCap, CheckCircle2, ChevronRight,
   TrendingUp, Award as BadgeIcon, Zap, Star, Play, Users, BookMarked,
-  Activity, CheckCircle, Lock, BarChart, ArrowUpRight
+  Activity, CheckCircle, Lock, BarChart, ArrowUpRight, FileText
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -25,6 +25,7 @@ import {
   getStudentRanking,
   getStudentRecommendations
 } from '@/services/studentDashboardService';
+import { getAssessments, getSubmissions } from '@/services/assessmentService';
 
 function getInitials(name) {
   if (!name) return 'AK';
@@ -113,7 +114,19 @@ export default function StudentDashboardPage() {
   const { showToast } = useToast();
   const { courses: liveCourses, categories: liveCategories } = useCatalog();
   const [activeTab, setActiveTab] = useState('overview');
-  
+  const [showTimetable, setShowTimetable] = useState(false);
+  const [showFees, setShowFees] = useState(false);
+  const [showRadio, setShowRadio] = useState(false);
+  const [showImpact, setShowImpact] = useState(false);
+  const [radioPlaying, setRadioPlaying] = useState(false);
+  const [currentTrack, setCurrentTrack] = useState(0);
+
+  const tracks = [
+    { title: 'GenAI & LangChain Architectures', duration: '14:20' },
+    { title: 'Spring Boot 3.3 Mastery Tips', duration: '08:45' },
+    { title: 'Vite & React 19 Upgrade Guide', duration: '11:15' },
+  ];
+
   // Data states
   const [dashboardData, setDashboardData] = useState(null);
   const [progressData, setProgressData] = useState(null);
@@ -122,6 +135,8 @@ export default function StudentDashboardPage() {
   const [history, setHistory] = useState([]);
   const [ranking, setRanking] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
+  const [dbAssessments, setDbAssessments] = useState([]);
+  const [dbSubmissions, setDbSubmissions] = useState([]);
   
   // Loading & error states
   const [isLoading, setIsLoading] = useState(true);
@@ -134,22 +149,34 @@ export default function StudentDashboardPage() {
     setIsLoading(true);
     setError('');
     try {
-      const [dashRes, progRes, certRes, aiRes, histRes, rankRes, recRes] = await Promise.all([
+      const [dashRes, progRes, certRes, aiRes, histRes, rankRes, recRes, assessmentsList, submissionsList] = await Promise.all([
         getStudentDashboardData(),
         getStudentProgress(),
         getStudentCertificates(),
         getStudentAIProgress(),
         getStudentHistory(),
         getStudentRanking(),
-        getStudentRecommendations()
+        getStudentRecommendations(),
+        getAssessments(),
+        getSubmissions()
       ]);
       setDashboardData(dashRes);
       setProgressData(progRes);
-      setCertificates(certRes);
+      
+      const studentEmail = user?.email || 'abhay.kumawat@xebia.com';
+      const studentName = user?.fullName || 'Abhay Kumawat';
+      const filteredCerts = (certRes || []).filter(c => 
+        !c.studentEmail || 
+        c.studentEmail.toLowerCase() === studentEmail.toLowerCase() || 
+        c.studentName?.toLowerCase() === studentName.toLowerCase()
+      );
+      setCertificates(filteredCerts);
       setAIProgress(aiRes);
       setHistory(histRes);
       setRanking(rankRes);
       setRecommendations(recRes);
+      setDbAssessments(assessmentsList);
+      setDbSubmissions(submissionsList);
     } catch (err) {
       console.error('Error fetching student dashboard data:', err);
       setError('We could not connect to the Learning Management System server. Please try again.');
@@ -161,6 +188,129 @@ export default function StudentDashboardPage() {
   useEffect(() => {
     fetchDashboardData();
   }, []);
+
+  // Memoized progress and dashboard data merging live catalog courses
+  const processedProgressData = useMemo(() => {
+    if (!progressData) return null;
+    
+    // Map live courses from useCatalog into the student's enrolled courses list
+    const mappedLiveCourses = (liveCourses || []).map(lc => {
+      const cat = (liveCategories || []).find(c => c.id === lc.categoryId);
+      const categoryName = cat ? cat.name : (lc.technology || 'General');
+      
+      return {
+        id: String(lc.id),
+        name: lc.title,
+        progress: lc.progress || 0,
+        lessonsCompleted: lc.lessonsCompleted || 0,
+        remainingLessons: lc.remainingLessons || 12,
+        category: categoryName,
+        trainer: lc.trainer || 'Prof. Abhay Kumawat',
+        thumbnail: lc.thumbnail || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80'
+      };
+    });
+
+    const mergedEnrolledCourses = [...(progressData.enrolledCourses || [])];
+    mappedLiveCourses.forEach(lc => {
+      const exists = mergedEnrolledCourses.some(mc => mc.name.toLowerCase() === lc.name.toLowerCase() || String(mc.id) === String(lc.id));
+      if (!exists) {
+        mergedEnrolledCourses.push(lc);
+      }
+    });
+
+    const totalEnrolled = mergedEnrolledCourses.length;
+    const totalProgress = mergedEnrolledCourses.reduce((acc, c) => acc + c.progress, 0);
+    const overallCompletion = totalEnrolled > 0 ? Math.round(totalProgress / totalEnrolled) : 0;
+
+    return {
+      ...progressData,
+      metrics: {
+        ...progressData.metrics,
+        overallCourseCompletion: overallCompletion
+      },
+      enrolledCourses: mergedEnrolledCourses
+    };
+  }, [progressData, liveCourses, liveCategories]);
+
+  const processedDashboardData = useMemo(() => {
+    if (!dashboardData || !processedProgressData) return null;
+
+    const mergedEnrolledCourses = processedProgressData.enrolledCourses;
+    const totalEnrolled = mergedEnrolledCourses.length;
+    const active = mergedEnrolledCourses.filter(c => c.progress > 0 && c.progress < 100).length;
+    const completed = mergedEnrolledCourses.filter(c => c.progress === 100).length;
+
+    const stats = (dashboardData.overviewStats || []).map(s => {
+      if (s.id === 'enrolled') return { ...s, value: String(totalEnrolled) };
+      if (s.id === 'active') return { ...s, value: String(active) };
+      if (s.id === 'completed') return { ...s, value: String(completed) };
+      return s;
+    });
+
+    return {
+      ...dashboardData,
+      overviewStats: stats,
+      courses: mergedEnrolledCourses
+    };
+  }, [dashboardData, processedProgressData]);
+
+  const pendingAssignmentsCount = useMemo(() => {
+    const studentEnrollment = user?.enrollmentNo || 'XEB-2026-081';
+    const assignmentsList = dbAssessments.filter(a => a.type?.toLowerCase() === 'assignment');
+    
+    const pending = assignmentsList.filter(ass => {
+      return !dbSubmissions.some(sub => 
+        sub.assessmentTitle === ass.title && 
+        sub.enrollmentNo === studentEnrollment
+      );
+    });
+    
+    return pending.length > 0 ? pending.length : 3;
+  }, [dbAssessments, dbSubmissions, user]);
+
+  const dynamicDeadlines = useMemo(() => {
+    const list = [];
+    const studentEnrollment = user?.enrollmentNo || 'XEB-2026-081';
+
+    dbAssessments.forEach(ass => {
+      const hasSubmitted = dbSubmissions.some(sub => 
+        sub.assessmentTitle === ass.title && 
+        sub.enrollmentNo === studentEnrollment
+      );
+
+      if (!hasSubmitted) {
+        list.push({
+          text: `${ass.title} (${ass.type})`,
+          when: `Due ${ass.dueDate}`,
+          urgent: new Date(ass.dueDate) <= new Date(Date.now() + 2 * 24 * 3600 * 1000)
+        });
+      }
+    });
+
+    if (list.length === 0) {
+      return [
+        { text: 'Xebia Orientation Submission', when: 'Due 2026-07-12', urgent: false },
+        { text: 'Docker Container Quiz', when: 'Due 2026-07-20', urgent: false }
+      ];
+    }
+
+    return list.slice(0, 3);
+  }, [dbAssessments, dbSubmissions, user]);
+
+  const studentCards = useMemo(() => [
+    { title: 'My Courses', sub: 'Explore active enrollments', icon: BookOpen, to: '/student/courses', color: 'from-[#831B84] to-[#4A1E47]' },
+    { title: 'Timetable', sub: 'Online classes & schedules', icon: Calendar, action: () => setShowTimetable(true), color: 'from-[#FF6200] to-[#5B1E53]' },
+    { title: 'My Exams', sub: 'Quizzes & final evaluations', icon: FileText, to: '/student/assessments', color: 'from-[#4A1E47] to-[#331431]' },
+    { title: 'Student Support', sub: 'Get help and resolve issues', icon: Users, to: '/student/discussion', color: 'from-[#5C4F61] to-[#3D3441]' },
+    { title: 'myCard', sub: 'Student Profile & Digital ID', icon: Award, to: '/student/profile', color: 'from-[#793B74] to-[#51234E]' },
+    { title: 'My Fees', sub: 'Pending dues & receipt invoices', icon: BookMarked, action: () => setShowFees(true), color: 'from-[#01AC9F] to-[#0b7f76]' },
+    { title: 'Overall Progress', sub: 'View completed modules', icon: TrendingUp, action: () => setActiveTab('progress'), color: 'from-[#01AC9F] to-[#018d82]' },
+    { title: 'Lecture Videos', sub: 'Recorded lectures repository', icon: Play, to: '/student/learning-content', color: 'from-[#5B1E53] to-[#3f1239]' },
+    { title: 'No Dues', sub: `${pendingAssignmentsCount} pending assignments`, icon: CheckCircle2, to: '/student/assignments', color: 'from-[#855889] to-[#5C395F]' },
+    { title: 'RESULT', sub: 'Final marks & transcript sheets', icon: GraduationCap, action: () => setActiveTab('progress'), color: 'from-[#91759E] to-[#674F73]' },
+    { title: 'Radio Xebia', sub: 'LMS Broadcast & Podcasts', icon: Zap, action: () => setShowRadio(true), color: 'from-[#FF6200] to-[#cc4e00]' },
+    { title: 'Xebia Impact', sub: 'Global achievements logs', icon: Sparkles, action: () => setShowImpact(true), color: 'from-[#831B84] to-[#FF6200]' }
+  ], [pendingAssignmentsCount]);
 
   const getCalendarDays = () => {
     const days = [];
@@ -292,7 +442,7 @@ export default function StudentDashboardPage() {
               <div className="grid grid-cols-3 gap-3 shrink-0">
                 {[
                   { label: 'Streak', value: '5 Days', icon: '🔥', accent: 'text-orange-300' },
-                  { label: 'Completion', value: '74%', icon: '📈', accent: 'text-emerald-300' },
+                  { label: 'Completion', value: `${processedProgressData?.metrics?.overallCourseCompletion || 78}%`, icon: '📈', accent: 'text-emerald-300' },
                   { label: 'Rank', value: '#4', icon: '🏆', accent: 'text-yellow-300' },
                 ].map((m) => (
                   <div key={m.label} className="text-center bg-white/8 border border-white/10 rounded-2xl px-4 py-3 backdrop-blur-sm hover:bg-white/12 transition-colors">
@@ -335,7 +485,7 @@ export default function StudentDashboardPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
                   active
-                    ? 'bg-gradient-to-r from-[#6C1D5F] to-[#511345] text-white shadow-md shadow-purple-500/20'
+                    ? 'bg-gradient-to-r from-[#831B84] to-[#511345] text-white shadow-md shadow-purple-500/20'
                     : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100/60'
                 }`}
               >
@@ -363,42 +513,47 @@ export default function StudentDashboardPage() {
             {activeTab === 'overview' && (
               <div className="space-y-6">
 
-                {/* Stat Cards Row */}
-                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                  <StatCard label="Enrolled Courses" value={12} icon={BookOpen} gradient="bg-gradient-to-br from-[#6C1D5F] to-[#9b2d89]" delay={0} />
-                  <StatCard label="Completed" value={3} icon={CheckCircle} gradient="bg-gradient-to-br from-emerald-500 to-teal-600" delay={0.08} />
-                  <StatCard label="Quiz Average" value={88} suffix="%" icon={BarChart} gradient="bg-gradient-to-br from-blue-500 to-indigo-600" delay={0.16} />
-                  <StatCard label="Certificates" value={2} icon={Award} gradient="bg-gradient-to-br from-amber-500 to-orange-600" delay={0.24} />
-                </div>
-
-                {/* Quick Actions */}
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  {[
-                    { label: 'Browse Courses', icon: GraduationCap, to: '/student/courses', color: 'text-purple-600 bg-purple-50 group-hover:bg-purple-100' },
-                    { label: 'AI Assistant', icon: Brain, tab: 'ai', color: 'text-blue-600 bg-blue-50 group-hover:bg-blue-100' },
-                    { label: 'Certifications', icon: Award, tab: 'certificates', color: 'text-amber-600 bg-amber-50 group-hover:bg-amber-100' },
-                    { label: 'Leaderboard', icon: Trophy, tab: 'leaderboard', color: 'text-emerald-600 bg-emerald-50 group-hover:bg-emerald-100' },
-                  ].map((action) => {
-                    const Icon = action.icon;
+                {/* Shoolini-style Visual LMS Navigation Grid */}
+                <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 select-none">
+                  {studentCards.map((card, idx) => {
+                    const Icon = card.icon;
                     const content = (
                       <motion.div
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="group flex items-center justify-between p-4 bg-white border border-slate-200/80 rounded-2xl shadow-sm hover:shadow-md cursor-pointer transition-all"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.03, duration: 0.4 }}
+                        whileHover={{ y: -6, scale: 1.02, boxShadow: '0 20px 30px rgba(108,29,95,0.12)' }}
+                        className={`group relative overflow-hidden rounded-[28px] p-6 text-white shadow-md cursor-pointer h-44 bg-gradient-to-br ${card.color} flex flex-col justify-between`}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className={`p-2.5 rounded-xl transition-colors shrink-0 ${action.color}`}>
-                            <Icon className="h-4.5 w-4.5" style={{ height: '18px', width: '18px' }} />
-                          </div>
-                          <span className="text-xs font-bold text-slate-700">{action.label}</span>
+                        {/* Huge background visual icon */}
+                        <div className="absolute right-[-10px] bottom-[-10px] opacity-10 group-hover:opacity-25 group-hover:scale-110 transition-all duration-300 pointer-events-none">
+                          <Icon size={100} strokeWidth={1} />
                         </div>
-                        <ArrowUpRight className="h-4 w-4 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                        
+                        <div className="flex justify-between items-start">
+                          <span className="text-[10px] font-black uppercase tracking-wider text-white/70 bg-white/10 px-2 py-0.5 rounded-full border border-white/10 backdrop-blur-sm">
+                            Access Portal
+                          </span>
+                          <div className="h-9 w-9 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm shadow-sm group-hover:rotate-6 transition-transform">
+                            <Icon size={18} className="text-white" />
+                          </div>
+                        </div>
+
+                        <div>
+                          <h3 className="text-base font-black tracking-tight leading-tight text-white mb-1 group-hover:translate-x-1 transition-transform">
+                            {card.title}
+                          </h3>
+                          <p className="text-[11px] text-white/75 leading-tight font-medium">
+                            {card.sub}
+                          </p>
+                        </div>
                       </motion.div>
                     );
-                    return action.to ? (
-                      <Link key={action.label} to={action.to}>{content}</Link>
+
+                    return card.to ? (
+                      <Link key={card.title} to={card.to}>{content}</Link>
                     ) : (
-                      <div key={action.label} onClick={() => setActiveTab(action.tab)}>{content}</div>
+                      <div key={card.title} onClick={card.action}>{content}</div>
                     );
                   })}
                 </div>
@@ -417,7 +572,7 @@ export default function StudentDashboardPage() {
                         <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600 bg-purple-50 border border-purple-100 px-2.5 py-0.5 rounded-full">
                           Continue Learning
                         </span>
-                        <span className="text-xs font-bold text-slate-500">{dashboardData?.continueLearning?.progress || 68}% Done</span>
+                        <span className="text-xs font-bold text-slate-500">{processedDashboardData?.continueLearning?.progress || 68}% Done</span>
                       </div>
 
                       <div className="relative overflow-hidden rounded-2xl mb-4 group">
@@ -436,15 +591,15 @@ export default function StudentDashboardPage() {
                       </div>
 
                       <h4 className="text-sm font-bold text-slate-800 leading-snug mb-1">
-                        {dashboardData?.continueLearning?.subtitle || 'Advanced React Patterns & Architecture'}
+                        {processedDashboardData?.continueLearning?.subtitle || 'Advanced React Patterns & Architecture'}
                       </h4>
                       <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
-                        {dashboardData?.continueLearning?.description || 'Master advanced hooks, context patterns, and enterprise-level component architecture.'}
+                        {processedDashboardData?.continueLearning?.description || 'Master advanced hooks, context patterns, and enterprise-level component architecture.'}
                       </p>
 
                       <div className="mt-4 space-y-2.5">
-                        <AnimatedBar value={dashboardData?.continueLearning?.progress || 68} color="bg-gradient-to-r from-[#6C1D5F] to-purple-500" />
-                        <Button className="w-full flex items-center justify-center gap-2 py-2.5 text-xs bg-gradient-to-r from-[#6C1D5F] to-[#9b2d89] hover:opacity-90 border-0 cursor-pointer rounded-xl shadow-md shadow-purple-500/20">
+                        <AnimatedBar value={processedDashboardData?.continueLearning?.progress || 68} color="bg-gradient-to-r from-[#831B84] to-purple-500" />
+                        <Button className="w-full flex items-center justify-center gap-2 py-2.5 text-xs bg-gradient-to-r from-[#831B84] to-[#9b2d89] hover:opacity-90 border-0 cursor-pointer rounded-xl shadow-md shadow-purple-500/20">
                           Resume Session <ArrowRight className="h-3.5 w-3.5" />
                         </Button>
                       </div>
@@ -600,7 +755,7 @@ export default function StudentDashboardPage() {
                           />
                           <defs>
                             <linearGradient id="goalGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                              <stop offset="0%" stopColor="#6C1D5F" />
+                              <stop offset="0%" stopColor="#831B84" />
                               <stop offset="100%" stopColor="#f59e0b" />
                             </linearGradient>
                           </defs>
@@ -687,10 +842,7 @@ export default function StudentDashboardPage() {
                       </div>
 
                       <div className="space-y-2.5">
-                        {[
-                          { text: 'Project Milestone 2 submission', when: 'Tomorrow', urgent: true },
-                          { text: 'React core quiz deadline', when: 'In 3 days', urgent: false },
-                        ].map((item) => (
+                        {dynamicDeadlines.map((item) => (
                           <div key={item.text} className={`flex items-start gap-2.5 p-2.5 rounded-xl border text-[11px] ${item.urgent ? 'bg-red-50 border-red-100' : 'bg-slate-50 border-slate-100'}`}>
                             <span className={`h-2 w-2 rounded-full mt-1 shrink-0 ${item.urgent ? 'bg-red-500' : 'bg-slate-400'}`} />
                             <div>
@@ -758,7 +910,7 @@ export default function StudentDashboardPage() {
             )}
 
             {/* PROGRESS PANEL */}
-            {activeTab === 'progress' && <LearningProgress progressData={progressData} />}
+            {activeTab === 'progress' && <LearningProgress progressData={processedProgressData} />}
 
             {/* CERTIFICATES PANEL */}
             {activeTab === 'certificates' && <CertificationSection certificates={certificates} />}
@@ -777,6 +929,167 @@ export default function StudentDashboardPage() {
 
           </motion.div>
         </AnimatePresence>
+
+        {/* Modals */}
+        {showTimetable && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in select-none">
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="w-full max-w-lg rounded-3xl border border-brand-border bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-5 w-5 text-brand-primary" />
+                  <h3 className="text-lg font-black text-slate-850 dark:text-white">Weekly Academic Timetable</h3>
+                </div>
+                <button onClick={() => setShowTimetable(false)} className="text-slate-400 hover:text-slate-650 bg-transparent border-0 cursor-pointer text-xl font-bold">×</button>
+              </div>
+              <div className="space-y-3.5">
+                {[
+                  { day: 'Monday', time: '10:00 AM - 11:30 AM', subject: 'Advanced React Architecture', room: 'Virtual Lab 1' },
+                  { day: 'Wednesday', time: '02:00 PM - 03:30 PM', subject: 'Docker & Kubernetes Mastery', room: 'Cloud Room A' },
+                  { day: 'Friday', time: '04:00 PM - 05:30 PM', subject: 'Generative AI Foundation', room: 'AI Theater' },
+                ].map((slot) => (
+                  <div key={slot.day} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-50 dark:bg-slate-950/40 rounded-2xl border border-slate-100 dark:border-slate-850">
+                    <div>
+                      <p className="text-xs font-black text-brand-primary uppercase tracking-wide">{slot.day}</p>
+                      <h4 className="text-sm font-extrabold text-slate-800 dark:text-slate-200 mt-1">{slot.subject}</h4>
+                    </div>
+                    <div className="text-left sm:text-right mt-2 sm:mt-0">
+                      <p className="text-xs text-slate-600 dark:text-slate-400 font-semibold">{slot.time}</p>
+                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">{slot.room}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {showFees && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in select-none">
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="w-full max-w-md rounded-3xl border border-brand-border bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-2">
+                  <BookMarked className="h-5 w-5 text-emerald-500" />
+                  <h3 className="text-lg font-black text-slate-850 dark:text-white">Fees & Financial Ledger</h3>
+                </div>
+                <button onClick={() => setShowFees(false)} className="text-slate-400 hover:text-slate-650 bg-transparent border-0 cursor-pointer text-xl font-bold">×</button>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="p-5 bg-emerald-50/50 dark:bg-emerald-950/10 border border-emerald-100 dark:border-emerald-900/30 rounded-2xl flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-black uppercase text-emerald-600 tracking-wider">Account Balance</p>
+                    <p className="text-3xl font-black text-slate-850 dark:text-white mt-1">$0.00</p>
+                  </div>
+                  <span className="text-[11px] font-bold text-white bg-emerald-500 px-3 py-1 rounded-full uppercase">All Paid</span>
+                </div>
+
+                <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-350">
+                  <div className="py-2.5 flex justify-between"><span>Enterprise Tuition Fees</span><span className="font-extrabold text-slate-850 dark:text-white">$1,200.00</span></div>
+                  <div className="py-2.5 flex justify-between"><span>Laboratory & AWS Sandboxes</span><span className="font-extrabold text-slate-850 dark:text-white">$150.00</span></div>
+                  <div className="py-2.5 flex justify-between"><span>Final Examination Fee</span><span className="font-extrabold text-slate-850 dark:text-white">$100.00</span></div>
+                </div>
+
+                <Button className="w-full mt-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 border-0 flex items-center justify-center gap-2 py-3 rounded-xl cursor-pointer">
+                  Download Payment Receipt (PDF)
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {showRadio && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in select-none">
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="w-full max-w-sm rounded-3xl border border-brand-border bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 text-center"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <span className="text-xs font-bold text-orange-500 bg-orange-50 dark:bg-orange-950/20 px-2.5 py-1 rounded-full uppercase border border-orange-100 dark:border-orange-900/20">Podcast Stream</span>
+                <button onClick={() => setShowRadio(false)} className="text-slate-400 hover:text-slate-650 bg-transparent border-0 cursor-pointer text-xl font-bold">×</button>
+              </div>
+
+              {/* Album Art Icon */}
+              <div className="mx-auto h-28 w-28 rounded-[24px] bg-gradient-to-tr from-[#FF6200] to-[#FF6200] flex items-center justify-center text-white shadow-lg relative overflow-hidden group">
+                <Zap size={44} className={`text-white transition-all ${radioPlaying ? 'scale-110' : 'group-hover:rotate-12'}`} />
+                {radioPlaying && (
+                  <div className="absolute inset-0 bg-black/10 flex items-end justify-center pb-2">
+                    <div className="flex gap-1 items-end h-6">
+                      <div className="w-1 bg-white h-4 rounded animate-[float1_0.6s_ease-in-out_infinite]" />
+                      <div className="w-1 bg-white h-6 rounded animate-[float1_0.8s_ease-in-out_infinite_0.2s]" />
+                      <div className="w-1 bg-white h-3 rounded animate-[float1_0.5s_ease-in-out_infinite_0.1s]" />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <h4 className="text-base font-extrabold text-slate-850 dark:text-white mt-5">{tracks[currentTrack].title}</h4>
+              <p className="text-xs text-slate-500 mt-1">Xebia Radio Broadcast · {tracks[currentTrack].duration}</p>
+
+              {/* Audio Controls */}
+              <div className="flex items-center justify-center gap-6 mt-6">
+                <button 
+                  onClick={() => setCurrentTrack(prev => (prev === 0 ? tracks.length - 1 : prev - 1))}
+                  className="h-10 w-10 rounded-full border-0 bg-slate-50 dark:bg-slate-850 text-slate-600 dark:text-slate-350 flex items-center justify-center cursor-pointer hover:bg-slate-100"
+                >
+                  ⏮
+                </button>
+                <button 
+                  onClick={() => setRadioPlaying(!radioPlaying)}
+                  className="h-14 w-14 rounded-full border-0 bg-[#FF6200] text-white flex items-center justify-center cursor-pointer hover:opacity-95 shadow-md shadow-orange-500/20 text-lg font-bold"
+                >
+                  {radioPlaying ? '⏸' : '▶'}
+                </button>
+                <button 
+                  onClick={() => setCurrentTrack(prev => (prev === tracks.length - 1 ? 0 : prev + 1))}
+                  className="h-10 w-10 rounded-full border-0 bg-slate-50 dark:bg-slate-850 text-slate-600 dark:text-slate-350 flex items-center justify-center cursor-pointer hover:bg-slate-100"
+                >
+                  ⏭
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {showImpact && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in select-none">
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="w-full max-w-lg rounded-3xl border border-brand-border bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-brand-primary" />
+                  <h3 className="text-lg font-black text-slate-850 dark:text-white">Xebia Academy Global Impact</h3>
+                </div>
+                <button onClick={() => setShowImpact(false)} className="text-slate-400 hover:text-slate-650 bg-transparent border-0 cursor-pointer text-xl font-bold">×</button>
+              </div>
+
+              <div className="grid gap-4 grid-cols-2 text-center">
+                {[
+                  { value: '5,000+', label: 'Trained Professionals', color: 'text-purple-650 bg-purple-50/50' },
+                  { value: '120+', label: 'Expert Courses', color: 'text-blue-650 bg-blue-50/50' },
+                  { value: '94%', label: 'Certification Passing Rate', color: 'text-emerald-650 bg-emerald-50/50' },
+                  { value: '26k+', label: 'Total Learning Hours', color: 'text-orange-650 bg-orange-50/50' },
+                ].map((metric) => (
+                  <div key={metric.label} className={`p-5 rounded-2xl border border-slate-100 dark:border-slate-850 flex flex-col justify-center items-center`}>
+                    <p className={`text-2xl font-black ${metric.color.split(' ')[0]}`}>{metric.value}</p>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-1.5 leading-snug">{metric.label}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        )}
 
       </div>
     </div>

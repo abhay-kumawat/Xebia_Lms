@@ -3,15 +3,14 @@
 import { useEffect } from 'react';
 import Sidebar from './Sidebar';
 import { useCatalog } from '@/hooks/useCatalog';
-import XebiaAssistant from '@/components/common/XebiaAssistant';
 
 export default function AppLayout({ children }) {
   const { branding, hydrated } = useCatalog();
 
   useEffect(() => {
     if (hydrated) {
-      document.documentElement.style.setProperty('--brand-primary', branding.primaryColor || '#6C1D5F');
-      document.documentElement.style.setProperty('--brand-secondary', branding.secondaryColor || '#84117C');
+      document.documentElement.style.setProperty('--brand-primary', branding.primaryColor || '#831B84');
+      document.documentElement.style.setProperty('--brand-secondary', branding.secondaryColor || '#FF6200');
     }
   }, [branding, hydrated]);
 
@@ -21,7 +20,6 @@ export default function AppLayout({ children }) {
       <div style={{ paddingLeft: 240 }}>
         <main className="min-h-screen">{children}</main>
       </div>
-      <XebiaAssistant />
     </div>
   );
 }

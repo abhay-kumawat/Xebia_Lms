@@ -61,7 +61,7 @@ export default function Hero({ onSignInClick }) {
           <button 
             onClick={onSignInClick}
             style={{ 
-              background: '#84117C', 
+              background: '#FF6200', 
               color: 'white', 
               border: 'none', 
               padding: '14px 32px', 
@@ -72,8 +72,8 @@ export default function Hero({ onSignInClick }) {
               boxShadow: '0 4px 14px rgba(132, 17, 124, 0.25)',
               transition: 'background 0.2s, transform 0.2s'
             }}
-            onMouseOver={(e) => { e.currentTarget.style.background = '#6C1D5F'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-            onMouseOut={(e) => { e.currentTarget.style.background = '#84117C'; e.currentTarget.style.transform = 'translateY(0)'; }}
+            onMouseOver={(e) => { e.currentTarget.style.background = '#831B84'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+            onMouseOut={(e) => { e.currentTarget.style.background = '#FF6200'; e.currentTarget.style.transform = 'translateY(0)'; }}
           >
             Enter LMS Portal
           </button>

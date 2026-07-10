@@ -128,7 +128,7 @@ export default function CourseManagement({ categoryId = null }) {
   }, [search, statusFilter, difficultyFilter, categoryFilter, categories, handleCreate]);
 
   const getCategoryName  = (id) => categories.find((c) => c.id === id)?.name  || '—';
-  const getCategoryColor = (id) => categories.find((c) => c.id === id)?.color || '#6c1d5f';
+  const getCategoryColor = (id) => categories.find((c) => c.id === id)?.color || '#831B84';
 
   const activeCourses   = baseCourses.filter((c) => c.status !== 'archived').length;
   const publishedCourses = baseCourses.filter((c) => c.status === 'published').length;
@@ -149,19 +149,19 @@ export default function CourseManagement({ categoryId = null }) {
         </div>
         <div className="flex items-center gap-3">
           {/* Quick stat pills */}
-          <span className="rounded-full px-3 py-1 text-xs font-bold bg-purple-500/10 text-purple-400 border border-purple-500/20">
+          <span className="rounded-full px-3 py-1 text-xs font-bold bg-[#831B84]/10 text-[#831B84] border border-[#831B84]/20">
             {baseCourses.length} Courses
           </span>
-          <span className="rounded-full px-3 py-1 text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span className="rounded-full px-3 py-1 text-xs font-bold bg-[#FF6200]/10 text-[#FF6200] border border-[#FF6200]/20">
             {activeCourses} Active
           </span>
-          <span className="rounded-full px-3 py-1 text-xs font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+          <span className="rounded-full px-3 py-1 text-xs font-bold bg-blue-500/10 text-blue-455 border border-blue-500/20">
             {publishedCourses} Published
           </span>
           <button
             type="button"
             onClick={handleCreate}
-            className="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold text-white bg-gradient-to-tr from-purple-600 to-indigo-600 shadow-md hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer border-0"
+            className="flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold text-white bg-gradient-to-tr from-[#831B84] to-[#FF6200] shadow-md hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer border-0"
           >
             <Plus className="h-4 w-4" />
             Create Course

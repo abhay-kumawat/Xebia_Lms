@@ -56,7 +56,7 @@ export default function Security() {
               justifyContent: 'center',
               flexShrink: 0
             }}>
-              <Check size={16} color="#6C1D5F" strokeWidth={3} />
+              <Check size={16} color="#831B84" strokeWidth={3} />
             </div>
             <span style={{ fontSize: '14px', fontWeight: '700', color: '#000000' }}>
               {feature}

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Users, Search, Filter, Award, Clock, BookOpen, CheckCircle, 
   ChevronRight, Calendar, UserCheck, X, FileText, BarChart2 
@@ -11,6 +11,7 @@ import Modal from '@/components/ui/Modal';
 import Select from '@/components/ui/Select';
 import StatCard from '@/components/ui/StatCard';
 import PageHeader from '@/components/layout/PageHeader';
+import { getSubmissions } from '@/services/assessmentService';
 
 // Mock Student Database for Teacher Portal
 const MOCK_STUDENTS = [
@@ -151,30 +152,105 @@ export default function StudentTracker() {
   const [selectedStatus, setSelectedStatus] = useState('All');
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [activeModalTab, setActiveModalTab] = useState('courses');
+  const [submissions, setSubmissions] = useState([]);
+
+  // Load submissions on mount
+  useEffect(() => {
+    async function loadSubmissions() {
+      try {
+        const subList = await getSubmissions();
+        setSubmissions(subList);
+      } catch (err) {
+        console.error("Failed to load submissions in tracker:", err);
+      }
+    }
+    loadSubmissions();
+  }, []);
+
+  // Merge submissions into student record
+  const studentsList = useMemo(() => {
+    return MOCK_STUDENTS.map(student => {
+      const studentSubmissions = submissions.filter(s => 
+        s.email.toLowerCase() === student.email.toLowerCase() || 
+        s.enrollmentNo === student.enrollmentNo
+      );
+
+      // Construct dynamic assessments array
+      const currentAssessments = [...student.assessments];
+      studentSubmissions.forEach(sub => {
+        const existsIdx = currentAssessments.findIndex(a => a.title.toLowerCase() === sub.assessmentTitle.toLowerCase());
+        if (existsIdx > -1) {
+          currentAssessments[existsIdx] = {
+            ...currentAssessments[existsIdx],
+            score: sub.score !== null ? sub.score : currentAssessments[existsIdx].score,
+            status: sub.score !== null ? (sub.score >= 50 ? 'Passed' : 'Failed') : 'Pending Evaluation',
+            date: sub.submittedDate
+          };
+        } else {
+          currentAssessments.push({
+            title: sub.assessmentTitle,
+            score: sub.score,
+            status: sub.score !== null ? (sub.score >= 50 ? 'Passed' : 'Failed') : 'Pending Evaluation',
+            date: sub.submittedDate
+          });
+        }
+      });
+
+      // Calculate dynamic average score
+      const graded = currentAssessments.filter(a => typeof a.score === 'number' && a.score !== null);
+      const avgScore = graded.length > 0 
+        ? Math.round(graded.reduce((acc, curr) => acc + curr.score, 0) / graded.length) 
+        : student.avgScore;
+
+      return {
+        ...student,
+        assessments: currentAssessments,
+        avgScore
+      };
+    });
+  }, [submissions]);
+
+  // Retrieve certificates for the selected student
+  const studentCertificates = useMemo(() => {
+    if (!selectedStudent) return [];
+    try {
+      const localCerts = localStorage.getItem('xebia-lms-student-certificates');
+      if (localCerts) {
+        const certs = JSON.parse(localCerts);
+        return certs.filter(c => 
+          c.studentEmail?.toLowerCase() === selectedStudent.email.toLowerCase() || 
+          c.studentName?.toLowerCase() === selectedStudent.name.toLowerCase()
+        );
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return [];
+  }, [selectedStudent]);
 
   // List of departments for filtering
   const departments = useMemo(() => {
-    const depts = new Set(MOCK_STUDENTS.map(s => s.department));
+    const depts = new Set(studentsList.map(s => s.department));
     return ['All', ...Array.from(depts)];
-  }, []);
+  }, [studentsList]);
 
   // Filter students based on search and selected filters
   const filteredStudents = useMemo(() => {
-    return MOCK_STUDENTS.filter(student => {
+    return studentsList.filter(student => {
       const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                             student.email.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesDept = selectedDept === 'All' || student.department === selectedDept;
       const matchesStatus = selectedStatus === 'All' || student.status === selectedStatus;
       return matchesSearch && matchesDept && matchesStatus;
     });
-  }, [searchTerm, selectedDept, selectedStatus]);
+  }, [searchTerm, selectedDept, selectedStatus, studentsList]);
 
   // Aggregate stats
   const stats = useMemo(() => {
-    const total = MOCK_STUDENTS.length;
-    const active = MOCK_STUDENTS.filter(s => s.status === 'Active').length;
-    const avgScore = Math.round(MOCK_STUDENTS.reduce((acc, curr) => acc + curr.avgScore, 0) / total);
-    const totalHours = Math.round(MOCK_STUDENTS.reduce((acc, curr) => acc + curr.learningHours, 0));
+    const total = studentsList.length;
+    const active = studentsList.filter(s => s.status === 'Active').length;
+    const avgScore = total > 0 ? Math.round(studentsList.reduce((acc, curr) => acc + curr.avgScore, 0) / total) : 0;
+    const totalHours = Math.round(studentsList.reduce((acc, curr) => acc + curr.learningHours, 0));
     
     return [
       { title: 'Total Registered Students', value: total, icon: Users, change: '100% active profile sync', color: 'purple' },
@@ -182,7 +258,7 @@ export default function StudentTracker() {
       { title: 'Average Assessment Score', value: `${avgScore}%`, icon: Award, change: 'Across all core modules', color: 'blue' },
       { title: 'Total Hours Completed', value: `${totalHours} hrs`, icon: Clock, change: 'Cumulative learning duration', color: 'orange' }
     ];
-  }, []);
+  }, [studentsList]);
 
   return (
     <div className="space-y-8 pb-12">
@@ -418,6 +494,16 @@ export default function StudentTracker() {
                   Assessment History
                 </button>
                 <button
+                  onClick={() => setActiveModalTab('certificates')}
+                  className={`border-b-2 px-4 py-2.5 text-sm font-semibold transition-all cursor-pointer ${
+                    activeModalTab === 'certificates' 
+                      ? 'border-emerald-600 text-emerald-600 dark:border-emerald-450 dark:text-emerald-450' 
+                      : 'border-transparent text-slate-400 hover:text-slate-600'
+                  }`}
+                >
+                  Earned Certifications
+                </button>
+                <button
                   onClick={() => setActiveModalTab('activity')}
                   className={`border-b-2 px-4 py-2.5 text-sm font-semibold transition-all cursor-pointer ${
                     activeModalTab === 'activity' 
@@ -428,6 +514,7 @@ export default function StudentTracker() {
                   Recent Activities
                 </button>
               </div>
+
 
               {/* Tab Contents */}
               <div className="max-h-[350px] overflow-y-auto pr-1 scrollbar-thin">
@@ -488,6 +575,34 @@ export default function StudentTracker() {
                         </div>
                       </div>
                     ))}
+                  </div>
+                )}
+
+                {activeModalTab === 'certificates' && (
+                  <div className="space-y-3">
+                    {studentCertificates.length > 0 ? (
+                      studentCertificates.map(cert => (
+                        <div 
+                          key={cert.id}
+                          className="flex items-center justify-between rounded-xl border border-slate-100 p-3.5 dark:border-white/[0.03]"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#831B84]/10 text-[#831B84]">
+                              <Award className="h-5 w-5" />
+                            </div>
+                            <div>
+                              <p className="font-semibold text-slate-800 dark:text-slate-200 text-sm">{cert.courseName}</p>
+                              <p className="text-[10px] text-slate-450 dark:text-slate-400">ID: {cert.certificateId} • Issued: {cert.completionDate}</p>
+                            </div>
+                          </div>
+                          <span className="text-[10px] font-black uppercase text-emerald-600 bg-emerald-500/10 px-2.5 py-1 rounded-lg">
+                            Verified
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-xs text-slate-450 dark:text-slate-400 text-center py-6">No certifications issued yet.</p>
+                    )}
                   </div>
                 )}
 

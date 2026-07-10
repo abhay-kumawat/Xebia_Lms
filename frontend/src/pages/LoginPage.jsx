@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, ShieldAlert, CheckCircle } from 'lucide-react';
+import { Mail, Lock, ShieldAlert, CheckCircle, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -87,6 +87,14 @@ export default function LoginPage() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md space-y-8 rounded-2xl border border-slate-200/60 bg-white p-8 shadow-xl"
       >
+        <Link
+          to="/portal-selector"
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors group"
+        >
+          <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-0.5 transition-transform" />
+          Back to Portal Selector
+        </Link>
+
         <div className="flex flex-col items-center justify-center text-center">
           <Logo className="mb-2 h-12 w-auto" variant="light" />
           <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-900">

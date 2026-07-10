@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import StudentSidebar from './StudentSidebar';
 import StudentHeader from './StudentHeader';
 import { useCatalog } from '@/hooks/useCatalog';
-import XebiaAssistant from '@/components/common/XebiaAssistant';
 
 export default function StudentLayout({ children }) {
   const { branding, hydrated } = useCatalog();
@@ -13,29 +12,29 @@ export default function StudentLayout({ children }) {
   useEffect(() => {
     document.title = 'Xebia Academy | Student Portal';
     if (hydrated && branding) {
-      document.documentElement.style.setProperty('--brand-primary', branding.primaryColor || '#6C1D5F');
-      document.documentElement.style.setProperty('--brand-secondary', branding.secondaryColor || '#84117C');
+      document.documentElement.style.setProperty('--brand-primary', branding.primaryColor || '#831B84');
+      document.documentElement.style.setProperty('--brand-secondary', branding.secondaryColor || '#FF6200');
     }
   }, [branding, hydrated]);
 
-  let title = 'Student Portal';
-  let subtitle = 'Learning dashboard and student workspace';
+  let title = 'Xebia Academy';
+  let subtitle = 'Accelerating your developer skill transition journey.';
 
   if (path.includes('/student/dashboard')) {
     title = 'Student Dashboard';
-    subtitle = 'Welcome back! Here is a summary of your learning progress, statistics, and course certifications.';
+    subtitle = 'Welcome back! Monitor your streaks, grades, assignments, and learning progression.';
   } else if (path.includes('/student/courses')) {
-    title = 'My Courses & Learning Paths';
-    subtitle = 'Explore real-time enterprise training courses and skill programs published by your organization.';
+    title = 'My Learning Paths';
+    subtitle = 'Browse registered paths, resume lecture tracks, and access files.';
   } else if (path.includes('/student/learning-content')) {
     title = 'Learning Content';
     subtitle = 'Access study materials, videos, PDFs, and lectures for your enrolled courses.';
   } else if (path.includes('/student/assignments')) {
-    title = 'Assignments';
-    subtitle = 'View, download, and submit your homework assignments and project work.';
+    title = 'Assignments Hub';
+    subtitle = 'View assigned milestones, read instructor instructions, and submit work.';
   } else if (path.includes('/student/assessments')) {
-    title = 'Assessments & Quizzes';
-    subtitle = 'Test your knowledge with quizzes, final exams, and self-assessments.';
+    title = 'Assessments Arena';
+    subtitle = 'Take course quizzes, check knowledge benchmarks, and view scores.';
   } else if (path.includes('/student/notifications')) {
     title = 'Notifications';
     subtitle = 'Stay updated with notifications regarding course updates, assignments, and grades.';
@@ -46,7 +45,7 @@ export default function StudentLayout({ children }) {
     title = 'Settings';
     subtitle = 'Configure account settings, security options, and notification preferences.';
   } else if (path.includes('/student/discussion')) {
-    title = 'Discussion Board';
+    title = 'Cohorts Discussion';
     subtitle = 'Collaborate and ask questions with instructors and peer students.';
   } else if (path.includes('/student/leaderboard')) {
     title = 'Leaderboard & Champions';
@@ -60,7 +59,6 @@ export default function StudentLayout({ children }) {
         <StudentHeader title={title} subtitle={subtitle} />
         <main className="min-h-screen">{children}</main>
       </div>
-      <XebiaAssistant />
     </div>
   );
 }

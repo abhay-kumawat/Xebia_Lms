@@ -1,7 +1,7 @@
 export const BRAND_DEFAULTS = {
   companyName: 'Xebia Academy',
-  primaryColor: '#6C1D5F',
-  secondaryColor: '#84117C',
+  primaryColor: '#831B84',
+  secondaryColor: '#FF6200',
   sidebarLogo: '/assets/Logo-White.png',
   headerLogo: '/assets/Logo-Purple.png',
   favicon: '/assets/favicon.svg',

@@ -22,6 +22,49 @@ export default function Dashboard() {
   
   // Tab states
   const [activeTab, setActiveTab] = useState('summary');
+  const [showBranding, setShowBranding] = useState(false);
+  const [showAIBuilder, setShowAIBuilder] = useState(false);
+  const [showZohoSync, setShowZohoSync] = useState(false);
+  const [showLogs, setShowLogs] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [showImpact, setShowImpact] = useState(false);
+  
+  const [aiTopic, setAiTopic] = useState('');
+  const [aiResult, setAiResult] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+
+  const adminCards = [
+    { title: 'Course Registry', sub: 'Manage learning syllabus catalogs', icon: BookOpen, to: '/admin/courses', color: 'from-[#831B84] to-[#4A1E47]' },
+    { title: 'Category Manager', sub: 'Group curriculum topics', icon: FolderPlus, to: '/admin/categories', color: 'from-[#FF6200] to-[#5B1E53]' },
+    { title: 'User Directory', sub: 'Nominated employee directory', icon: Users, to: '/admin/dashboard', color: 'from-[#4A1E47] to-[#331431]' },
+    { title: 'Media Library', sub: 'Manage global resource files', icon: HardDrive, to: '/admin/media', color: 'from-[#01AC9F] to-[#018d82]' },
+    { title: 'Upload Center', sub: 'Upload study files and notes', icon: Plus, to: '/admin/upload-content', color: 'from-[#5C4F61] to-[#3D3441]' },
+    { title: 'System Branding', sub: 'Dynamic primary & secondary colors', icon: Sparkles, action: () => setShowBranding(true), color: 'from-[#793B74] to-[#51234E]' },
+    { title: 'Global Analytics', sub: 'Platform learning coverage rates', icon: BarChart2, action: () => setActiveTab('coverage'), color: 'from-[#01AC9F] to-[#0b7f76]' },
+    { title: 'AI Syllabus Builder', sub: 'Draft modules from prompt outline', icon: Brain, action: () => setShowAIBuilder(true), color: 'from-[#5B1E53] to-[#3f1239]' },
+    { title: 'Zoho Sync Pipeline', sub: 'Zoho integration synchronization', icon: Zap, action: () => setShowZohoSync(true), color: 'from-[#FF6200] to-[#cc4e00]' },
+    { title: 'Audit Event Logs', sub: 'Administrator action trail', icon: ClipboardList, action: () => setShowLogs(true), color: 'from-[#855889] to-[#5C395F]' },
+    { title: 'Academic Settings', sub: 'Configure session structures', icon: CheckSquare, action: () => setShowSettings(true), color: 'from-[#91759E] to-[#674F73]' },
+    { title: 'Academy Impact', sub: 'Enterprise learning certifications', icon: Award, action: () => setShowImpact(true), color: 'from-[#831B84] to-[#FF6200]' }
+  ];
+
+  const handleGenerateSyllabus = () => {
+    if (!aiTopic.trim()) return;
+    setAiLoading(true);
+    setTimeout(() => {
+      setAiResult(`### AI Generated Syllabus for "${aiTopic}"\n\n- **Module 1**: Core Foundations & Prerequisites\n- **Module 2**: Practical Hands-on Exercises & Scaffolding\n- **Module 3**: Advanced Architectural Integration\n- **Module 4**: Final Capstone Project Evaluation`);
+      setAiLoading(false);
+    }, 1500);
+  };
+
+  const handleRunZohoSync = () => {
+    setSyncing(true);
+    setTimeout(() => {
+      setSyncing(false);
+      showToast('Zoho CRM & HR Sync successfully completed.', 'success');
+    }, 2000);
+  };
 
   // Filter states
   const [filters, setFilters] = useState({
@@ -603,19 +646,46 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Animated KPI Grid */}
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-                {summaryStats.map((stat, idx) => (
-                  <DashboardStatCard
-                    key={stat.title}
-                    title={stat.title}
-                    value={stat.value}
-                    trend={stat.trend}
-                    iconName={stat.iconName}
-                    color={stat.color}
-                    index={idx}
-                  />
-                ))}
+              {/* Shoolini-style Visual LMS Admin Grid */}
+              <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 select-none">
+                {adminCards.map((card, idx) => {
+                  const Icon = card.icon;
+                  const content = (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.03, duration: 0.4 }}
+                      whileHover={{ y: -6, scale: 1.02, boxShadow: '0 20px 30px rgba(108,29,95,0.12)' }}
+                      className={`group relative overflow-hidden rounded-[28px] p-6 text-white shadow-md cursor-pointer h-44 bg-gradient-to-br ${card.color} flex flex-col justify-between`}
+                    >
+                      <div className="absolute right-[-10px] bottom-[-10px] opacity-10 group-hover:opacity-25 group-hover:scale-110 transition-all duration-300 pointer-events-none">
+                        <Icon size={100} strokeWidth={1} />
+                      </div>
+                      <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-white/70 bg-white/10 px-2 py-0.5 rounded-full border border-white/10 backdrop-blur-sm">
+                          Admin Portal
+                        </span>
+                        <div className="h-9 w-9 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-sm shadow-sm group-hover:rotate-6 transition-transform">
+                          <Icon size={18} className="text-white" />
+                        </div>
+                      </div>
+                      <div>
+                        <h3 className="text-base font-black tracking-tight leading-tight text-white mb-1 group-hover:translate-x-1 transition-transform">
+                          {card.title}
+                        </h3>
+                        <p className="text-[11px] text-white/75 leading-tight font-medium">
+                          {card.sub}
+                        </p>
+                      </div>
+                    </motion.div>
+                  );
+
+                  return card.to ? (
+                    <Link key={card.title} to={card.to}>{content}</Link>
+                  ) : (
+                    <div key={card.title} onClick={card.action}>{content}</div>
+                  );
+                })}
               </div>
 
               {/* Main Dashboard Widget Layout */}
@@ -1463,6 +1533,237 @@ export default function Dashboard() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Modals */}
+      {showBranding && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in select-none">
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-900 p-6 shadow-2xl"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-purple-400" />
+                <h3 className="text-lg font-black text-white">LMS Dynamic Branding Control</h3>
+              </div>
+              <button onClick={() => setShowBranding(false)} className="text-slate-400 hover:text-white bg-transparent border-0 cursor-pointer text-xl font-bold">×</button>
+            </div>
+            
+            <div className="space-y-4 text-slate-300 text-xs">
+              <div className="space-y-2">
+                <label className="block font-bold uppercase text-[10px] text-slate-400">Primary Color Preset</label>
+                <div className="flex gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-[#831B84] border border-white/25" />
+                  <span className="font-mono text-sm self-center text-white">#831B84 (Tranquil Velvet)</span>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <label className="block font-bold uppercase text-[10px] text-slate-400">Secondary Color Preset</label>
+                <div className="flex gap-2">
+                  <div className="h-8 w-8 rounded-lg bg-[#FF6200] border border-white/25" />
+                  <span className="font-mono text-sm self-center text-white">#FF6200 (Bright Tr. Velvet)</span>
+                </div>
+              </div>
+
+              <Button onClick={() => { setShowBranding(false); showToast('Theme branding synchronized globally.', 'success'); }} className="w-full mt-2 bg-gradient-to-r from-purple-650 to-[#FF6200] hover:opacity-90 border-0 flex items-center justify-center gap-2 py-3 rounded-xl cursor-pointer">
+                Synchronize Platform Branding
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {showAIBuilder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in select-none">
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="w-full max-w-lg rounded-3xl border border-white/10 bg-slate-900 p-6 shadow-2xl"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-2">
+                <Brain className="h-5 w-5 text-[#01AC9F]" />
+                <h3 className="text-lg font-black text-white">AI Syllabus blueprint Builder</h3>
+              </div>
+              <button onClick={() => { setShowAIBuilder(false); setAiTopic(''); setAiResult(''); }} className="text-slate-400 hover:text-white bg-transparent border-0 cursor-pointer text-xl font-bold">×</button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Create Module Outline from Prompt</label>
+                <div className="flex gap-2">
+                  <input 
+                    type="text" 
+                    placeholder="Enter course topic (e.g. AWS Solutions Architect, React 19)"
+                    value={aiTopic}
+                    onChange={(e) => setAiTopic(e.target.value)}
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-xs outline-none text-white"
+                  />
+                  <Button 
+                    onClick={handleGenerateSyllabus} 
+                    disabled={aiLoading}
+                    className="bg-[#01AC9F] hover:bg-[#009b8f] border-0 text-white cursor-pointer px-4 rounded-xl py-2"
+                  >
+                    {aiLoading ? 'Drafting...' : 'Build Draft'}
+                  </Button>
+                </div>
+              </div>
+
+              {aiResult && (
+                <div className="p-4 bg-white/5 border border-white/10 rounded-2xl text-left text-xs text-slate-350 leading-relaxed font-mono whitespace-pre-line max-h-56 overflow-y-auto">
+                  {aiResult}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {showZohoSync && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in select-none">
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-900 p-6 shadow-2xl"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-2">
+                <Zap className="h-5 w-5 text-orange-500" />
+                <h3 className="text-lg font-black text-white">Zoho CRM Sync Pipeline</h3>
+              </div>
+              <button onClick={() => setShowZohoSync(false)} className="text-slate-400 hover:text-white bg-transparent border-0 cursor-pointer text-xl font-bold">×</button>
+            </div>
+            
+            <div className="space-y-4 text-slate-300 text-xs">
+              <div className="p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-bold uppercase text-slate-400">Zoho Connection Status</p>
+                  <p className="text-sm font-black text-white mt-1">135 Employees Synced</p>
+                </div>
+                <span className="text-[11px] font-bold text-white bg-emerald-500 px-3 py-1 rounded-full uppercase">Connected</span>
+              </div>
+
+              <div className="divide-y divide-white/5 font-semibold">
+                <div className="py-2.5 flex justify-between"><span>CRM Connector Health</span><span className="text-emerald-400 font-extrabold">100% Operational</span></div>
+                <div className="py-2.5 flex justify-between"><span>Last Checked Pipeline</span><span className="text-white font-extrabold">2 hours ago</span></div>
+                <div className="py-2.5 flex justify-between"><span>Pending Certifications</span><span className="text-white font-extrabold">0 approvals</span></div>
+              </div>
+
+              <Button 
+                onClick={handleRunZohoSync} 
+                disabled={syncing}
+                className="w-full mt-2 bg-gradient-to-r from-orange-500 to-amber-600 hover:opacity-90 border-0 flex items-center justify-center gap-2 py-3 rounded-xl cursor-pointer text-white font-bold"
+              >
+                {syncing ? 'Syncing Pipeline...' : 'Run Manual CRM Pipeline Sync'}
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {showLogs && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in select-none">
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="w-full max-w-lg rounded-3xl border border-white/10 bg-slate-900 p-6 shadow-2xl"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-2">
+                <ClipboardList className="h-5 w-5 text-purple-400" />
+                <h3 className="text-lg font-black text-white">Administrator Audit Logs</h3>
+              </div>
+              <button onClick={() => setShowLogs(false)} className="text-slate-400 hover:text-white bg-transparent border-0 cursor-pointer text-xl font-bold">×</button>
+            </div>
+            
+            <div className="space-y-3.5 max-h-80 overflow-y-auto">
+              {[
+                { actor: 'Admin Vikram Malhotra', action: 'Created course Docker & Kubernetes Mastery', time: '1 hour ago' },
+                { actor: 'Admin Priya Sharma', action: 'Modified category DevOps & Cloud Architecture', time: '2 hours ago' },
+                { actor: 'Admin Akash Patel', action: 'Deleted draft course Legacy Java 6 Frameworks', time: '5 hours ago' },
+              ].map((log, idx) => (
+                <div key={idx} className="p-4 bg-white/5 border border-white/10 rounded-2xl text-xs flex justify-between items-start gap-4">
+                  <div>
+                    <h4 className="font-extrabold text-white">{log.actor}</h4>
+                    <p className="text-slate-400 mt-1 font-medium leading-snug">{log.action}</p>
+                  </div>
+                  <span className="text-[10px] text-slate-500 font-bold shrink-0">{log.time}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {showSettings && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in select-none">
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-900 p-6 shadow-2xl"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-2">
+                <CheckSquare className="h-5 w-5 text-purple-400" />
+                <h3 className="text-lg font-black text-white">Academic Parameters</h3>
+              </div>
+              <button onClick={() => setShowSettings(false)} className="text-slate-400 hover:text-white bg-transparent border-0 cursor-pointer text-xl font-bold">×</button>
+            </div>
+            
+            <div className="space-y-4 text-slate-300 text-xs">
+              <div className="flex justify-between items-center py-2.5 border-b border-white/5">
+                <span className="font-semibold">Maximum Active Cohorts</span>
+                <span className="font-black text-white">25 Cohorts</span>
+              </div>
+              <div className="flex justify-between items-center py-2.5 border-b border-white/5">
+                <span className="font-semibold">Allow Student Registration</span>
+                <span className="font-black text-emerald-400">Yes (Public)</span>
+              </div>
+              <div className="flex justify-between items-center py-2.5 border-b border-white/5">
+                <span className="font-semibold">Redis Cache TTL Configuration</span>
+                <span className="font-black text-white">3600 seconds</span>
+              </div>
+              <Button onClick={() => { setShowSettings(false); showToast('Academic parameters synchronized.', 'success'); }} className="w-full mt-2 bg-gradient-to-r from-purple-650 to-indigo-700 hover:opacity-90 border-0 flex items-center justify-center gap-2 py-3 rounded-xl cursor-pointer text-white font-bold">
+                Apply System Configurations
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {showImpact && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in select-none">
+          <motion.div 
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="w-full max-w-lg rounded-3xl border border-white/10 bg-slate-900 p-6 shadow-2xl"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-2">
+                <Award className="h-5 w-5 text-purple-400" />
+                <h3 className="text-lg font-black text-white">Academy Certifications Status</h3>
+              </div>
+              <button onClick={() => setShowImpact(false)} className="text-slate-400 hover:text-white bg-transparent border-0 cursor-pointer text-xl font-bold">×</button>
+            </div>
+
+            <div className="grid gap-4 grid-cols-2 text-center text-white">
+              {[
+                { value: '14', label: 'Active Business Groups', color: 'text-purple-400 bg-purple-950/20 border border-purple-900/20' },
+                { value: '135 / 200', label: 'Registered Licenses', color: 'text-blue-400 bg-blue-950/20 border border-blue-900/20' },
+                { value: '5', label: 'Platform Administrators', color: 'text-emerald-400 bg-emerald-950/20 border border-emerald-900/20' },
+                { value: '92%', label: 'Platform Satisfaction', color: 'text-orange-400 bg-orange-950/20 border border-orange-900/20' },
+              ].map((metric) => (
+                <div key={metric.label} className={`p-5 rounded-2xl ${metric.color.split(' ')[1]} ${metric.color.split(' ')[2]} flex flex-col justify-center items-center`}>
+                  <p className={`text-2xl font-black ${metric.color.split(' ')[0]}`}>{metric.value}</p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1.5 leading-snug">{metric.label}</p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       )}
     </div>

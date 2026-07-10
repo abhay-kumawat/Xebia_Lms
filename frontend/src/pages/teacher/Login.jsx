@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, ShieldAlert, CheckCircle, Eye, EyeOff, ArrowRight, Sparkles, BookOpen, GraduationCap, Users } from 'lucide-react';
+import { Mail, Lock, ShieldAlert, CheckCircle, Eye, EyeOff, ArrowRight, ArrowLeft, Sparkles, BookOpen, GraduationCap, Users } from 'lucide-react';
 import { useTeacherAuth } from '@/hooks/useTeacherAuth';
 
 export default function TeacherLoginPage() {
@@ -63,21 +63,21 @@ export default function TeacherLoginPage() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#080D09] select-none text-slate-100">
+    <div className="flex min-h-screen bg-[#0C0017] select-none text-slate-100">
 
       {/* ── LEFT BRANDING PANEL ── */}
       <div className="relative hidden lg:flex lg:w-[52%] flex-col justify-between overflow-hidden p-12">
 
         {/* Layered gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#06180F] via-[#040D0A] to-[#020504]" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-950/40 via-transparent to-teal-900/30" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1F0038] via-[#0F001D] to-[#05000A]" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-[#831B84]/20 via-transparent to-[#FF6200]/15" />
 
         {/* Grid mesh */}
         <div className="absolute inset-0 opacity-[0.05]">
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <pattern id="teacher-grid" width="50" height="50" patternUnits="userSpaceOnUse">
-                <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(52,211,153,0.8)" strokeWidth="0.8" />
+                <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(131,27,132,0.4)" strokeWidth="0.8" />
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#teacher-grid)" />
@@ -87,17 +87,17 @@ export default function TeacherLoginPage() {
         {/* Glowing orbs */}
         <motion.div
           className="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(131,27,132,0.18) 0%, transparent 70%)' }}
           animate={{ scale: [1, 1.1, 1], opacity: [0.6, 1, 0.6] }}
           transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
         />
 
         {/* Header */}
         <div className="relative z-10 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md">
-            <Sparkles className="h-5.5 w-5.5" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#831B84] to-[#FF6200] text-white shadow-md ring-1 ring-white/10">
+            <img src="/assets/Logo-Purple.png" alt="Xebia" className="h-6 w-6 object-contain brightness-200" />
           </div>
-          <span className="text-lg font-black tracking-tight bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+          <span className="text-lg font-black tracking-tight bg-gradient-to-r from-[#831B84] to-[#FF6200] bg-clip-text text-transparent">
             Xebia Instructor Academy
           </span>
         </div>
@@ -108,14 +108,14 @@ export default function TeacherLoginPage() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-4.5 py-1.5 text-xs font-bold text-emerald-400"
+            className="inline-flex items-center gap-2 rounded-full border border-[#831B84]/25 bg-[#831B84]/10 px-4.5 py-1.5 text-xs font-bold text-[#831B84]"
           >
             <span>Instructor Workspace v1.2</span>
           </motion.div>
 
           <h1 className="text-4xl font-extrabold leading-tight text-white md:text-5xl">
             Powering Next-Gen <br />
-            <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#831B84] via-[#9C27B0] to-[#FF6200] bg-clip-text text-transparent">
               Enterprise Education.
             </span>
           </h1>
@@ -128,7 +128,7 @@ export default function TeacherLoginPage() {
           <div className="grid grid-cols-3 gap-6 border-t border-white/[0.08] pt-8">
             {stats.map((s, i) => (
               <div key={i} className="space-y-1">
-                <div className="flex items-center gap-2 text-emerald-400">
+                <div className="flex items-center gap-2 text-[#FF6200]">
                   <s.icon className="h-4.5 w-4.5" />
                   <span className="text-base font-black text-white">{s.value}</span>
                 </div>
@@ -146,10 +146,18 @@ export default function TeacherLoginPage() {
       </div>
 
       {/* ── RIGHT LOGIN FORM PANEL ── */}
-      <div className="flex w-full lg:w-[48%] flex-col justify-center bg-[#070907] px-6 py-12 md:px-16 lg:px-20 border-l border-white/[0.04]">
+      <div className="flex w-full lg:w-[48%] flex-col justify-center bg-[#0E001A] px-6 py-12 md:px-16 lg:px-20 border-l border-white/[0.04]">
         
         <div className="mx-auto w-full max-w-md space-y-8">
           
+          <Link
+            to="/portal-selector"
+            className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors mb-4 group"
+          >
+            <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-0.5 transition-transform" />
+            Back to Portal Selector
+          </Link>
+
           <div className="space-y-3.5">
             <h2 className="text-2xl font-black tracking-tight text-white">Teacher Portal Sign In</h2>
             <p className="text-xs text-slate-400">
@@ -160,7 +168,7 @@ export default function TeacherLoginPage() {
             <button
               onClick={autofillCredentials}
               type="button"
-              className="inline-flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/5 px-4 py-2 text-xs font-bold text-emerald-400 hover:bg-emerald-500/10 transition-all cursor-pointer border-dashed"
+              className="inline-flex items-center gap-2 rounded-xl border border-[#831B84]/20 bg-[#831B84]/5 px-4 py-2 text-xs font-bold text-[#831B84] hover:bg-[#831B84]/10 transition-all cursor-pointer border-dashed"
             >
               <span>Auto-Fill Demo Account</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -194,7 +202,7 @@ export default function TeacherLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className={`w-full rounded-2xl border bg-white/[0.02] py-3 pl-11 pr-4 text-sm text-slate-200 outline-none transition-all ${
-                    errors.email ? 'border-red-500/50 focus:border-red-500' : 'border-white/[0.08] focus:border-emerald-500'
+                    errors.email ? 'border-red-500/50 focus:border-red-500' : 'border-white/[0.08] focus:border-[#831B84]'
                   }`}
                   placeholder="name@xebia.com"
                 />
@@ -212,7 +220,7 @@ export default function TeacherLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className={`w-full rounded-2xl border bg-white/[0.02] py-3 pl-11 pr-11 text-sm text-slate-200 outline-none transition-all ${
-                    errors.password ? 'border-red-500/50 focus:border-red-500' : 'border-white/[0.08] focus:border-emerald-500'
+                    errors.password ? 'border-red-500/50 focus:border-red-500' : 'border-white/[0.08] focus:border-[#831B84]'
                   }`}
                   placeholder="••••••••"
                 />
@@ -231,7 +239,7 @@ export default function TeacherLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:from-emerald-600 hover:to-teal-700 hover:shadow-emerald-950/20 active:scale-[0.98] disabled:opacity-50 cursor-pointer border-0 mt-3"
+              className="w-full rounded-2xl bg-gradient-to-r from-[#831B84] to-[#FF6200] py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:opacity-90 hover:shadow-[#831B84]/20 active:scale-[0.98] disabled:opacity-50 cursor-pointer border-0 mt-3"
             >
               {loading ? 'Signing in...' : 'Sign In as Teacher'}
             </button>
@@ -242,7 +250,7 @@ export default function TeacherLoginPage() {
           <div className="text-center pt-4">
             <Link
               to="/"
-              className="text-xs font-semibold text-slate-400 hover:text-emerald-400 transition-colors"
+              className="text-xs font-semibold text-slate-400 hover:text-[#FF6200] transition-colors"
             >
               ← Back to Portal Selection
             </Link>

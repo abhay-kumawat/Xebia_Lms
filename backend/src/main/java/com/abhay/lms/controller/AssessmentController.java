@@ -137,6 +137,12 @@ public class AssessmentController {
         return ResponseEntity.ok(new ApiResponse("Submissions retrieved successfully", submissions));
     }
 
+    @PostMapping("/submissions")
+    public ResponseEntity<ApiResponse> createSubmission(@RequestBody SubmissionEntity submission) {
+        SubmissionEntity saved = submissionRepository.save(submission);
+        return new ResponseEntity<>(new ApiResponse("Submission created successfully", saved), HttpStatus.CREATED);
+    }
+
     @PutMapping("/submissions/{id}/grade")
     public ResponseEntity<ApiResponse> gradeSubmission(@PathVariable Long id, @RequestParam Integer score) {
         return submissionRepository.findById(id).map(sub -> {

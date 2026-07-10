@@ -5,32 +5,32 @@ export default function Features() {
   const capabilities = [
     {
       title: 'Cloud',
-      icon: <Cloud size={24} color="#84117C" />,
+      icon: <Cloud size={24} color="#FF6200" />,
       desc: 'Strategy, architecture migration, and cloud-native software engineering. Certified training across AWS, Microsoft Azure, and Google Cloud.'
     },
     {
       title: 'Data & AI',
-      icon: <Database size={24} color="#84117C" />,
+      icon: <Database size={24} color="#FF6200" />,
       desc: 'Build scalable data pipelines, design advanced machine learning models, and implement production-ready Generative AI solutions safely.'
     },
     {
       title: 'DevOps',
-      icon: <GitBranch size={24} color="#84117C" />,
+      icon: <GitBranch size={24} color="#FF6200" />,
       desc: 'Establish high-performance developer platforms. Standardize continuous delivery pipelines, Kubernetes scaling, and SRE operations.'
     },
     {
       title: 'Intelligent Automation',
-      icon: <Cpu size={24} color="#84117C" />,
+      icon: <Cpu size={24} color="#FF6200" />,
       desc: 'Deploy low-code solutions like Appian and Mendix to automate mission-critical banking operations, customer portals, and workflows.'
     },
     {
       title: 'Agile & Leadership',
-      icon: <Layers size={24} color="#84117C" />,
+      icon: <Layers size={24} color="#FF6200" />,
       desc: 'Transform product management, train Scrum Masters, Agile coaches, and align business strategy with technical delivery.'
     },
     {
       title: 'Software Development',
-      icon: <Terminal size={24} color="#84117C" />,
+      icon: <Terminal size={24} color="#FF6200" />,
       desc: 'Develop secure, microservices-based backend architectures, cloud-ready applications, and modern frontend user experiences.'
     }
   ];
@@ -72,7 +72,7 @@ export default function Features() {
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.transform = 'translateY(-4px)';
-              e.currentTarget.style.borderColor = '#84117C';
+              e.currentTarget.style.borderColor = '#FF6200';
               e.currentTarget.style.boxShadow = '0 10px 25px rgba(108, 29, 95, 0.05)';
             }}
             onMouseOut={(e) => {
@@ -90,7 +90,7 @@ export default function Features() {
                 left: 0,
                 width: '100%',
                 height: '100%',
-                background: '#6C1D5F',
+                background: '#831B84',
                 padding: '30px',
                 boxSizing: 'border-box',
                 display: 'flex',
@@ -119,7 +119,7 @@ export default function Features() {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   background: '#ffffff',
-                  color: '#6C1D5F',
+                  color: '#831B84',
                   padding: '10px 20px',
                   borderRadius: '24px',
                   fontSize: '13px',

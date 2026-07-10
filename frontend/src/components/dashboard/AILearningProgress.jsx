@@ -37,7 +37,7 @@ export default function AILearningProgress({ aiData = null, isLoading = false })
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-3xl border border-[#84117C]/20 bg-gradient-to-r from-[#6C1D5F] to-[#84117C] p-6 text-white shadow-lg md:p-8"
+        className="relative overflow-hidden rounded-3xl border border-[#FF6200]/20 bg-gradient-to-r from-[#831B84] to-[#FF6200] p-6 text-white shadow-lg md:p-8"
       >
         {/* Background glow animations */}
         <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-cyan-400/20 blur-3xl" />

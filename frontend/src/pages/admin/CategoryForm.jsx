@@ -12,10 +12,10 @@ import Badge from '@/components/ui/Badge';
 import PageHeader from '@/components/layout/PageHeader';
 
 const SWATCH_PALETTE = [
-  { hex: '#6C1D5F', label: 'Plum'       },
+  { hex: '#831B84', label: 'Plum'       },
   { hex: '#01AC9F', label: 'Teal'       },
   { hex: '#FF6200', label: 'Orange'     },
-  { hex: '#84117C', label: 'Magenta'    },
+  { hex: '#FF6200', label: 'Magenta'    },
   { hex: '#5C4F61', label: 'Slate'      },
   { hex: '#793B74', label: 'Violet'     },
 ];

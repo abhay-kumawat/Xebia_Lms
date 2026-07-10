@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  BookOpen, LayoutDashboard, Users, ClipboardList, LogOut, Sun, Moon
+  BookOpen, LayoutDashboard, Users, ClipboardList, LogOut, Sun, Moon, BarChart2
 } from 'lucide-react';
 import StudentLogo from '@/components/ui/StudentLogo';
 import { cn } from '@/utils';
@@ -13,6 +13,7 @@ const TEACHER_NAV_ITEMS = [
   { href: '/teacher/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/teacher/students', label: 'Student Tracker', icon: Users },
   { href: '/teacher/assessments', label: 'Assessments', icon: ClipboardList },
+  { href: '/teacher/analytics', label: 'Analytics', icon: BarChart2 },
   { href: '/teacher/courses', label: 'Courses', icon: BookOpen },
 ];
 
@@ -23,7 +24,7 @@ export default function TeacherSidebar() {
 
   return (
     <aside
-      className="fixed left-0 top-0 z-40 flex h-screen flex-col bg-gradient-to-b from-[#0E1B15] via-[#09100D] to-[#040806] border-r border-white/[0.04] text-slate-300 transition-all duration-300"
+      className="fixed left-0 top-0 z-40 flex h-screen flex-col bg-gradient-to-b from-[#150027] via-[#0C0017] to-[#05000A] border-r border-white/[0.04] text-slate-300 transition-all duration-300"
       style={{ width: 240 }}
     >
       {/* Logo */}
@@ -32,7 +33,7 @@ export default function TeacherSidebar() {
       </div>
 
       {/* Nav label */}
-      <p className="px-6 pt-6 pb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-400/70">
+      <p className="px-6 pt-6 pb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#FF6200]/70">
         Teacher Menu
       </p>
 
@@ -53,7 +54,7 @@ export default function TeacherSidebar() {
               {active && (
                 <motion.div
                   layoutId="activeNavBackgroundTeacher"
-                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-emerald-600/15 to-teal-650/5 border-l-2 border-emerald-500"
+                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-[#831B84]/15 to-[#FF6200]/5 border-l-2 border-[#831B84]"
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
               )}
@@ -61,7 +62,7 @@ export default function TeacherSidebar() {
               <Icon 
                 className={cn(
                   'relative z-10 h-[18px] w-[18px] shrink-0 transition-all duration-300 group-hover:scale-110',
-                  active ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'text-slate-400 group-hover:text-white'
+                  active ? 'text-[#FF6200] drop-shadow-[0_0_8px_rgba(255,98,0,0.5)]' : 'text-slate-400 group-hover:text-white'
                 )}
                 strokeWidth={active ? 2.5 : 2} 
               />
@@ -78,9 +79,9 @@ export default function TeacherSidebar() {
         <div className="mt-auto p-4 border-t border-white/[0.04] bg-white/[0.01]">
           <div className="flex flex-col gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.04] hover:border-white/[0.08] transition-all duration-300 shadow-md">
             <div className="flex items-center gap-3">
-              <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-black text-white bg-gradient-to-tr from-emerald-600 to-teal-600 shadow-inner ring-2 ring-white/10">
+              <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-black text-white bg-gradient-to-tr from-[#831B84] to-[#FF6200] shadow-inner ring-2 ring-white/10">
                 {(user.fullName || 'T')[0].toUpperCase()}
-                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-[#0F101A]" />
+                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-[#FF6200] ring-2 ring-[#0F101A]" />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-xs font-bold text-white leading-tight">

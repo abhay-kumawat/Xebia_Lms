@@ -1,327 +1,345 @@
-'use client';
-
-import { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
-import { PlayCircle, Trophy, HelpCircle, CheckCircle, Clock, Award, X } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  PlayCircle, Trophy, Clock, CheckCircle, Award, Lock, Star,
+  BarChart3, BookOpen, Target, Zap, ChevronRight, AlertCircle,
+  Filter, Search, RefreshCw, Timer, Users, TrendingUp
+} from 'lucide-react';
 import Button from '@/components/ui/Button';
-import { useCatalog } from '@/hooks/useCatalog';
 import { useToast } from '@/hooks/useToast';
+import { useStudentAuth } from '@/hooks/useStudentAuth';
+import { getQuizList, getAttemptByQuizAndEmail, getStudentAttempts, getAttemptCount } from '@/services/quizService';
+import { getCertificatesByEmail } from '@/services/certificateService';
 
-const XEBIA_PORTAL_QUIZZES = [
-  {
-    id: 'xebia-quiz-1',
-    title: 'Xebia Portal Navigation Quiz',
-    courseTitle: 'Xebia Academy Portal',
-    duration: '12 mins',
-    quizData: { passingPercentage: 70 },
-    questions: [
-      {
-        id: 'xq1',
-        title: 'Which section is best for finding assigned work in the Xebia portal?',
-        options: [
-          { text: 'Assignments tab', isCorrect: true },
-          { text: 'Profile settings', isCorrect: false },
-          { text: 'Notification center', isCorrect: false }
-        ]
-      },
-      {
-        id: 'xq2',
-        title: 'What is the main purpose of the Assessments area?',
-        options: [
-          { text: 'Track quizzes and knowledge checks', isCorrect: true },
-          { text: 'Change the portal theme', isCorrect: false },
-          { text: 'Upload course logos', isCorrect: false }
-        ]
-      },
-      {
-        id: 'xq3',
-        title: 'What should a learner do after completing a portal assignment?',
-        options: [
-          { text: 'Submit the work through the assignment flow', isCorrect: true },
-          { text: 'Delete the course card', isCorrect: false },
-          { text: 'Reset the browser cache', isCorrect: false }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'xebia-quiz-2',
-    title: 'Xebia Learner Success Check',
-    courseTitle: 'Xebia Academy Portal',
-    duration: '15 mins',
-    quizData: { passingPercentage: 75 },
-    questions: [
-      {
-        id: 'xq4',
-        title: 'Which practice improves assessment readiness in the portal?',
-        options: [
-          { text: 'Reviewing module outcomes before starting', isCorrect: true },
-          { text: 'Skipping all course videos', isCorrect: false },
-          { text: 'Submitting placeholder answers', isCorrect: false }
-        ]
-      },
-      {
-        id: 'xq5',
-        title: 'What is the benefit of keeping assignment instructions clear?',
-        options: [
-          { text: 'Learners can submit more accurate work', isCorrect: true },
-          { text: 'It removes the need for modules', isCorrect: false },
-          { text: 'It disables grading', isCorrect: false }
-        ]
-      },
-      {
-        id: 'xq6',
-        title: 'Which type of content best supports a portal-based learning journey?',
-        options: [
-          { text: 'A mix of courses, assignments, and assessments', isCorrect: true },
-          { text: 'Only blank cards', isCorrect: false },
-          { text: 'Only profile images', isCorrect: false }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'xebia-quiz-3',
-    title: 'Release Readiness Knowledge Check',
-    courseTitle: 'Xebia Academy Portal',
-    duration: '10 mins',
-    quizData: { passingPercentage: 80 },
-    questions: [
-      {
-        id: 'xq7',
-        title: 'A good portal release checklist should include:',
-        options: [
-          { text: 'Content order, assessments, and learner outcomes', isCorrect: true },
-          { text: 'Only color preferences', isCorrect: false },
-          { text: 'Random file names', isCorrect: false }
-        ]
-      },
-      {
-        id: 'xq8',
-        title: 'Which metric is most useful for portal learning progress?',
-        options: [
-          { text: 'Completion of modules and assessments', isCorrect: true },
-          { text: 'Number of browser tabs open', isCorrect: false },
-          { text: 'Device wallpaper selection', isCorrect: false }
-        ]
-      },
-      {
-        id: 'xq9',
-        title: 'What makes a course path feel enterprise-ready?',
-        options: [
-          { text: 'Structured content and measurable outcomes', isCorrect: true },
-          { text: 'No course titles', isCorrect: false },
-          { text: 'Hidden navigation only', isCorrect: false }
-        ]
-      }
-    ]
-  }
-];
+// ─── Stat Card ────────────────────────────────────────────────────────────────
 
-export default function StudentAssessmentsPage() {
-  const { courses } = useCatalog();
-  const { showToast } = useToast();
-  const [activeQuizModal, setActiveQuizModal] = useState(null);
-  const [userAnswers, setUserAnswers] = useState({});
-  const [quizResult, setQuizResult] = useState(null);
+function StatCard({ icon: Icon, value, label, color }) {
+  const colorMap = {
+    purple: 'from-[#831B84]/10 to-[#FF6200]/10 text-[#831B84]',
+    emerald: 'from-emerald-500/10 to-teal-500/10 text-emerald-600',
+    amber: 'from-amber-500/10 to-orange-500/10 text-amber-600',
+    blue: 'from-blue-500/10 to-indigo-500/10 text-blue-600'
+  };
+  return (
+    <div className={`rounded-[20px] bg-gradient-to-br ${colorMap[color] || colorMap.purple} border border-white/5 p-5 flex items-center gap-4`}>
+      <div className="h-11 w-11 rounded-2xl bg-white dark:bg-slate-900 flex items-center justify-center shadow-sm">
+        <Icon className="h-5 w-5" />
+      </div>
+      <div>
+        <p className="text-xl font-black text-slate-900 dark:text-white">{value}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold">{label}</p>
+      </div>
+    </div>
+  );
+}
 
-  // Extract all quizzes created in Admin Course Builder
-  const liveQuizzes = useMemo(() => {
-    const list = [];
-    (courses || []).forEach(c => {
-      (c.modules || []).forEach(m => {
-        (m.submodules || []).forEach(s => {
-          (s.contents || []).forEach(ct => {
-            if (ct.type === 'quiz') {
-              let quizMeta = {};
-              try { quizMeta = JSON.parse(ct.markdown || '{}'); } catch {}
-              list.push({
-                id: ct.id,
-                title: ct.title || 'Knowledge Check Quiz',
-                courseTitle: c.title,
-                duration: ct.duration || '20 mins',
-                quizData: quizMeta.quizData || {},
-                questions: quizMeta.quizData?.questions || [
-                  {
-                    id: 'q1',
-                    title: 'What is the primary benefit of microservices architecture?',
-                    options: [
-                      { text: 'Independent service deployment and loose coupling', isCorrect: true },
-                      { text: 'Single monolithic database for all services', isCorrect: false },
-                      { text: 'No API security requirements', isCorrect: false }
-                    ]
-                  }
-                ]
-              });
-            }
-          });
-        });
-      });
-    });
-    return list;
-  }, [courses]);
+// ─── Quiz Card ────────────────────────────────────────────────────────────────
 
-  const quizzesToShow = liveQuizzes.length > 0
-    ? [...XEBIA_PORTAL_QUIZZES, ...liveQuizzes]
-    : XEBIA_PORTAL_QUIZZES;
+function QuizCard({ quiz, attempt, attemptsUsed, onStart, cert }) {
+  const status = attempt ? (attempt.passed ? 'passed' : 'failed') : 'not-started';
+  const maxAttempts = quiz.maxAttempts || 2;
+  const canRetake = !attempt?.passed && attemptsUsed < maxAttempts;
 
-  const handleStartQuiz = (quiz) => {
-    setActiveQuizModal(quiz);
-    setUserAnswers({});
-    setQuizResult(null);
+  const difficultyColors = {
+    Easy: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
+    Medium: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
+    Hard: 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300'
   };
 
-  const handleSelectOption = (qIdx, oIdx) => {
-    setUserAnswers(prev => ({ ...prev, [qIdx]: oIdx }));
-  };
-
-  const handleSubmitQuiz = () => {
-    let score = 0;
-    const questions = activeQuizModal.questions || [];
-    questions.forEach((q, idx) => {
-      const selected = userAnswers[idx];
-      if (selected !== undefined && q.options && q.options[selected]?.isCorrect) {
-        score += 1;
-      }
-    });
-    const total = questions.length;
-    const percentage = Math.round((score / total) * 100);
-    const passed = percentage >= (activeQuizModal.quizData?.passingPercentage || 70);
-
-    setQuizResult({ score, total, percentage, passed });
-    showToast(passed ? 'Congratulations! You passed the quiz.' : 'Quiz completed. Try again to improve score.');
+  const gradeColor = (g) => {
+    if (!g) return '';
+    if (['A+', 'A'].includes(g)) return 'text-emerald-600 dark:text-emerald-400';
+    if (['B+', 'B'].includes(g)) return 'text-blue-600 dark:text-blue-400';
+    if (g === 'C') return 'text-amber-600 dark:text-amber-400';
+    return 'text-rose-600 dark:text-rose-400';
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0B1120] p-6 lg:p-8 text-slate-800 dark:text-[#F8FAFC]">
+    <div className="group rounded-[24px] border border-slate-200 dark:border-[#334155] bg-white dark:bg-[#111827] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
+      {/* Color accent top */}
+      <div className={`h-1.5 w-full ${
+        status === 'passed' ? 'bg-gradient-to-r from-emerald-400 to-teal-500' :
+        status === 'failed' ? 'bg-gradient-to-r from-rose-400 to-pink-500' :
+        'bg-gradient-to-r from-[#831B84] to-[#FF6200]'
+      }`} />
 
+      <div className="p-6 space-y-4">
+        {/* Header */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              {quiz.status === 'Published' && (
+                <span className="text-[9px] font-black uppercase tracking-wider bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-full">
+                  Live
+                </span>
+              )}
+              <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${difficultyColors['Medium']}`}>
+                {quiz.subject}
+              </span>
+            </div>
+            <h3 className="text-base font-black text-slate-900 dark:text-white leading-snug group-hover:text-[#831B84] dark:group-hover:text-[#FF6200] transition-colors">
+              {quiz.title}
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{quiz.course}</p>
+          </div>
 
-      {quizzesToShow.length === 0 ? (
-        <div className="mt-12 text-center p-12 rounded-3xl border border-dashed border-slate-200 dark:border-[#334155] bg-white dark:bg-[#1E293B] max-w-md mx-auto">
-          <Trophy className="h-10 w-10 text-purple-500 mx-auto mb-3" />
-          <h3 className="text-base font-extrabold text-slate-900 dark:text-white">No Quizzes Available</h3>
-          <p className="text-xs text-slate-500 dark:text-[#CBD5E1] mt-1">
-            When an Admin creates a Quiz in the Course Builder, it will automatically sync and appear here.
+          {/* Score badge */}
+          {attempt && (
+            <div className={`shrink-0 text-center rounded-2xl border-2 px-3 py-2 ${
+              attempt.passed
+                ? 'border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-900/10'
+                : 'border-rose-300 dark:border-rose-700 bg-rose-50 dark:bg-rose-900/10'
+            }`}>
+              <p className={`text-xl font-black ${gradeColor(attempt.grade)}`}>{attempt.percentage}%</p>
+              <p className={`text-[10px] font-bold ${gradeColor(attempt.grade)}`}>{attempt.grade}</p>
+            </div>
+          )}
+        </div>
+
+        {/* Meta row */}
+        <div className="flex flex-wrap items-center gap-3 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+          <span className="flex items-center gap-1"><Timer className="h-3 w-3" /> {quiz.timeLimitMinutes} min</span>
+          <span className="flex items-center gap-1"><BookOpen className="h-3 w-3" /> {quiz.questions?.length || 0} questions</span>
+          <span className="flex items-center gap-1"><Target className="h-3 w-3" /> Pass: {quiz.passingPercentage}%</span>
+          <span className="flex items-center gap-1"><Trophy className="h-3 w-3" /> {quiz.totalMarks} marks</span>
+        </div>
+
+        {/* Attempt tracker */}
+        <div className="flex items-center justify-between text-[10px] font-bold text-slate-400">
+          <span>Attempts: {attemptsUsed} / {maxAttempts}</span>
+          {quiz.dueDate && <span>Due: {new Date(quiz.dueDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>}
+        </div>
+
+        {/* Per-question result bar (if attempted) */}
+        {attempt && (
+          <div>
+            <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all ${attempt.passed ? 'bg-gradient-to-r from-emerald-400 to-teal-500' : 'bg-gradient-to-r from-rose-400 to-pink-500'}`}
+                style={{ width: `${attempt.percentage}%` }}
+              />
+            </div>
+            <div className="flex justify-between text-[10px] text-slate-400 mt-1">
+              <span>Score: {attempt.earnedMarks}/{attempt.totalMarks}</span>
+              <span>{attempt.passed ? '✓ Passed' : `✗ Need ${quiz.passingPercentage}%`}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Certificate banner */}
+        {cert && (
+          <div className="flex items-center gap-2 rounded-xl bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800 px-3 py-2">
+            <Award className="h-4 w-4 text-amber-500 shrink-0" />
+            <p className="text-[10px] font-bold text-amber-700 dark:text-amber-300 flex-1">Certificate earned — ID: {cert.certificateId}</p>
+          </div>
+        )}
+
+        {/* CTA Button */}
+        <div className="pt-1">
+          {!attempt ? (
+            <Button
+              onClick={() => onStart(quiz.id)}
+              variant="primary"
+              className="w-full rounded-2xl bg-gradient-to-r from-[#831B84] to-[#FF6200] text-white font-bold border-0 cursor-pointer py-3 flex items-center justify-center gap-2 hover:opacity-90 shadow-md"
+            >
+              <PlayCircle className="h-4 w-4" /> Start Quiz
+            </Button>
+          ) : attempt.passed ? (
+            <Button
+              onClick={() => onStart(quiz.id)}
+              variant="outline"
+              className="w-full rounded-2xl border-emerald-300 dark:border-emerald-700 text-emerald-600 dark:text-emerald-400 font-bold cursor-pointer py-3 flex items-center justify-center gap-2"
+            >
+              <CheckCircle className="h-4 w-4" /> View Results
+            </Button>
+          ) : canRetake ? (
+            <Button
+              onClick={() => onStart(quiz.id)}
+              variant="outline"
+              className="w-full rounded-2xl border-amber-400/30 bg-amber-50 dark:bg-amber-900/10 text-amber-600 dark:text-amber-400 font-bold cursor-pointer py-3 flex items-center justify-center gap-2"
+            >
+              <RefreshCw className="h-4 w-4" /> Retake Quiz ({maxAttempts - attemptsUsed} left)
+            </Button>
+          ) : (
+            <Button
+              onClick={() => onStart(quiz.id)}
+              variant="outline"
+              className="w-full rounded-2xl border-slate-200 dark:border-[#334155] text-slate-500 font-bold cursor-pointer py-3 flex items-center justify-center gap-2"
+            >
+              <BarChart3 className="h-4 w-4" /> View Results
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
+
+export default function StudentAssessmentsPage() {
+  const navigate = useNavigate();
+  const { showToast } = useToast();
+  const { user } = useStudentAuth();
+
+  const [quizzes, setQuizzes] = useState([]);
+  const [attempts, setAttempts] = useState([]);
+  const [certificates, setCertificates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [filterStatus, setFilterStatus] = useState('All');
+
+  const email = user?.email || 'abhay.kumawat@xebia.com';
+
+  useEffect(() => {
+    setQuizzes(getQuizList().filter(q => q.status === 'Published'));
+    setAttempts(getStudentAttempts(email));
+    setCertificates(getCertificatesByEmail(email));
+    setLoading(false);
+  }, [email]);
+
+  const filteredQuizzes = useMemo(() => {
+    return quizzes.filter(q => {
+      const matchSearch = q.title.toLowerCase().includes(search.toLowerCase()) ||
+        q.course.toLowerCase().includes(search.toLowerCase()) ||
+        q.subject.toLowerCase().includes(search.toLowerCase());
+      const attempt = attempts.find(a => a.quizId === q.id);
+      const matchFilter =
+        filterStatus === 'All' ||
+        (filterStatus === 'Not Started' && !attempt) ||
+        (filterStatus === 'Passed' && attempt?.passed) ||
+        (filterStatus === 'Failed' && attempt && !attempt.passed);
+      return matchSearch && matchFilter;
+    });
+  }, [quizzes, attempts, search, filterStatus]);
+
+  const stats = useMemo(() => {
+    const passed = attempts.filter(a => a.passed).length;
+    const total = quizzes.length;
+    const avgScore = attempts.length > 0
+      ? Math.round(attempts.reduce((s, a) => s + a.percentage, 0) / attempts.length)
+      : 0;
+    return { total, attempted: attempts.length, passed, avgScore };
+  }, [quizzes, attempts]);
+
+  const handleStart = (quizId) => {
+    navigate('/student/quiz/run', { state: { quizId } });
+  };
+
+  if (loading) {
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#831B84] border-t-transparent" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-8 pb-12 px-4 sm:px-6 lg:px-8">
+
+      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-6">
+        <div>
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white">Quizzes & Assessments</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Attempt timed quizzes, track your scores, and earn certificates.
           </p>
         </div>
-      ) : (
-        <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {quizzesToShow.map((quiz) => (
-            <motion.div
-              key={quiz.id}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="rounded-[24px] border border-slate-200 dark:border-[#334155] bg-white dark:bg-[#1E293B] p-5 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between"
+      </div>
+
+      {/* ── Stat Cards ──────────────────────────────────────────────────────── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard icon={BookOpen} value={stats.total} label="Total Quizzes" color="purple" />
+        <StatCard icon={PlayCircle} value={stats.attempted} label="Attempted" color="blue" />
+        <StatCard icon={CheckCircle} value={stats.passed} label="Passed" color="emerald" />
+        <StatCard icon={TrendingUp} value={`${stats.avgScore}%`} label="Average Score" color="amber" />
+      </div>
+
+      {/* ── Filter & Search ─────────────────────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row items-center gap-3">
+        <div className="relative flex-1 w-full">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <input
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Search quizzes by title, course, or subject..."
+            className="w-full rounded-2xl border border-slate-200 dark:border-[#334155] bg-white dark:bg-[#111827] pl-9 pr-4 py-2.5 text-sm text-slate-900 dark:text-white outline-none focus:border-[#831B84] transition-colors placeholder:text-slate-400"
+          />
+        </div>
+        <div className="flex gap-2">
+          {['All', 'Not Started', 'Passed', 'Failed'].map(s => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => setFilterStatus(s)}
+              className={`px-3 py-2 rounded-xl text-xs font-bold cursor-pointer border transition-all ${
+                filterStatus === s
+                  ? 'bg-[#831B84] text-white border-[#831B84]'
+                  : 'border-slate-200 dark:border-[#334155] text-slate-600 dark:text-slate-400 bg-white dark:bg-[#111827] hover:border-slate-300'
+              }`}
             >
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="rounded-2xl bg-purple-50 text-purple-600 dark:bg-purple-950/60 p-3">
-                    <Trophy className="h-5 w-5" />
-                  </div>
-                  <span className="rounded-full bg-purple-50 text-purple-600 dark:bg-purple-950/50 dark:text-purple-300 px-3 py-1 text-[10px] font-extrabold uppercase">
-                    Published Quiz
-                  </span>
-                </div>
+              {s}
+            </button>
+          ))}
+        </div>
+      </div>
 
-                <h3 className="text-base font-black text-slate-900 dark:text-white">{quiz.title}</h3>
-                <p className="text-xs text-slate-500 dark:text-[#CBD5E1] mt-1">{quiz.courseTitle}</p>
-
-                <p className="mt-3 text-xs text-slate-600 dark:text-[#CBD5E1] bg-slate-50 dark:bg-[#111827] p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                  A Xebia portal assessment focused on learner navigation, content readiness, and course completion expectations.
-                </p>
-
-                <div className="mt-4 grid gap-2 text-xs font-semibold text-slate-500 dark:text-[#CBD5E1] bg-slate-50 dark:bg-[#111827] p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                  <div className="flex justify-between"><span>Time Limit:</span><span className="font-extrabold text-slate-800 dark:text-white">{quiz.duration}</span></div>
-                  <div className="flex justify-between"><span>Questions:</span><span className="font-extrabold text-slate-800 dark:text-white">{quiz.questions?.length || 1}</span></div>
-                  <div className="flex justify-between"><span>Passing Score:</span><span className="font-extrabold text-purple-600">70%</span></div>
-                </div>
-              </div>
-
-              <div className="mt-5 pt-2">
-                <button
-                  type="button"
-                  onClick={() => handleStartQuiz(quiz)}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#7C3AED] text-white text-xs font-bold hover:bg-purple-700 transition-colors cursor-pointer"
-                >
-                  <PlayCircle className="h-4 w-4" /> Start Knowledge Quiz
-                </button>
-              </div>
-            </motion.div>
+      {/* ── Quiz Grid ───────────────────────────────────────────────────────── */}
+      {filteredQuizzes.length === 0 ? (
+        <div className="text-center py-16 rounded-[24px] border border-dashed border-slate-200 dark:border-slate-700">
+          <BookOpen className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+          <p className="font-bold text-slate-500">No quizzes match your filters.</p>
+          <button
+            type="button"
+            onClick={() => { setSearch(''); setFilterStatus('All'); }}
+            className="mt-3 text-sm text-[#831B84] font-bold cursor-pointer hover:underline"
+          >
+            Clear filters
+          </button>
+        </div>
+      ) : (
+        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+          {filteredQuizzes.map(quiz => (
+            <QuizCard
+              key={quiz.id}
+              quiz={quiz}
+              attempt={attempts.find(a => a.quizId === quiz.id)}
+              attemptsUsed={getAttemptCount(quiz.id, email)}
+              onStart={handleStart}
+              cert={certificates.find(c => c.quizName === quiz.title || c.assignmentName === quiz.title + ' (Quiz)')}
+            />
           ))}
         </div>
       )}
 
-      {/* Interactive Student Quiz Taking Modal */}
-      {activeQuizModal && (
-        <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#1E293B] border border-slate-200 dark:border-[#334155] rounded-[24px] max-w-2xl w-full p-6 shadow-2xl space-y-6">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-[#334155] pb-4">
-              <div>
-                <h3 className="text-base font-black text-slate-900 dark:text-white">{activeQuizModal.title}</h3>
-                <p className="text-xs text-slate-500">{activeQuizModal.courseTitle}</p>
-              </div>
-              <button type="button" onClick={() => setActiveQuizModal(null)} className="text-slate-400 hover:text-slate-600">
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-
-            {quizResult ? (
-              <div className="text-center py-6 space-y-4">
-                <div className={`h-16 w-16 rounded-full mx-auto flex items-center justify-center ${quizResult.passed ? 'bg-teal-50 text-teal-600' : 'bg-rose-50 text-rose-600'}`}>
-                  <Award className="h-8 w-8" />
+      {/* ── Certificates Earned ─────────────────────────────────────────────── */}
+      {certificates.length > 0 && (
+        <div className="rounded-[24px] border border-amber-200 dark:border-amber-800/50 bg-amber-50/50 dark:bg-amber-900/10 p-6">
+          <h2 className="text-sm font-black text-slate-900 dark:text-white flex items-center gap-2 mb-4">
+            <Award className="h-4 w-4 text-amber-500" /> Your Certificates ({certificates.length})
+          </h2>
+          <div className="space-y-3">
+            {certificates.map(cert => (
+              <div key={cert.id} className="flex items-center justify-between gap-4 bg-white dark:bg-[#111827] rounded-2xl border border-slate-200 dark:border-[#334155] p-4">
+                <div>
+                  <p className="text-sm font-bold text-slate-800 dark:text-white">{cert.courseName || cert.assignmentName}</p>
+                  <p className="text-[10px] text-slate-400 font-mono mt-0.5">ID: {cert.certificateId} · Issued: {cert.completionDate}</p>
                 </div>
-                <h3 className="text-xl font-black text-slate-900 dark:text-white">
-                  {quizResult.passed ? 'Passed Quiz!' : 'Quiz Needs Review'}
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Your Score: <strong className="text-purple-600">{quizResult.score} / {quizResult.total} ({quizResult.percentage}%)</strong>
-                </p>
-                <button
-                  type="button"
-                  onClick={() => setQuizResult(null)}
-                  className="px-6 py-2 rounded-xl bg-purple-600 text-white text-xs font-bold"
-                >
-                  Retake Quiz
-                </button>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 px-2 py-1 rounded-lg">
+                    {cert.grade} · {cert.finalPercentage}%
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => navigate('/student/assessments/certificate', { state: { certificateId: cert.certificateId } })}
+                    className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-[#FF6200] text-white text-[10px] font-black cursor-pointer border-0 hover:opacity-90"
+                  >
+                    View →
+                  </button>
+                </div>
               </div>
-            ) : (
-              <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-2">
-                {activeQuizModal.questions?.map((q, qIdx) => (
-                  <div key={q.id || qIdx} className="p-4 rounded-2xl border border-slate-200 dark:border-[#334155] bg-slate-50/50 dark:bg-[#111827]/50 space-y-3">
-                    <h4 className="text-xs font-bold text-slate-900 dark:text-white">
-                      Q{qIdx + 1}. {q.title}
-                    </h4>
-                    <div className="space-y-2">
-                      {q.options?.map((opt, oIdx) => (
-                        <div
-                          key={oIdx}
-                          onClick={() => handleSelectOption(qIdx, oIdx)}
-                          className={`p-3 rounded-xl border transition-all cursor-pointer text-xs font-medium flex items-center gap-3 ${userAnswers[qIdx] === oIdx ? 'bg-purple-50 dark:bg-purple-950/50 border-[#7C3AED] text-purple-900 dark:text-purple-300 font-bold' : 'bg-white dark:bg-[#1E293B] border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200'}`}
-                        >
-                          <input type="radio" checked={userAnswers[qIdx] === oIdx} onChange={() => {}} className="h-4 w-4 accent-purple-600" />
-                          <span>{opt.text}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {!quizResult && (
-              <div className="flex justify-end gap-3 pt-3 border-t border-slate-100 dark:border-[#334155]">
-                <button type="button" onClick={() => setActiveQuizModal(null)} className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500">
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={handleSubmitQuiz}
-                  className="px-6 py-2 rounded-xl bg-[#7C3AED] text-white text-xs font-bold shadow-md hover:bg-purple-700"
-                >
-                  Submit Quiz Answers
-                </button>
-              </div>
-            )}
+            ))}
           </div>
         </div>
       )}

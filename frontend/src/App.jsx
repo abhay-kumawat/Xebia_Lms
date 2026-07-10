@@ -54,6 +54,16 @@ import TeacherStudentTracker from '@/pages/teacher/StudentTracker';
 import TeacherAssessments from '@/pages/teacher/TeacherAssessments';
 import CreateAssignment from '@/pages/teacher/CreateAssignment';
 import ImportQuizFromExcel from '@/pages/teacher/ImportQuizFromExcel';
+import TeacherAnalytics from '@/pages/teacher/TeacherAnalytics';
+
+// New Student Assessment Pages
+import StudentSubmissionRunner from '@/pages/student/StudentSubmissionRunner';
+import StudentQuizRunner from '@/pages/student/StudentQuizRunner';
+import CertificateViewer from '@/pages/student/CertificateViewer';
+import CertificateVerification from '@/pages/CertificateVerification';
+
+// New Teacher Quiz Builder
+import CreateQuiz from '@/pages/teacher/CreateQuiz';
 
 function RouteTitle({ title, children }) {
   React.useEffect(() => {
@@ -136,6 +146,12 @@ export default function App() {
             </RouteTitle>
           } />
 
+          <Route path="/verify-certificate" element={
+            <RouteTitle title="Verify Certificate Registration">
+              <CertificateVerification />
+            </RouteTitle>
+          } />
+
           {/* Student Protected Routes */}
           <Route path="/student/*" element={
             <StudentProtectedRoute>
@@ -174,6 +190,24 @@ export default function App() {
                   <Route path="assessments" element={
                     <RouteTitle title="Assessments">
                       <StudentAssessmentsPage />
+                    </RouteTitle>
+                  } />
+
+                  <Route path="assessments/run" element={
+                    <RouteTitle title="Complete Assessment Workspace">
+                      <StudentSubmissionRunner />
+                    </RouteTitle>
+                  } />
+
+                  <Route path="assessments/certificate" element={
+                    <RouteTitle title="View Certificate Credential">
+                      <CertificateViewer />
+                    </RouteTitle>
+                  } />
+
+                  <Route path="quiz/run" element={
+                    <RouteTitle title="Quiz in Progress">
+                      <StudentQuizRunner />
                     </RouteTitle>
                   } />
 
@@ -244,15 +278,33 @@ export default function App() {
                     </RouteTitle>
                   } />
 
+                  <Route path="assessments/grade/:submissionId" element={
+                    <RouteTitle title="Evaluate Submission">
+                      <TeacherAssessments />
+                    </RouteTitle>
+                  } />
+
                   <Route path="assessments/create" element={
                     <RouteTitle title="Create Assignment">
                       <CreateAssignment />
                     </RouteTitle>
                   } />
 
+                  <Route path="analytics" element={
+                    <RouteTitle title="Teacher Analytics">
+                      <TeacherAnalytics />
+                    </RouteTitle>
+                  } />
+
                   <Route path="assessments/import-excel" element={
                     <RouteTitle title="Import Quiz from Excel">
                       <ImportQuizFromExcel />
+                    </RouteTitle>
+                  } />
+
+                  <Route path="assessments/quiz/create" element={
+                    <RouteTitle title="Create Quiz">
+                      <CreateQuiz />
                     </RouteTitle>
                   } />
                   

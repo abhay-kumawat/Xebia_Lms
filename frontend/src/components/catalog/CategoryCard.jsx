@@ -152,7 +152,7 @@ export function CategoryRow({ category, courseCount, onEdit, onDelete, onView })
             onClick={() => onEdit(category)}
             className="flex h-7 w-7 items-center justify-center rounded-md border border-brand-border bg-brand-background hover:bg-brand-surface"
           >
-            <Pencil className="h-3 w-3" style={{ color: '#6c1d5f' }} />
+            <Pencil className="h-3 w-3" style={{ color: '#831B84' }} />
           </button>
           <button
             type="button"

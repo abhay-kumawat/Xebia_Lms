@@ -3,10 +3,10 @@
 import { motion } from 'framer-motion';
 
 const ICON_COLORS = {
-  purple: { bg: '#6c1d5f15', text: '#6c1d5f' },
+  purple: { bg: '#831B8415', text: '#831B84' },
   teal:   { bg: '#01ac9f15', text: '#01ac9f' },
   orange: { bg: '#ff620015', text: '#ff6200' },
-  plum:   { bg: '#84117c15', text: '#84117c' },
+  plum:   { bg: '#FF620015', text: '#FF6200' },
   pink:   { bg: '#db277715', text: '#db2777' },
 };
 

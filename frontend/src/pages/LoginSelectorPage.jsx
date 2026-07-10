@@ -65,7 +65,7 @@ export default function LoginSelectorPage() {
             className="group cursor-pointer flex flex-col justify-between rounded-2xl border border-brand-border/70 bg-brand-surface/40 p-6 transition-all hover:bg-brand-surface/90 hover:shadow-lg dark:border-slate-800"
           >
             <div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 text-emerald-600 group-hover:scale-110 transition-transform">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#831B84]/10 to-[#FF6200]/10 text-[#831B84] group-hover:scale-110 transition-transform">
                 <Presentation className="h-6 w-6" />
               </div>
               <h3 className="mt-4 text-lg font-bold text-brand-text-primary dark:text-slate-100">
@@ -76,7 +76,7 @@ export default function LoginSelectorPage() {
               </p>
             </div>
 
-            <div className="mt-6 flex items-center justify-between text-xs font-bold text-emerald-600">
+            <div className="mt-6 flex items-center justify-between text-xs font-bold text-[#831B84]">
               <span>Login as Teacher</span>
               <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </div>
@@ -113,12 +113,12 @@ export default function LoginSelectorPage() {
             <p className="font-bold text-slate-700 text-[11px] uppercase tracking-wider">Demo Credentials:</p>
             <div className="grid grid-cols-3 gap-2 text-[11px]">
               <div>
-                <p className="text-purple-700 font-bold">Student Portal:</p>
+                <p className="text-[#831B84] font-bold">Student Portal:</p>
                 <p className="text-slate-600 font-mono mt-0.5">abhay.kumawat@xebia.com</p>
                 <p className="text-slate-600 font-mono">student123</p>
               </div>
               <div>
-                <p className="text-emerald-700 font-bold">Teacher Portal:</p>
+                <p className="text-[#FF6200] font-bold">Teacher Portal:</p>
                 <p className="text-slate-600 font-mono mt-0.5">teacher@xebia.com</p>
                 <p className="text-slate-600 font-mono">teacher123</p>
               </div>

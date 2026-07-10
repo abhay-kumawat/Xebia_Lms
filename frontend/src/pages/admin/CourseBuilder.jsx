@@ -695,7 +695,7 @@ function CourseBuilderWorkspaceContent({ course, catalog, showToast, urlPrefix }
 
   // Block colors config from design stylesheet
   const blockTypesConfig = {
-    heading: { label: 'Heading', color: '#6c1d5f', bg: '#6c1d5f12' },
+    heading: { label: 'Heading', color: '#831B84', bg: '#831B8412' },
     text: { label: 'Text', color: '#5c4f61', bg: '#5c4f6112' },
     callout: { label: 'Callout', color: '#793b74', bg: '#793b7412' },
     code: { label: 'Code', color: '#4a1e47', bg: '#4a1e4712' },
@@ -1301,7 +1301,7 @@ function CourseBuilderWorkspaceContent({ course, catalog, showToast, urlPrefix }
                 <div className="flex items-center gap-3 mb-2">
                   <div
                     className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: '#6c1d5f18' }}
+                    style={{ backgroundColor: '#831B8418' }}
                   >
                     <FileText className="h-[17px] w-[17px] text-brand-primary" />
                   </div>
@@ -1552,9 +1552,9 @@ function CourseBuilderWorkspaceContent({ course, catalog, showToast, urlPrefix }
                                   onClick={() => setContentForm(prev => ({ ...prev, headingLevel: lvl }))}
                                   className="w-10 h-10 rounded-lg text-sm font-bold border transition-colors"
                                   style={{
-                                    backgroundColor: isLvlActive ? '#6c1d5f' : 'transparent',
+                                    backgroundColor: isLvlActive ? '#831B84' : 'transparent',
                                     color: isLvlActive ? '#fff' : '#5a5a5a',
-                                    borderColor: isLvlActive ? '#6c1d5f' : '#dadcea'
+                                    borderColor: isLvlActive ? '#831B84' : '#dadcea'
                                   }}
                                 >
                                   H{lvl}

@@ -12,11 +12,29 @@ import { announcements, notifications } from './studentMockData';
 // Simulated latency helper
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const CERTS_KEY = 'xebia-lms-student-certificates';
+
+function getLocalCertificates() {
+  if (typeof window === 'undefined') return certificatesMock;
+  const local = localStorage.getItem(CERTS_KEY);
+  if (local) {
+    try {
+      return JSON.parse(local);
+    } catch (e) {
+      console.error("Failed to parse certificates from localStorage:", e);
+    }
+  }
+  // Pre-seed certificates in local storage if not present
+  localStorage.setItem(CERTS_KEY, JSON.stringify(certificatesMock));
+  return certificatesMock;
+}
+
 /**
  * GET /student/dashboard
  */
 export async function getStudentDashboardData() {
   await delay(400);
+  const certsList = getLocalCertificates();
   return {
     overviewStats: dashboardOverviewMock.stats,
     continueLearning: {
@@ -32,7 +50,7 @@ export async function getStudentDashboardData() {
       { label: 'Learning Hours', value: '12.4h', width: '82%' },
     ],
     weeklyActivity: [1.5, 2.4, 1.8, 3.2, 2.0, 1.0, 0.5],
-    certificates: certificatesMock.slice(0, 2),
+    certificates: certsList.slice(0, 2),
     aiProgress: {
       score: '89 / 100',
       summary: aiProgressMock.summary,
@@ -72,7 +90,7 @@ export async function getStudentProgress() {
  */
 export async function getStudentCertificates() {
   await delay(300);
-  return certificatesMock;
+  return getLocalCertificates();
 }
 
 /**

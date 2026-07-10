@@ -308,7 +308,7 @@ export default function Header({ title, subtitle }) {
                           type="checkbox"
                           checked={selectedFilters.length === 12}
                           onChange={handleSelectAllFilters}
-                          className="rounded border-slate-350 dark:border-slate-700 bg-white/5 text-[#84117C]"
+                          className="rounded border-slate-350 dark:border-slate-700 bg-white/5 text-[#FF6200]"
                         />
                         Select All Filters
                       </label>
@@ -325,7 +325,7 @@ export default function Header({ title, subtitle }) {
                             type="checkbox"
                             checked={selectedFilters.includes(item.val)}
                             onChange={() => handleFilterToggle(item.val)}
-                            className="rounded border-slate-350 dark:border-slate-700 bg-white/5 text-[#84117C]"
+                            className="rounded border-slate-350 dark:border-slate-700 bg-white/5 text-[#FF6200]"
                           />
                           {item.lbl}
                         </label>
@@ -343,7 +343,7 @@ export default function Header({ title, subtitle }) {
                             type="checkbox"
                             checked={selectedFilters.includes(item.val)}
                             onChange={() => handleFilterToggle(item.val)}
-                            className="rounded border-slate-350 dark:border-slate-700 bg-white/5 text-[#84117C]"
+                            className="rounded border-slate-350 dark:border-slate-700 bg-white/5 text-[#FF6200]"
                           />
                           {item.lbl}
                         </label>
@@ -361,7 +361,7 @@ export default function Header({ title, subtitle }) {
                             type="checkbox"
                             checked={selectedFilters.includes(item.val)}
                             onChange={() => handleFilterToggle(item.val)}
-                            className="rounded border-slate-350 dark:border-slate-700 bg-white/5 text-[#84117C]"
+                            className="rounded border-slate-350 dark:border-slate-700 bg-white/5 text-[#FF6200]"
                           />
                           {item.lbl}
                         </label>
@@ -499,7 +499,7 @@ export default function Header({ title, subtitle }) {
 
         {/* User profile dropdown indicator */}
         <div className="flex items-center gap-2.5 rounded-xl border border-slate-200 dark:border-white/[0.08] px-3 py-1.5 bg-slate-50 dark:bg-white/[0.04] hover:bg-slate-105 dark:hover:bg-white/[0.07] transition-all cursor-default">
-          <div className="h-7 w-7 rounded-lg bg-gradient-to-tr from-[#6C1D5F] to-[#84117C] flex items-center justify-center text-xs font-black text-white shrink-0">
+          <div className="h-7 w-7 rounded-lg bg-gradient-to-tr from-[#831B84] to-[#FF6200] flex items-center justify-center text-xs font-black text-white shrink-0">
             {(user?.fullName || 'A')[0].toUpperCase()}
           </div>
           <span className="hidden sm:inline text-sm font-semibold text-slate-700 dark:text-slate-200">{user?.fullName || 'Admin'}</span>

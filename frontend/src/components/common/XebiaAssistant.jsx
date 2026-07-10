@@ -100,11 +100,11 @@ export default function XebiaAssistant() {
             className="mb-4 flex h-[480px] w-[350px] flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0E0F14]/95 shadow-2xl backdrop-blur-2xl ring-1 ring-white/[0.05]"
           >
             {/* Header */}
-            <div className="flex items-center justify-between bg-gradient-to-r from-[#6C1D5F] to-[#84117C] px-4 py-3.5 text-white">
+            <div className="flex items-center justify-between bg-gradient-to-r from-[#831B84] to-[#FF6200] px-4 py-3.5 text-white">
               <div className="flex items-center gap-2">
                 <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-white/10">
                   <Brain className="h-5 w-5 text-white" />
-                  <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-400 ring-2 ring-[#6C1D5F] animate-pulse" />
+                  <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-400 ring-2 ring-[#831B84] animate-pulse" />
                 </div>
                 <div>
                   <h4 className="text-xs font-bold leading-none">Xebia AI Assistant</h4>
@@ -130,7 +130,7 @@ export default function XebiaAssistant() {
                   <div
                     className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs leading-relaxed ${
                       msg.sender === 'user'
-                        ? 'bg-[#84117C] text-white rounded-tr-none'
+                        ? 'bg-[#FF6200] text-white rounded-tr-none'
                         : 'bg-white/[0.04] text-slate-200 border border-white/[0.06] rounded-tl-none'
                     }`}
                     style={{ whiteSpace: 'pre-line' }}
@@ -162,7 +162,7 @@ export default function XebiaAssistant() {
                       key={p.label}
                       type="button"
                       onClick={() => handleSend(p.query)}
-                      className="text-left w-full px-3 py-1.5 rounded-xl border border-white/[0.06] bg-white/[0.02] hover:bg-[#84117C]/10 hover:border-[#84117C]/30 text-[11px] text-slate-300 font-semibold transition-all cursor-pointer flex items-center justify-between group"
+                      className="text-left w-full px-3 py-1.5 rounded-xl border border-white/[0.06] bg-white/[0.02] hover:bg-[#FF6200]/10 hover:border-[#FF6200]/30 text-[11px] text-slate-300 font-semibold transition-all cursor-pointer flex items-center justify-between group"
                     >
                       <span>{p.label}</span>
                       <ChevronRight className="h-3 w-3 text-slate-500 group-hover:text-purple-400 transition-colors" />
@@ -186,7 +186,7 @@ export default function XebiaAssistant() {
               />
               <button
                 type="submit"
-                className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#84117C] text-white hover:opacity-90 active:scale-95 transition-all cursor-pointer border-0"
+                className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#FF6200] text-white hover:opacity-90 active:scale-95 transition-all cursor-pointer border-0"
               >
                 <Send className="h-3.5 w-3.5" />
               </button>
@@ -201,7 +201,7 @@ export default function XebiaAssistant() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-[#6C1D5F] to-[#84117C] text-white shadow-2xl hover:opacity-95 cursor-pointer relative border-0"
+        className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-[#831B84] to-[#FF6200] text-white shadow-2xl hover:opacity-95 cursor-pointer relative border-0"
       >
         <MessageSquare className="h-5.5 w-5.5" />
         <span className="absolute -top-0.5 -right-0.5 flex h-3.5 w-3.5">

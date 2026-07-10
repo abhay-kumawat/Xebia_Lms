@@ -42,7 +42,7 @@ export function CourseStatusBadge({ status }) {
   const map = {
     active:    { label: 'Active',    bg: '#01ac9f18', text: '#01ac9f' },
     inactive:  { label: 'Inactive',  bg: '#f1f1f7',   text: '#6b7280' },
-    published: { label: 'Published', bg: '#6c1d5f18', text: '#6c1d5f' },
+    published: { label: 'Published', bg: '#831B8418', text: '#831B84' },
     draft:     { label: 'Draft',     bg: '#f1f1f7',   text: '#6b7280' },
     in_review: { label: 'In Review', bg: '#fef3c718', text: '#d97706' },
     archived:  { label: 'Archived',  bg: '#ff620015', text: '#ff6200' },
@@ -62,10 +62,10 @@ export function CourseStatusBadge({ status }) {
 export function LevelBadge({ level }) {
   const map = {
     Beginner:             { bg: '#01ac9f18', text: '#01ac9f' },
-    Intermediate:         { bg: '#6c1d5f18', text: '#6c1d5f' },
+    Intermediate:         { bg: '#831B8418', text: '#831B84' },
     Advanced:             { bg: '#ff620015', text: '#ff6200' },
     Expert:               { bg: '#f1f1f7',   text: '#6b7280' },
-    'Beginner to Advanced':{ bg: '#6c1d5f18', text: '#6c1d5f' },
+    'Beginner to Advanced':{ bg: '#831B8418', text: '#831B84' },
   };
   const s = map[level] || { bg: '#f1f1f7', text: '#6b7280' };
   return (
@@ -78,7 +78,7 @@ export function LevelBadge({ level }) {
   );
 }
 
-export function CategoryBadge({ name, color = '#6c1d5f' }) {
+export function CategoryBadge({ name, color = '#831B84' }) {
   return (
     <span
       className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold"

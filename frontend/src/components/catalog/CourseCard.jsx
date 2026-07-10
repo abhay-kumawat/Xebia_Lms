@@ -23,7 +23,7 @@ function StatusPill({ children, color }) {
   );
 }
 
-export default function CourseCard({ course, categoryName, categoryColor = '#6c1d5f', onEdit, onDelete, isCurriculumView = false }) {
+export default function CourseCard({ course, categoryName, categoryColor = '#831B84', onEdit, onDelete, isCurriculumView = false }) {
   const navigate = useNavigate();
   const stats = countCourseStats(course);
   const isPublished = course.status === 'published';
@@ -89,7 +89,7 @@ export default function CourseCard({ course, categoryName, categoryColor = '#6c1
         <div className="flex flex-wrap items-center gap-2">
           <span
             className="rounded-full px-2.5 py-0.5 text-[10px] font-bold"
-            style={{ backgroundColor: `${categoryColor}25`, color: categoryColor === '#6c1d5f' ? '#c084fc' : categoryColor }}
+            style={{ backgroundColor: `${categoryColor}25`, color: categoryColor === '#831B84' ? '#c084fc' : categoryColor }}
           >
             {categoryName}
           </span>
@@ -177,7 +177,7 @@ export default function CourseCard({ course, categoryName, categoryColor = '#6c1
   );
 }
 
-export function CourseRow({ course, index, categoryName, categoryColor = '#6c1d5f', onEdit, onDelete }) {
+export function CourseRow({ course, index, categoryName, categoryColor = '#831B84', onEdit, onDelete }) {
   const isPublished = course.status === 'published';
   const isActive    = course.status !== 'archived';
   const isFeatured  = course.isFeatured || isPublished;
@@ -232,7 +232,7 @@ export function CourseRow({ course, index, categoryName, categoryColor = '#6c1d5
             onClick={() => onEdit(course)}
             className="flex h-7 w-7 items-center justify-center rounded-md border border-brand-border bg-brand-background hover:bg-brand-surface"
           >
-            <Pencil className="h-3.5 w-3.5" style={{ color: '#6c1d5f' }} />
+            <Pencil className="h-3.5 w-3.5" style={{ color: '#831B84' }} />
           </button>
           <button
             type="button"

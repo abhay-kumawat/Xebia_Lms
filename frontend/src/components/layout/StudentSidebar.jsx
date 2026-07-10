@@ -28,7 +28,7 @@ export default function StudentSidebar() {
 
   return (
     <aside
-      className="fixed left-0 top-0 z-40 flex h-screen flex-col bg-gradient-to-b from-[#181223] via-[#0E1017] to-[#08090E] border-r border-white/[0.04] text-slate-300 transition-all duration-300"
+      className="fixed left-0 top-0 z-40 flex h-screen flex-col bg-gradient-to-b from-[#150027] via-[#0C0017] to-[#05000A] border-r border-white/[0.04] text-slate-300 transition-all duration-300"
       style={{ width: 240 }}
     >
       {/* Logo */}
@@ -37,7 +37,7 @@ export default function StudentSidebar() {
       </div>
 
       {/* Nav label */}
-      <p className="px-6 pt-6 pb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-purple-400/70">
+      <p className="px-6 pt-6 pb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#FF6200]/70">
         Student Menu
       </p>
 
@@ -58,7 +58,7 @@ export default function StudentSidebar() {
               {active && (
                 <motion.div
                   layoutId="activeNavBackground"
-                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-600/15 to-indigo-600/5 border-l-2 border-purple-500"
+                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-[#831B84]/15 to-[#FF6200]/5 border-l-2 border-[#831B84]"
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
               )}
@@ -66,7 +66,7 @@ export default function StudentSidebar() {
               <Icon 
                 className={cn(
                   'relative z-10 h-[18px] w-[18px] shrink-0 transition-all duration-300 group-hover:scale-110',
-                  active ? 'text-purple-400 drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]' : 'text-slate-400 group-hover:text-white'
+                  active ? 'text-[#FF6200] drop-shadow-[0_0_8px_rgba(255,98,0,0.5)]' : 'text-slate-400 group-hover:text-white'
                 )}
                 strokeWidth={active ? 2.5 : 2} 
               />
@@ -83,9 +83,9 @@ export default function StudentSidebar() {
         <div className="mt-auto p-4 border-t border-white/[0.04] bg-white/[0.01]">
           <div className="flex flex-col gap-3 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.04] hover:border-white/[0.08] transition-all duration-300 shadow-md">
             <div className="flex items-center gap-3">
-              <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-black text-white bg-gradient-to-tr from-purple-600 to-indigo-600 shadow-inner ring-2 ring-white/10">
+              <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-black text-white bg-gradient-to-tr from-[#831B84] to-[#FF6200] shadow-inner ring-2 ring-white/10">
                 {(user.fullName || 'S')[0].toUpperCase()}
-                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-[#0F101A]" />
+                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-[#FF6200] ring-2 ring-[#0F101A]" />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-xs font-bold text-white leading-tight">

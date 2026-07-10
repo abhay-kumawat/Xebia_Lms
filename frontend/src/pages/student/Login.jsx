@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, ShieldAlert, CheckCircle, Eye, EyeOff, ArrowRight, Sparkles, BookOpen, Trophy, Users } from 'lucide-react';
+import { Mail, Lock, ShieldAlert, CheckCircle, Eye, EyeOff, ArrowRight, ArrowLeft, Sparkles, BookOpen, Trophy, Users } from 'lucide-react';
 import { useStudentAuth } from '@/hooks/useStudentAuth';
 
 export default function StudentLoginPage() {
@@ -63,21 +63,21 @@ export default function StudentLoginPage() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#09090E] select-none">
+    <div className="flex min-h-screen bg-[#0C0017] select-none">
 
       {/* ── LEFT BRANDING PANEL ── */}
       <div className="relative hidden lg:flex lg:w-[52%] flex-col justify-between overflow-hidden p-12">
 
         {/* Layered gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a0b2e] via-[#0f0a1f] to-[#07060f]" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-purple-900/40 via-transparent to-indigo-900/30" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1F0038] via-[#0F001D] to-[#05000A]" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-[#831B84]/20 via-transparent to-[#FF6200]/15" />
 
         {/* Grid mesh */}
         <div className="absolute inset-0 opacity-[0.07]">
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <pattern id="login-grid" width="50" height="50" patternUnits="userSpaceOnUse">
-                <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(167,139,250,0.8)" strokeWidth="0.8" />
+                <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(131,27,132,0.4)" strokeWidth="0.8" />
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#login-grid)" />
@@ -87,19 +87,19 @@ export default function StudentLoginPage() {
         {/* Glowing orbs */}
         <motion.div
           className="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(131,27,132,0.18) 0%, transparent 70%)' }}
           animate={{ scale: [1, 1.1, 1], opacity: [0.6, 1, 0.6] }}
           transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.div
           className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(79,70,229,0.12) 0%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(255,98,0,0.12) 0%, transparent 70%)' }}
           animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.9, 0.5] }}
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
         />
         <motion.div
           className="absolute top-[40%] right-[10%] w-[300px] h-[300px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(168,85,247,0.10) 0%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(131,27,132,0.10) 0%, transparent 70%)' }}
           animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.8, 0.4] }}
           transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
         />
@@ -107,12 +107,12 @@ export default function StudentLoginPage() {
         {/* Logo */}
         <div className="relative z-10">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 shadow-lg shadow-purple-900/40 ring-1 ring-white/10">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#831B84] to-[#FF6200] shadow-lg shadow-purple-900/40 ring-1 ring-white/10">
               <img src="/assets/Logo-Purple.png" alt="Xebia" className="h-7 w-7 object-contain brightness-200" />
             </div>
             <div>
               <p className="text-lg font-black text-white tracking-tight">Xebia Academy</p>
-              <p className="text-[10px] text-purple-300/70 font-medium uppercase tracking-widest">Learning Platform</p>
+              <p className="text-[10px] text-[#831B84]/70 font-medium uppercase tracking-widest">Learning Platform</p>
             </div>
           </div>
         </div>
@@ -124,10 +124,10 @@ export default function StudentLoginPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-flex items-center gap-2 rounded-full border border-purple-500/20 bg-purple-500/10 px-3 py-1.5"
+              className="inline-flex items-center gap-2 rounded-full border border-[#831B84]/20 bg-[#831B84]/10 px-3 py-1.5"
             >
-              <Sparkles className="h-3.5 w-3.5 text-purple-400" />
-              <span className="text-xs font-semibold text-purple-300">AI-Powered Learning Experience</span>
+              <Sparkles className="h-3.5 w-3.5 text-[#FF6200]" />
+              <span className="text-xs font-semibold text-[#831B84]">AI-Powered Learning Experience</span>
             </motion.div>
 
             <motion.h1
@@ -137,7 +137,7 @@ export default function StudentLoginPage() {
               className="text-5xl font-black text-white leading-[1.1] tracking-tight"
             >
               Accelerate Your{' '}
-              <span className="bg-gradient-to-r from-purple-400 via-violet-300 to-indigo-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#831B84] via-[#9C27B0] to-[#FF6200] bg-clip-text text-transparent">
                 Career Growth
               </span>
             </motion.h1>
@@ -162,7 +162,7 @@ export default function StudentLoginPage() {
             {stats.map(({ icon: Icon, label, value }) => (
               <div key={label} className="flex flex-col gap-1">
                 <div className="flex items-center gap-1.5">
-                  <Icon className="h-4 w-4 text-purple-400" />
+                  <Icon className="h-4 w-4 text-[#FF6200]" />
                   <span className="text-xl font-black text-white">{value}</span>
                 </div>
                 <span className="text-xs text-slate-500 font-medium">{label}</span>
@@ -182,7 +182,7 @@ export default function StudentLoginPage() {
               helped us close critical skill gaps in under 3 months."
             </p>
             <div className="mt-4 flex items-center gap-3">
-              <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-600 flex items-center justify-center text-xs font-black text-white">
+              <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-[#831B84] to-[#FF6200] flex items-center justify-center text-xs font-black text-white">
                 R
               </div>
               <div>
@@ -200,11 +200,11 @@ export default function StudentLoginPage() {
       </div>
 
       {/* ── RIGHT LOGIN PANEL ── */}
-      <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 lg:px-16 bg-[#09090E] relative">
+      <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 lg:px-16 bg-[#0E001A] relative">
 
         {/* Subtle background glow */}
         <div className="absolute top-0 right-0 h-[400px] w-[400px] rounded-full opacity-10 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.5) 0%, transparent 70%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(131,27,132,0.5) 0%, transparent 70%)' }} />
 
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -214,11 +214,20 @@ export default function StudentLoginPage() {
         >
           {/* Mobile logo */}
           <div className="flex lg:hidden items-center gap-2.5 mb-8">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center">
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-[#831B84] to-[#FF6200] flex items-center justify-center">
               <img src="/assets/Logo-Purple.png" alt="Xebia" className="h-6 w-6 object-contain brightness-200" />
             </div>
             <span className="text-base font-black text-white">Xebia Academy</span>
           </div>
+
+          {/* Back to Portal */}
+          <Link
+            to="/portal-selector"
+            className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors mb-6 group"
+          >
+            <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-0.5 transition-transform" />
+            Back to Portal Selector
+          </Link>
 
           {/* Heading */}
           <div className="mb-8">
@@ -256,8 +265,7 @@ export default function StudentLoginPage() {
 
           {/* Form */}
           <form className="space-y-5" onSubmit={handleSubmit}>
-            {/* Email */}
-            <div className="space-y-1.5">
+                    <div className="space-y-1.5">
               <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
                 Email Address
               </label>
@@ -268,7 +276,7 @@ export default function StudentLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@company.com"
-                  className={`w-full rounded-xl border bg-white/[0.04] py-3.5 pl-11 pr-4 text-sm text-white placeholder-slate-600 outline-none transition-all duration-200 focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 focus:bg-white/[0.06] ${
+                  className={`w-full rounded-xl border bg-white/[0.04] py-3.5 pl-11 pr-4 text-sm text-white placeholder-slate-600 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#831B84]/50 focus:border-[#831B84]/50 focus:bg-white/[0.06] ${
                     errors.email
                       ? 'border-red-500/40 bg-red-500/5'
                       : 'border-white/[0.08] hover:border-white/[0.12]'
@@ -292,7 +300,7 @@ export default function StudentLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className={`w-full rounded-xl border bg-white/[0.04] py-3.5 pl-11 pr-11 text-sm text-white placeholder-slate-600 outline-none transition-all duration-200 focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 focus:bg-white/[0.06] ${
+                  className={`w-full rounded-xl border bg-white/[0.04] py-3.5 pl-11 pr-11 text-sm text-white placeholder-slate-600 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#831B84]/50 focus:border-[#831B84]/50 focus:bg-white/[0.06] ${
                     errors.password
                       ? 'border-red-500/40 bg-red-500/5'
                       : 'border-white/[0.08] hover:border-white/[0.12]'
@@ -301,7 +309,7 @@ export default function StudentLoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors cursor-pointer bg-transparent border-0 p-0"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-350 transition-colors cursor-pointer bg-transparent border-0 p-0"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -318,13 +326,13 @@ export default function StudentLoginPage() {
                   id="remember-me"
                   type="checkbox"
                   defaultChecked
-                  className="h-4 w-4 rounded border-slate-600 bg-white/5 text-purple-600 focus:ring-purple-500 cursor-pointer"
+                  className="h-4 w-4 rounded border-slate-600 bg-white/5 text-[#831B84] focus:ring-[#831B84] cursor-pointer"
                 />
                 <span className="text-xs text-slate-500 group-hover:text-slate-400 transition-colors">Remember me</span>
               </label>
               <Link
                 to="/student/forgot-password"
-                className="text-xs font-semibold text-purple-400 hover:text-purple-300 transition-colors"
+                className="text-xs font-semibold text-[#831B84] hover:text-[#FF6200] transition-colors"
               >
                 Forgot password?
               </Link>
@@ -336,7 +344,7 @@ export default function StudentLoginPage() {
               disabled={loading}
               whileHover={{ scale: loading ? 1 : 1.015 }}
               whileTap={{ scale: loading ? 1 : 0.985 }}
-              className="relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-purple-900/40 transition-all duration-200 hover:shadow-purple-900/60 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer border-0"
+              className="relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-[#831B84] to-[#FF6200] py-3.5 text-sm font-bold text-white shadow-lg shadow-purple-900/40 transition-all duration-200 hover:shadow-purple-900/60 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer border-0"
             >
               {/* Shimmer effect */}
               {!loading && (
@@ -364,7 +372,7 @@ export default function StudentLoginPage() {
           {/* Demo credentials */}
           <div className="mt-6 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
             <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Demo Account</p>
-            <p className="font-mono text-[11px] text-purple-400">abhay.kumawat@xebia.com</p>
+            <p className="font-mono text-[11px] text-[#FF6200]">abhay.kumawat@xebia.com</p>
             <p className="font-mono text-[11px] text-slate-500 mt-0.5">Password: student123</p>
           </div>
 
@@ -373,7 +381,7 @@ export default function StudentLoginPage() {
             Don&apos;t have an account?{' '}
             <Link
               to="/student/register"
-              className="font-bold text-purple-400 hover:text-purple-300 transition-colors"
+              className="font-bold text-[#831B84] hover:text-[#FF6200] transition-colors"
             >
               Create account
             </Link>

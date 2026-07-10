@@ -25,7 +25,7 @@ export default function CTASection({ onSignInClick }) {
         <button 
           onClick={onSignInClick} 
           style={{ 
-            background: '#84117C', 
+            background: '#FF6200', 
             color: 'white', 
             border: 'none',
             padding: '14px 32px', 
@@ -36,8 +36,8 @@ export default function CTASection({ onSignInClick }) {
             boxShadow: '0 4px 12px rgba(132, 17, 124, 0.25)',
             transition: 'background 0.2s'
           }}
-          onMouseOver={(e) => e.currentTarget.style.background = '#6C1D5F'}
-          onMouseOut={(e) => e.currentTarget.style.background = '#84117C'}
+          onMouseOver={(e) => e.currentTarget.style.background = '#831B84'}
+          onMouseOut={(e) => e.currentTarget.style.background = '#FF6200'}
         >
           Get Started Now
         </button>
@@ -45,8 +45,8 @@ export default function CTASection({ onSignInClick }) {
           onClick={onSignInClick} 
           style={{ 
             background: '#ffffff', 
-            color: '#6C1D5F', 
-            border: '2px solid #84117C',
+            color: '#831B84', 
+            border: '2px solid #FF6200',
             padding: '12px 32px', 
             fontSize: '15px',
             fontWeight: '700',
@@ -54,8 +54,8 @@ export default function CTASection({ onSignInClick }) {
             cursor: 'pointer',
             transition: 'background 0.2s, color 0.2s'
           }}
-          onMouseOver={(e) => { e.currentTarget.style.background = '#84117C'; e.currentTarget.style.color = '#ffffff'; }}
-          onMouseOut={(e) => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.color = '#6C1D5F'; }}
+          onMouseOver={(e) => { e.currentTarget.style.background = '#FF6200'; e.currentTarget.style.color = '#ffffff'; }}
+          onMouseOut={(e) => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.color = '#831B84'; }}
         >
           Talk to Our Team
         </button>

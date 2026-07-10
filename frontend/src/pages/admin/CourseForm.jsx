@@ -16,7 +16,7 @@ import api from '@/services/api';
 
 /* ─── colours that match the design tokens ─── */
 const C = {
-  primary:  '#6c1d5f',
+  primary:  '#831B84',
   secondary:'#01ac9f',
   accent:   '#ff6200',
   border:   '#dadcea',
@@ -127,7 +127,7 @@ function FieldSelect({ value, onChange, options, placeholder }) {
 }
 
 /* Section card matching the design */
-function Card({ title, titleIcon: Icon, titleColor='#6c1d5f', accentColor='#6c1d5f', children }) {
+function Card({ title, titleIcon: Icon, titleColor='#831B84', accentColor='#831B84', children }) {
   return (
     <div
       className="rounded-xl overflow-hidden"
@@ -512,7 +512,7 @@ export default function CourseForm() {
       <div className="flex items-center gap-4 px-8 pt-6 pb-2"
         style={{ borderBottom: `1px solid ${C.border}`, backgroundColor: C.card }}>
         <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
-          style={{ backgroundColor: '#6c1d5f18' }}>
+          style={{ backgroundColor: '#831B8418' }}>
           <BookOpen className="w-[17px] h-[17px]" style={{ color: C.primary }} />
         </div>
         <div className="flex-1">
@@ -751,7 +751,7 @@ export default function CourseForm() {
                   input={prereqInput}
                   setInput={setPrereqInput}
                   placeholder="Basic Java knowledge"
-                  bulletColor="#6c1d5f"
+                  bulletColor="#831B84"
                   addButtonLabel="Add Prerequisite"
                   dragType="prereq"
                   onAdd={() => addItem(prereqs, setPrereqs, prereqInput, setPrereqInput, 'prerequisites')}
@@ -1075,7 +1075,7 @@ export default function CourseForm() {
                 </div>
               </div>
 
-              <div className="rounded-xl p-4" style={{ backgroundColor: '#6c1d5f08', border: `1px solid #6c1d5f20` }}>
+              <div className="rounded-xl p-4" style={{ backgroundColor: '#831B8408', border: `1px solid #831B8420` }}>
                 <p className="text-xs font-bold mb-2 flex items-center gap-1" style={{ color: C.primary }}>
                   <Sparkles className="w-3.5 h-3.5" /> SEO Checklist
                 </p>

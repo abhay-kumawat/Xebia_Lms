@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import TeacherSidebar from './TeacherSidebar';
 import TeacherHeader from './TeacherHeader';
 import { useCatalog } from '@/hooks/useCatalog';
-import XebiaAssistant from '@/components/common/XebiaAssistant';
 
 export default function TeacherLayout({ children }) {
   const { branding, hydrated } = useCatalog();
@@ -13,8 +12,8 @@ export default function TeacherLayout({ children }) {
   useEffect(() => {
     document.title = 'Xebia Academy | Teacher Portal';
     if (hydrated && branding) {
-      document.documentElement.style.setProperty('--brand-primary', branding.primaryColor || '#6C1D5F');
-      document.documentElement.style.setProperty('--brand-secondary', branding.secondaryColor || '#84117C');
+      document.documentElement.style.setProperty('--brand-primary', branding.primaryColor || '#831B84');
+      document.documentElement.style.setProperty('--brand-secondary', branding.secondaryColor || '#FF6200');
     }
   }, [branding, hydrated]);
 
@@ -42,7 +41,6 @@ export default function TeacherLayout({ children }) {
         <TeacherHeader title={title} subtitle={subtitle} />
         <main className="min-h-screen">{children}</main>
       </div>
-      <XebiaAssistant />
     </div>
   );
 }

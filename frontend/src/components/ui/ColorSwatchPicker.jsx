@@ -8,7 +8,7 @@ export const SWATCH_PALETTE = [
   '#0B7F76', // deep teal
   '#7C3AED', // purple
   '#F97316', // orange
-  '#6C1D5F', // plum
+  '#831B84', // plum
   '#DB2777', // pink / magenta
 ];
 

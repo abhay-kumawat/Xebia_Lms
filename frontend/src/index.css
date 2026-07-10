@@ -7,9 +7,9 @@
 @layer base {
   :root {
     /* Brand variables from cloned repo (do not remove to prevent dashboard issues) */
-    --brand-primary:      #6C1D5F;
-    --brand-primary-dark: #4A1E47;
-    --brand-secondary:    #84117C;
+    --brand-primary:      #831B84;
+    --brand-primary-dark: #681069;
+    --brand-secondary:    #FF6200;
     --brand-success:      #01AC9F;
     --brand-cta:          #01AC9F;
     --brand-border:       #DADCEA;
@@ -21,20 +21,20 @@
     --accent-teal:        #01AC9F;
     --accent-teal-dark:   #0B7F76;
     --accent-orange:      #FF6200;
-    --accent-purple:      #84117C;
+    --accent-purple:      #831B84;
     --accent-pink:        #DB2777;
-    --accent-plum:        #6C1D5F;
+    --accent-plum:        #681069;
 
     /* Landing page variables */
-    --xebia-velvet: #6C1D5F;
-    --xebia-velvet-glow: rgba(108, 29, 95, 0.12);
-    --xebia-velvet-light: #84117C;
+    --xebia-velvet: #831B84;
+    --xebia-velvet-glow: rgba(131, 27, 132, 0.12);
+    --xebia-velvet-light: #9C27B0;
     --xebia-dark-blue: #ffffff;
     --xebia-black: #F7F8FC;
     --xebia-grey-dark: #5A5A5A;
     --xebia-grey-light: #F7F8FC;
     --xebia-border: #DADCEA;
-    --xebia-border-hover: #84117C;
+    --xebia-border-hover: #FF6200;
     --accent-cyan: #01AC9F;
     --accent-green: #5eb32a;
     --accent-coral: #E31818;
@@ -44,10 +44,10 @@
   }
 
   .dark {
-    --brand-border:     #334155;
-    --brand-surface:    #111827;
-    --brand-background: #0B1120;
-    --card-background:  #1E293B;
+    --brand-border:     #2B1B3D;
+    --brand-surface:    #150027;
+    --brand-background: #0C0017;
+    --card-background:  #200D33;
     --text-primary:     #F8FAFC;
     --text-secondary:   #CBD5E1;
   }
@@ -66,7 +66,7 @@
   }
 
   .dark body {
-    background-color: #0B1120;
+    background-color: #0C0017;
     color: #F8FAFC;
   }
 

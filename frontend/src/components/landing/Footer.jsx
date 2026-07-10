@@ -45,8 +45,8 @@ export default function Footer() {
         {/* Column 1: Brand Info & Form */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <GraduationCap size={24} color="#6C1D5F" />
-            <span style={{ fontSize: '20px', fontWeight: '800', color: '#6C1D5F' }}>Xebia Academy</span>
+            <GraduationCap size={24} color="#831B84" />
+            <span style={{ fontSize: '20px', fontWeight: '800', color: '#831B84' }}>Xebia Academy</span>
           </div>
           
           <p style={{ color: '#444444', lineHeight: '1.6' }}>
@@ -59,7 +59,7 @@ export default function Footer() {
 
           {/* Newsletter form */}
           {isSubscribed ? (
-            <div style={{ background: '#F5E6F3', border: '1px solid #84117C', padding: '16px', borderRadius: '8px', color: '#6C1D5F', fontWeight: '600' }}>
+            <div style={{ background: '#F5E6F3', border: '1px solid #FF6200', padding: '16px', borderRadius: '8px', color: '#831B84', fontWeight: '600' }}>
               ✓ Thank you for subscribing!
             </div>
           ) : (
@@ -101,7 +101,7 @@ export default function Footer() {
               <button 
                 type="submit" 
                 style={{
-                  background: '#84117C',
+                  background: '#FF6200',
                   color: 'white',
                   border: 'none',
                   padding: '12px 28px',
@@ -113,8 +113,8 @@ export default function Footer() {
                   boxShadow: '0 4px 10px rgba(132, 17, 124, 0.25)',
                   transition: '0.2s'
                 }}
-                onMouseOver={(e) => e.currentTarget.style.background = '#6C1D5F'}
-                onMouseOut={(e) => e.currentTarget.style.background = '#84117C'}
+                onMouseOver={(e) => e.currentTarget.style.background = '#831B84'}
+                onMouseOut={(e) => e.currentTarget.style.background = '#FF6200'}
               >
                 Subscribe Now
               </button>
@@ -145,7 +145,7 @@ export default function Footer() {
                   width: '14px', 
                   height: '14px', 
                   borderRadius: '50%', 
-                  background: 'radial-gradient(circle at 30% 30%, #a932ad, #6C1D5F)', 
+                  background: 'radial-gradient(circle at 30% 30%, #a932ad, #831B84)', 
                   display: 'inline-block',
                   boxShadow: '0 2px 4px rgba(108,29,95,0.3)' 
                 }}></span>

@@ -67,7 +67,7 @@ export default function HowItWorks() {
             }}
             onMouseOver={(e) => {
               e.currentTarget.style.transform = 'translateY(-4px)';
-              e.currentTarget.style.borderColor = '#84117C';
+              e.currentTarget.style.borderColor = '#FF6200';
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
@@ -83,7 +83,7 @@ export default function HowItWorks() {
                 left: 0,
                 width: '100%',
                 height: '100%',
-                background: '#6C1D5F',
+                background: '#831B84',
                 padding: '30px',
                 boxSizing: 'border-box',
                 display: 'flex',
@@ -112,7 +112,7 @@ export default function HowItWorks() {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   background: '#ffffff',
-                  color: '#6C1D5F',
+                  color: '#831B84',
                   padding: '10px 20px',
                   borderRadius: '24px',
                   fontSize: '13px',

@@ -17,10 +17,15 @@ export default function Logo({ size = 22, glow = true }) {
         <GraduationCap size={size} color="white" />
       </div>
       <div>
-        <h2 style={{ fontSize: '18px', fontWeight: '800', lineHeight: 1.1 }}>
-          xebia <span className="gradient-text-velvet">academy</span>
+        <h2 style={{ 
+          fontSize: '18px', 
+          fontWeight: '800', 
+          lineHeight: 1.1,
+          color: 'var(--brand-primary)'
+        }}>
+          xebia <span style={{ color: 'var(--brand-secondary)' }}>academy</span>
         </h2>
-        <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+        <span style={{ fontSize: '10px', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
           LMS PORTAL
         </span>
       </div>
